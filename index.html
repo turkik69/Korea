@@ -309,13 +309,67 @@ img,svg{display:block}
 .pb-page td.ko{font-family:var(--font-kr);font-weight:700;color:var(--navy)}
 .pb-page .pb-sentence{padding:8px 10px;background:var(--bg-soft);border-radius:6px;margin-bottom:6px;font-size:12.5px}
 .pb-page .pb-note{font-size:11.5px;background:rgba(217,164,65,.12);border-right:3px solid var(--gold);padding:8px 12px;margin-top:8px}
+
+/* ---------- auth tabs ---------- */
+.auth-tabs{display:flex;gap:6px;background:var(--bg-soft);padding:5px;border-radius:12px;margin-bottom:20px}
+.auth-tab{flex:1;padding:10px;border-radius:9px;font-weight:800;font-size:13px;color:var(--ink-soft)}
+.auth-tab.active{background:var(--card);color:var(--navy);box-shadow:var(--shadow-sm)}
+
+/* ---------- status screens (pending/blocked/device) ---------- */
+.status-screen{min-height:78vh;display:flex;align-items:center;justify-content:center}
+.status-card{max-width:440px;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:44px 34px;box-shadow:var(--shadow)}
+.status-ico{font-size:44px;margin-bottom:14px}
+.status-card h2{font-size:20px;font-weight:800;color:var(--navy);margin-bottom:10px}
+.status-card p{font-size:14px;color:var(--ink-soft);line-height:1.8}
+
+/* ---------- drill cta on dashboard ---------- */
+.drill-cta{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  margin-top:16px;padding:18px 20px;border-radius:14px;background:linear-gradient(120deg,var(--navy),var(--navy-deep));color:#fff;
+}
+.drill-cta b{font-size:14.5px}
+.drill-cta p{font-size:12px;opacity:.8;margin-top:3px}
+
+/* ---------- admin shell ---------- */
+#admin-shell{min-height:100vh;background:var(--bg)}
+.admin-topbar{
+  display:flex;align-items:center;justify-content:space-between;padding:18px 26px;
+  background:var(--navy-deep);color:#fff;font-weight:800;font-size:15px;
+}
+.admin-topbar .btn-outline{border-color:rgba(255,255,255,.4);color:#fff}
+.admin-wrap{max-width:920px;margin:0 auto;padding:26px 20px 70px}
+.admin-section{margin-bottom:30px}
+.admin-section h3{font-size:15px;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.count-pill{font-family:var(--font-mono);font-size:11px;background:var(--bg-soft);color:var(--ink-soft);padding:2px 10px;border-radius:100px}
+.admin-list{display:grid;gap:10px}
+.admin-row{
+  display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;flex-wrap:wrap;
+}
+.admin-row .who{flex:1;min-width:140px}
+.admin-row .who b{font-size:14px;display:block}
+.admin-row .who span{font-size:11.5px;color:var(--ink-soft);font-family:var(--font-mono)}
+.admin-row .meta{font-size:11.5px;color:var(--ink-soft);font-family:var(--font-mono)}
+.admin-row .actions{display:flex;gap:8px}
+.admin-btn{padding:8px 14px;border-radius:8px;font-size:12px;font-weight:800}
+.admin-btn.ok{background:rgba(47,111,98,.15);color:var(--jade)}
+.admin-btn.no{background:rgba(193,68,60,.13);color:var(--red)}
+.admin-btn.neutral{background:var(--bg-soft);color:var(--ink-soft)}
+.admin-empty{padding:16px;text-align:center;color:var(--ink-soft);font-size:12.5px;background:var(--card);border:1px dashed var(--line);border-radius:12px}
+
+/* ---------- drill screen ---------- */
+.drill-card{padding:30px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);text-align:center}
+.drill-prompt{font-family:var(--font-kr);font-size:30px;font-weight:800;color:var(--navy);margin-bottom:24px}
+.drill-prompt.ar{font-family:var(--font-ar);font-size:20px}
+.drill-summary{text-align:center;padding:44px 30px}
+.drill-summary .score-ring{font-family:var(--font-mono);font-size:40px;font-weight:700;color:var(--jade)}
 </style>
 </head>
 <body>
 
+<!-- ================= واجهة المستخدم العادية ================= -->
 <div id="app-shell">
 
-  <!-- ================= TOPBAR ================= -->
   <header class="topbar" id="topbar" style="display:none">
     <div class="brand">
       <svg class="brand-mark" viewBox="0 0 48 48" id="brand-gate"></svg>
@@ -324,41 +378,94 @@ img,svg{display:block}
     <nav class="nav-tabs" id="nav-tabs">
       <button data-go="dashboard" class="active">الرئيسية</button>
       <button data-go="levels">المستويات</button>
-      <button data-go="leaderboard">لوحة المتصدرين</button>
+      <button data-go="drill">تدريب سريع</button>
+      <button data-go="leaderboard">لوحة المتصدّرين</button>
     </nav>
-    <div class="user-pill"><span class="dot"></span><span id="user-pill-name">—</span></div>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div class="user-pill"><span class="dot"></span><span id="user-pill-name">—</span></div>
+      <button class="btn-outline" id="btn-logout" style="padding:8px 14px;font-size:12px">خروج</button>
+    </div>
   </header>
 
-  <!-- ================= AUTH SCREEN ================= -->
+  <!-- ---------- تسجيل الدخول / حساب جديد ---------- -->
   <section class="screen" id="screen-auth">
     <div class="auth-wrap">
       <div class="auth-hero">
         <h1>ابدئي رحلتك مع<br><span class="kr-accent">한글</span> من الصفر</h1>
-        <p>منصّة تعليمية متدرّجة لتعلّم اللغة الكورية باللغة العربية — دروس، مفردات، محادثات، واختبارات تفتح لك كل مستوى جديد بعد إتقان الذي قبله.</p>
+        <p>منصّة تعليمية متدرّجة لتعلّم اللغة الكورية باللغة العربية — دروس، مفردات، محادثات، واختبارات متجدّدة تفتح لك كل مستوى جديد بعد إتقان الذي قبله.</p>
         <div class="stat-row">
           <div><b>5</b><span>مستويات</span></div>
           <div><b>20</b><span>درساً</span></div>
           <div><b>٪70</b><span>نسبة النجاح المطلوبة</span></div>
         </div>
-      </div>
-      <div class="auth-card">
-        <h2>ابدئي التعلّم</h2>
-        <p class="sub">أدخلي اسمك لإنشاء ملفّك التعليمي ومتابعة تقدّمك بين الأجهزة</p>
-        <div class="field">
-          <label for="username-input">اسم المستخدم</label>
-          <input id="username-input" type="text" placeholder="مثال: خديجة" maxlength="24" autocomplete="off">
-        </div>
-        <button class="btn-primary" id="btn-start">ابدأ التعلّم ←</button>
-        <p class="auth-note" id="auth-error" style="color:var(--red);display:none"></p>
         <div class="mini-board">
           <h3>المتصدّرون حالياً</h3>
           <div id="mini-leaderboard"></div>
         </div>
       </div>
+      <div class="auth-card">
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-mode="login">تسجيل الدخول</button>
+          <button class="auth-tab" data-mode="signup">حساب جديد</button>
+        </div>
+
+        <!-- تسجيل الدخول -->
+        <div id="auth-form-login">
+          <p class="sub">أدخلي بيانات حسابك للمتابعة</p>
+          <div class="field"><label>اسم الدخول</label><input id="login-handle" type="text" placeholder="بالإنجليزية، مثال: ward" autocomplete="off"></div>
+          <div class="field"><label>كلمة السر</label><input id="login-password" type="password" placeholder="••••••••" autocomplete="off"></div>
+          <button class="btn-primary" id="btn-login">تسجيل الدخول ←</button>
+        </div>
+
+        <!-- حساب جديد -->
+        <div id="auth-form-signup" class="hidden">
+          <p class="sub">أدخلي اسمك لإنشاء ملفك التعليمي ومتابعة تقدّمك بين المشاركين — يحتاج حسابك موافقة الإدارة أولاً</p>
+          <div class="field"><label>الاسم المعروض (يظهر في لوحة المتصدّرين)</label><input id="signup-name" type="text" placeholder="مثال: ورد" autocomplete="off"></div>
+          <div class="field"><label>اسم الدخول (بالإنجليزية والأرقام فقط)</label><input id="signup-handle" type="text" placeholder="مثال: ward" autocomplete="off"></div>
+          <div class="field"><label>كلمة السر</label><input id="signup-password" type="password" placeholder="4 أحرف على الأقل" autocomplete="off"></div>
+          <button class="btn-primary" id="btn-signup">إنشاء الحساب ←</button>
+        </div>
+
+        <p class="auth-note" id="auth-error" style="color:var(--red);display:none"></p>
+        <p class="auth-note">🔒 كل حساب يُستخدم من جهاز واحد فقط لضمان عدالة المنافسة — لا تشاركي بيانات دخولك مع أحد.</p>
+      </div>
     </div>
   </section>
 
-  <!-- ================= DASHBOARD ================= -->
+  <!-- ---------- بانتظار موافقة الإدارة ---------- -->
+  <section class="screen hidden status-screen" id="screen-pending">
+    <div class="status-card">
+      <div class="status-ico">⏳</div>
+      <h2>طلبك قيد المراجعة</h2>
+      <p>سجّلتِ بنجاح — بانتظار موافقة الإدارة على حسابك لتتمكّني من بدء الدروس. حاولي الدخول لاحقاً.</p>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:18px">
+        <button class="btn-outline" id="btn-pending-refresh">تحقّقي مجدداً</button>
+        <button class="btn-outline" id="btn-pending-logout">تسجيل الخروج</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------- حساب موقوف ---------- -->
+  <section class="screen hidden status-screen" id="screen-blocked">
+    <div class="status-card">
+      <div class="status-ico">🚫</div>
+      <h2>تم إيقاف الوصول لهذا الحساب</h2>
+      <p>تواصلي مع الإدارة إن كنتِ تعتقدين أن هذا خطأ.</p>
+      <button class="btn-outline" id="btn-blocked-logout" style="margin-top:18px">تسجيل الخروج</button>
+    </div>
+  </section>
+
+  <!-- ---------- تعارض الجهاز ---------- -->
+  <section class="screen hidden status-screen" id="screen-device">
+    <div class="status-card">
+      <div class="status-ico">📵</div>
+      <h2>تسجيل دخول من جهاز آخر</h2>
+      <p>هذا الحساب مرتبط بجهاز آخر مسبقاً. لأسباب أمنية يجب موافقة الإدارة لتفعيل هذا الجهاز الجديد. حاولي الدخول من جهازك الأصلي، أو انتظري الموافقة.</p>
+      <button class="btn-outline" id="btn-device-back" style="margin-top:18px">رجوع</button>
+    </div>
+  </section>
+
+  <!-- ---------- الرئيسية ---------- -->
   <section class="screen hidden" id="screen-dashboard">
     <div class="stat-cards">
       <div class="stat-card"><div class="k">المستوى الحالي</div><div class="v" id="stat-level">1</div></div>
@@ -382,6 +489,10 @@ img,svg{display:block}
       <div>
         <div class="section-head"><h2>تابعي من حيث توقّفتِ</h2><span class="link" data-go="levels">كل المستويات ←</span></div>
         <div id="continue-lessons" class="lesson-list"></div>
+        <div class="drill-cta" id="drill-cta">
+          <div><b>🎯 تدريب سريع</b><p>أسئلة عشوائية متجدّدة من دروسك المكتملة — لا تشعري بالملل!</p></div>
+          <button class="btn-light" data-go="drill">ابدئي التدريب</button>
+        </div>
       </div>
       <div class="card side-card">
         <h3>🏆 لوحة المتصدّرين</h3>
@@ -391,7 +502,7 @@ img,svg{display:block}
     </div>
   </section>
 
-  <!-- ================= LEVELS LIST ================= -->
+  <!-- ---------- كل المستويات ---------- -->
   <section class="screen hidden" id="screen-levels">
     <div class="section-head">
       <h2>كل المستويات</h2>
@@ -400,7 +511,7 @@ img,svg{display:block}
     <div id="levels-list" style="display:grid;gap:16px"></div>
   </section>
 
-  <!-- ================= SINGLE LEVEL ================= -->
+  <!-- ---------- مستوى واحد ---------- -->
   <section class="screen hidden" id="screen-level">
     <button class="btn-outline" style="padding:8px 16px;font-size:12.5px;margin-bottom:16px" data-go="levels">→ رجوع للمستويات</button>
     <div class="lesson-hero">
@@ -423,7 +534,7 @@ img,svg{display:block}
     </div>
   </section>
 
-  <!-- ================= LESSON ================= -->
+  <!-- ---------- الدرس ---------- -->
   <section class="screen hidden" id="screen-lesson">
     <button class="btn-outline" style="padding:8px 16px;font-size:12.5px;margin-bottom:16px" id="btn-back-to-level">→ رجوع للمستوى</button>
     <div class="lesson-hero">
@@ -440,13 +551,19 @@ img,svg{display:block}
     </div>
   </section>
 
-  <!-- ================= QUIZ ================= -->
+  <!-- ---------- الاختبار ---------- -->
   <section class="screen hidden" id="screen-quiz">
     <div class="quiz-progress"><i id="quiz-progress-bar" style="width:0%"></i></div>
     <div id="quiz-body"></div>
   </section>
 
-  <!-- ================= LEADERBOARD ================= -->
+  <!-- ---------- تدريب سريع ---------- -->
+  <section class="screen hidden" id="screen-drill">
+    <div class="quiz-progress"><i id="drill-progress-bar" style="width:0%"></i></div>
+    <div id="drill-body"></div>
+  </section>
+
+  <!-- ---------- لوحة المتصدّرين ---------- -->
   <section class="screen hidden" id="screen-leaderboard">
     <div class="section-head"><h2>🏆 لوحة المتصدّرين الكاملة</h2></div>
     <div class="card" style="padding:8px 20px">
@@ -462,8 +579,57 @@ img,svg{display:block}
 <nav class="mobile-nav" id="mobile-nav" style="display:none">
   <button data-go="dashboard" class="active">الرئيسية</button>
   <button data-go="levels">المستويات</button>
+  <button data-go="drill">تدريب</button>
   <button data-go="leaderboard">المتصدّرون</button>
 </nav>
+
+<!-- ================= واجهة الإدارة (مخفية تماماً عن المستخدمين) ================= -->
+<div id="admin-shell" class="hidden">
+  <div class="admin-topbar">
+    <b>لوحة الإدارة · 한글이랑</b>
+    <button class="btn-outline" id="btn-admin-logout" style="padding:7px 14px;font-size:12px">خروج</button>
+  </div>
+
+  <section id="admin-screen-setup" class="hidden admin-wrap">
+    <div class="auth-card" style="max-width:420px;margin:60px auto">
+      <h2>إعداد حساب الإدارة الأول</h2>
+      <p class="sub">لا يوجد حساب إدارة بعد — أنشئي واحداً الآن. لن تظهر هذه الصفحة لأي مستخدم آخر.</p>
+      <div class="field"><label>اسم دخول الإدارة (بالإنجليزية)</label><input id="admsetup-handle" type="text" placeholder="مثال: ward" autocomplete="off"></div>
+      <div class="field"><label>كلمة السر</label><input id="admsetup-password" type="password" placeholder="4 أحرف على الأقل" autocomplete="off"></div>
+      <button class="btn-primary" id="btn-admin-bootstrap">إنشاء حساب الإدارة ←</button>
+      <p class="auth-note" id="admsetup-error" style="color:var(--red);display:none"></p>
+    </div>
+  </section>
+
+  <section id="admin-screen-login" class="hidden admin-wrap">
+    <div class="auth-card" style="max-width:420px;margin:60px auto">
+      <h2>دخول الإدارة</h2>
+      <div class="field"><label>اسم الدخول</label><input id="admlogin-handle" type="text" autocomplete="off"></div>
+      <div class="field"><label>كلمة السر</label><input id="admlogin-password" type="password" autocomplete="off"></div>
+      <button class="btn-primary" id="btn-admin-login">دخول ←</button>
+      <p class="auth-note" id="admlogin-error" style="color:var(--red);display:none"></p>
+    </div>
+  </section>
+
+  <section id="admin-screen-dashboard" class="hidden admin-wrap">
+    <div class="admin-section">
+      <h3>🆕 طلبات تسجيل جديدة <span class="count-pill" id="count-pending">0</span></h3>
+      <div id="admin-pending-list" class="admin-list"></div>
+    </div>
+    <div class="admin-section">
+      <h3>📵 طلبات تفعيل جهاز جديد <span class="count-pill" id="count-device">0</span></h3>
+      <div id="admin-device-list" class="admin-list"></div>
+    </div>
+    <div class="admin-section">
+      <h3>✅ المستخدمون النشطون <span class="count-pill" id="count-active">0</span></h3>
+      <div id="admin-active-list" class="admin-list"></div>
+    </div>
+    <div class="admin-section">
+      <h3>🚫 حسابات موقوفة <span class="count-pill" id="count-blocked">0</span></h3>
+      <div id="admin-blocked-list" class="admin-list"></div>
+    </div>
+  </section>
+</div>
 
 <div id="toast"></div>
 <div id="print-book"></div>
@@ -544,7 +710,11 @@ const LEVELS = [
         { q:"الحرف «ㅏ» يمثّل الصوت:", options:["o","u","a","i"], correct:2 },
         { q:"ما ناتج دمج ㅎ + ㅏ + ㄴ؟", options:["하","항","한","흔"], correct:2 },
         { q:"أي ممّا يلي حرف متحرك مركّب (diphthong)؟", options:["ㄲ","ㅌ","ㅅ","ㅘ"], correct:3 },
-        { q:"كم عدد الحروف الساكنة الأساسية في الهانغل؟", options:["10","14","19","21"], correct:1 }
+        { q:"كم عدد الحروف الساكنة الأساسية في الهانغل؟", options:["10","14","19","21"], correct:1 },
+      { q:"الحرف «ㅜ» يمثّل الصوت:", options:["u","a","i","eu"], correct:0 },
+      { q:"أي ممّا يلي حرف «ساكن» وليس «متحركاً»؟", options:["ㅁ","ㅗ","ㅏ","ㅣ"], correct:0 },
+      { q:"كم عدد الحروف المتحركة الأساسية؟", options:["8","10","12","14"], correct:1 },
+      { q:"المقطع «물» يعني:", options:["نار","ماء","هواء","طعام"], correct:1 }
       ]
     }
   },
@@ -611,7 +781,11 @@ const LEVELS = [
         { q:"الرقم الكوري الأصلي «셋» يعني:", options:["1","3","5","7"], correct:1 },
         { q:"«네» تعني:", options:["لا","ربما","نعم","لماذا"], correct:2 },
         { q:"لتقديم نفسكِ تقولين:", options:["맛있어요","제 이름은 ○○입니다","어디예요؟","감사합니다"], correct:1 },
-        { q:"«물» تعني:", options:["نار","طعام","هواء","ماء"], correct:3 }
+        { q:"«물» تعني:", options:["نار","طعام","هواء","ماء"], correct:3 },
+      { q:"«친구» تعني:", options:["مدرسة","صديق","منزل","حب"], correct:1 },
+      { q:"الرقم الصيني-الكوري لـ 5 هو:", options:["오","다섯","일","십"], correct:0 },
+      { q:"«죄송합니다» تعني:", options:["شكراً","مرحباً","أنا آسف","مع السلامة"], correct:2 },
+      { q:"«만나서 반갑습니다» تعني:", options:["من أين أتيتَ؟","سعيد بلقائك","كم الساعة؟","أين الحمّام؟"], correct:1 }
       ]
     }
   },
@@ -673,7 +847,11 @@ const LEVELS = [
         { q:"«있어요» تعني:", options:["لا يوجد","يوجد / لديه","ذهب","أكل"], correct:1 },
         { q:"لنفي فعل بأسلوب مهذّب بسيط، نضع قبل الفعل:", options:["안","-고","-지만","-을"], correct:0 },
         { q:"«이것» تعني:", options:["ذلك البعيد","من","هذا القريب","متى"], correct:2 },
-        { q:"الصيغة الرسمية المهذّبة لفعل «يأكل» (먹다) هي:", options:["먹고","먹지","먹어","먹습니다"], correct:3 }
+        { q:"الصيغة الرسمية المهذّبة لفعل «يأكل» (먹다) هي:", options:["먹고","먹지","먹어","먹습니다"], correct:3 },
+      { q:"«그것» تشير إلى:", options:["هذا القريب","ذلك (متوسط أو بعيد قليلاً)","من","متى"], correct:1 },
+      { q:"صيغة «-아요/어요» تُستخدم في:", options:["الماضي الرسمي","المضارع المهذّب غير الرسمي","السؤال فقط","النفي"], correct:1 },
+      { q:"ضمير «당신» يُستخدم:", options:["بشكل يومي جداً","نادراً وبحذر (قد يبدو غير مهذّب أحياناً)","فقط مع الأطفال","فقط في الكتابة"], correct:1 },
+      { q:"عكس «있다» هو:", options:["하다","없다","가다","오다"], correct:1 }
       ]
     }
   },
@@ -731,7 +909,11 @@ const LEVELS = [
         { q:"«왼쪽» تعني:", options:["يمين","يسار","أمام","خلف"], correct:1 },
         { q:"للسؤال عن الوقت تقولين:", options:["몇 시예요؟","뭐예요؟","어디예요؟","누구예요؟"], correct:0 },
         { q:"«오른쪽으로 가세요» تعني:", options:["اذهب يساراً","توقّف هنا","اذهب يميناً","ارجع"], correct:2 },
-        { q:"«맛있어요» تعني:", options:["غالٍ","بارد","رخيص","لذيذ"], correct:3 }
+        { q:"«맛있어요» تعني:", options:["غالٍ","بارد","رخيص","لذيذ"], correct:3 },
+      { q:"«계산해 주세요» تُقال:", options:["عند الدخول للمطعم","لطلب الفاتورة","للسؤال عن الاتجاه","للتحية"], correct:1 },
+      { q:"«똑바로 가세요» تعني:", options:["توقّف","ارجع","اذهب مباشرة","اذهب يساراً"], correct:2 },
+      { q:"«너무 비싸요» تعني:", options:["رخيص جداً","غالٍ جداً","لذيذ جداً","بعيد جداً"], correct:1 },
+      { q:"«약속» تعني:", options:["موعد","طعام","نقود","حمّام"], correct:0 }
       ]
     }
   },
@@ -789,7 +971,11 @@ const LEVELS = [
         { q:"«갈 거예요» تعني:", options:["ذهبتُ","سأذهب","أذهب الآن","لن أذهب"], correct:1 },
         { q:"أداة ربط «السبب والنتيجة»:", options:["-아서/어서","-지만","-고","-까요"], correct:0 },
         { q:"«공부하고 있어요» تعني:", options:["درستُ","سأدرس","لا أدرس","أدرس الآن (مستمر)"], correct:3 },
-        { q:"وظيفة اللاحقة «-(으)ㄹ 거예요»:", options:["التعبير عن الماضي","النفي","التعبير عن المستقبل","السؤال"], correct:2 }
+        { q:"وظيفة اللاحقة «-(으)ㄹ 거예요»:", options:["التعبير عن الماضي","النفي","التعبير عن المستقبل","السؤال"], correct:2 },
+      { q:"وظيفة «-고» في جملة مركّبة:", options:["لكن","و (لربط فعلين متتاليين)","لأنّ","هل"], correct:1 },
+      { q:"«봤어요» (فعل «يشاهد») في زمن:", options:["المستقبل","الماضي","المضارع المستمر","الأمر"], correct:1 },
+      { q:"أفضل طريقة لمواصلة التعلّم بعد هذا المستوى:", options:["التوقّف عن الدراسة","مشاهدة محتوى كوري والتحدث مع ناطقين أصليين","حفظ القاموس فقط","تجاهل النطق"], correct:1 },
+      { q:"«일어나요» تعني:", options:["ينام","يستيقظ","يأكل","يذهب"], correct:1 }
       ]
     }
   }
@@ -883,61 +1069,126 @@ function gateSVG(state){
 }
 
 /* ============================================================
-   الحالة والاتصال بقاعدة البيانات (Supabase)
+   الحالة، المصادقة (Supabase Auth)، وربط قاعدة البيانات
    ============================================================ */
 const STATE = {
-  user: null,          // {id, username}
-  stats: null,          // صف من user_stats
-  progress: {},          // "levelId-lessonId" -> true
+  profile: null,        // صف من profiles
+  stats: null,           // صف من user_stats
+  progress: {},           // "levelId-lessonId" -> true
   currentLevelId: null,
   currentLessonIdx: 0,
-  quiz: null            // {levelId, qIndex, answers[], locked}
+  quiz: null,
+  drill: null
 };
 
-function toast(msg, ms=2600){
+function toast(msg, ms=2800){
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
   clearTimeout(t._timer);
   t._timer = setTimeout(()=>t.classList.remove('show'), ms);
 }
-
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function totalLessonCount(){ return LEVELS.reduce((s,l)=>s+l.lessons.length,0); }
+function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 
-async function ensureUser(usernameRaw){
-  const username = usernameRaw.trim();
-  if(!username) throw new Error("empty");
-  const { data: existing } = await sb.from('users').select('id,username').eq('username', username).maybeSingle();
-  let id;
-  if(existing){
-    id = existing.id;
-  } else {
-    const { data: created, error: insErr } = await sb.from('users').insert({ username }).select().single();
-    if(insErr){
-      const { data: retry } = await sb.from('users').select('id').eq('username', username).maybeSingle();
-      if(retry) id = retry.id; else throw insErr;
-    } else {
-      id = created.id;
-    }
+/* ---------- أدوات الحساب ---------- */
+const HANDLE_RE = /^[a-z0-9_]{3,20}$/;
+function slugHandle(h){ return String(h||'').trim().toLowerCase(); }
+function handleToEmail(handle){ return `${handle}@hangeul-irang.local`; }
+function getDeviceId(){
+  let id = localStorage.getItem('hi_device_id');
+  if(!id){
+    id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('dev-'+Math.random().toString(36).slice(2)+Date.now());
+    localStorage.setItem('hi_device_id', id);
   }
-  localStorage.setItem('hi_user_id', id);
-  localStorage.setItem('hi_username', username);
-  return { id, username };
+  return id;
 }
 
-async function loadUserData(user){
-  let { data: stats } = await sb.from('user_stats').select('*').eq('user_id', user.id).maybeSingle();
+/* ---------- تسجيل حساب جديد (مستخدم عادي) ---------- */
+async function signUpUser(displayName, loginHandle, password){
+  const handle = slugHandle(loginHandle);
+  const name = String(displayName||'').trim();
+  if(!name || name.length < 2) throw new Error('BAD_NAME');
+  if(!HANDLE_RE.test(handle)) throw new Error('BAD_HANDLE');
+  if(!password || password.length < 4) throw new Error('BAD_PASSWORD');
+
+  const email = handleToEmail(handle);
+  const { data, error } = await sb.auth.signUp({ email, password });
+  if(error){
+    if(/registered|exists/i.test(error.message||'')) throw new Error('HANDLE_TAKEN');
+    throw error;
+  }
+  if(!data.session){
+    const { error: e2 } = await sb.auth.signInWithPassword({ email, password });
+    if(e2) throw e2;
+  }
+  const { data: authData } = await sb.auth.getUser();
+  const uid = authData.user.id;
+  const { error: profErr } = await sb.from('profiles').insert({
+    id: uid, username: name, login_handle: handle, role:'user', status:'pending',
+    device_flag:false, bound_device_id: getDeviceId()
+  });
+  if(profErr){ await sb.auth.signOut(); throw profErr; }
+  return uid;
+}
+
+/* ---------- تسجيل الدخول (مستخدم عادي) ---------- */
+async function loginUser(loginHandle, password){
+  const handle = slugHandle(loginHandle);
+  const email = handleToEmail(handle);
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if(error) throw new Error('BAD_CREDENTIALS');
+  const uid = data.user.id;
+  const { data: profile } = await sb.from('profiles').select('*').eq('id', uid).maybeSingle();
+  if(!profile || profile.role === 'admin'){ await sb.auth.signOut(); throw new Error('BAD_CREDENTIALS'); }
+  return await verifyDeviceAndTouch(profile);
+}
+
+/* ---------- التحقّق من الجهاز المرتبط بالحساب ---------- */
+async function verifyDeviceAndTouch(profile){
+  const myDevice = getDeviceId();
+  if(profile.bound_device_id && profile.bound_device_id !== myDevice){
+    await sb.from('profiles').update({ device_flag:true }).eq('id', profile.id);
+    await sb.auth.signOut();
+    throw new Error('DEVICE_MISMATCH');
+  }
+  const patch = { last_login_at: new Date().toISOString() };
+  if(!profile.bound_device_id) patch.bound_device_id = myDevice;
+  await sb.from('profiles').update(patch).eq('id', profile.id);
+  return Object.assign({}, profile, patch);
+}
+
+/* ---------- استرجاع الجلسة عند إعادة فتح الصفحة ---------- */
+async function restoreSession(){
+  const { data: sessionData } = await sb.auth.getSession();
+  if(!sessionData.session) return null;
+  const uid = sessionData.session.user.id;
+  const { data: profile } = await sb.from('profiles').select('*').eq('id', uid).maybeSingle();
+  if(!profile) return null;
+  if(profile.role === 'admin') return profile; // لا نفحص الجهاز لحساب الإدارة
+  try{
+    return await verifyDeviceAndTouch(profile);
+  }catch(e){
+    return null;
+  }
+}
+
+/* ---------- بيانات التعلّم (تقدّم، إحصائيات) ---------- */
+async function loadLearningData(){
+  const uid = STATE.profile.id;
+  let { data: stats } = await sb.from('user_stats').select('*').eq('user_id', uid).maybeSingle();
   if(!stats){
-    const defaults = { user_id:user.id, username:user.username, current_level:1, xp:0, lessons_completed:0, quizzes_passed:0, avg_quiz_score:0 };
+    const defaults = { user_id:uid, username:STATE.profile.username, current_level:1, xp:0, lessons_completed:0, quizzes_passed:0, avg_quiz_score:0 };
     const { data: created } = await sb.from('user_stats').insert(defaults).select().single();
     stats = created;
-  } else if(stats.username !== user.username){
-    await sb.from('user_stats').update({ username:user.username }).eq('user_id', user.id);
-    stats.username = user.username;
+  } else if(stats.username !== STATE.profile.username){
+    await sb.from('user_stats').update({ username: STATE.profile.username }).eq('user_id', uid);
+    stats.username = STATE.profile.username;
   }
   STATE.stats = stats;
 
-  const { data: prog } = await sb.from('progress').select('level_id,lesson_id,completed').eq('user_id', user.id);
+  const { data: prog } = await sb.from('progress').select('level_id,lesson_id,completed').eq('user_id', uid);
   STATE.progress = {};
   (prog||[]).forEach(r=>{ if(r.completed) STATE.progress[r.level_id+'-'+r.lesson_id] = true; });
 }
@@ -951,7 +1202,7 @@ async function syncStats(){
       quizzes_passed: STATE.stats.quizzes_passed,
       avg_quiz_score: STATE.stats.avg_quiz_score,
       last_active: new Date().toISOString()
-    }).eq('user_id', STATE.user.id);
+    }).eq('user_id', STATE.profile.id);
   }catch(e){ toast("تعذّر مزامنة الإحصائيات مع الخادم"); }
 }
 
@@ -963,7 +1214,7 @@ async function markLessonComplete(levelId, lessonId){
   STATE.stats.xp += 10;
   try{
     await sb.from('progress').upsert(
-      { user_id:STATE.user.id, level_id:levelId, lesson_id:lessonId, completed:true, updated_at:new Date().toISOString() },
+      { user_id:STATE.profile.id, level_id:levelId, lesson_id:lessonId, completed:true, updated_at:new Date().toISOString() },
       { onConflict:'user_id,level_id,lesson_id' }
     );
     await syncStats();
@@ -973,8 +1224,8 @@ async function markLessonComplete(levelId, lessonId){
 
 async function submitQuizAttempt(levelId, score, passed){
   try{
-    await sb.from('quiz_attempts').insert({ user_id:STATE.user.id, level_id:levelId, score, passed });
-    const { data: attempts } = await sb.from('quiz_attempts').select('score').eq('user_id', STATE.user.id);
+    await sb.from('quiz_attempts').insert({ user_id:STATE.profile.id, level_id:levelId, score, passed });
+    const { data: attempts } = await sb.from('quiz_attempts').select('score').eq('user_id', STATE.profile.id);
     if(attempts && attempts.length){
       const avg = attempts.reduce((s,a)=>s+Number(a.score),0)/attempts.length;
       STATE.stats.avg_quiz_score = Math.round(avg*10)/10;
@@ -996,22 +1247,83 @@ async function fetchLeaderboard(limit=50){
 }
 
 /* ============================================================
-   التنقّل والعرض
+   لوحة الإدارة (ورد) — إنشاء، دخول، وإدارة الحسابات
    ============================================================ */
-const SCREENS = ['auth','dashboard','levels','level','lesson','quiz','leaderboard'];
-
-function goTo(name){
-  SCREENS.forEach(s=>{
-    const el = document.getElementById('screen-'+s);
-    if(el) el.classList.toggle('hidden', s!==name);
+async function adminExists(){
+  try{ const { data } = await sb.rpc('admin_exists'); return !!data; }catch(e){ return false; }
+}
+async function adminBootstrap(loginHandle, password, displayName){
+  const handle = slugHandle(loginHandle);
+  if(!HANDLE_RE.test(handle)) throw new Error('BAD_HANDLE');
+  if(!password || password.length < 4) throw new Error('BAD_PASSWORD');
+  const email = handleToEmail(handle);
+  const { data, error } = await sb.auth.signUp({ email, password });
+  if(error) throw error;
+  if(!data.session){ const { error:e2 } = await sb.auth.signInWithPassword({email,password}); if(e2) throw e2; }
+  const { data: authData } = await sb.auth.getUser();
+  const uid = authData.user.id;
+  const { error: profErr } = await sb.from('profiles').insert({
+    id:uid, username: displayName||'الإدارة', login_handle: handle, role:'admin', status:'approved', device_flag:false
   });
+  if(profErr){ await sb.auth.signOut(); throw profErr; }
+  return uid;
+}
+async function adminLogin(loginHandle, password){
+  const handle = slugHandle(loginHandle);
+  const email = handleToEmail(handle);
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if(error) throw new Error('BAD_CREDENTIALS');
+  const uid = data.user.id;
+  const { data: profile } = await sb.from('profiles').select('*').eq('id', uid).maybeSingle();
+  if(!profile || profile.role !== 'admin'){ await sb.auth.signOut(); throw new Error('BAD_CREDENTIALS'); }
+  return profile;
+}
+async function adminFetchAll(){
+  const { data } = await sb.from('profiles').select('*').order('created_at',{ascending:true});
+  return data || [];
+}
+async function adminFetchStatsMap(ids){
+  if(!ids.length) return {};
+  const { data } = await sb.from('user_stats').select('*').in('user_id', ids);
+  const map = {};
+  (data||[]).forEach(s=> map[s.user_id]=s);
+  return map;
+}
+async function adminApprove(id){ await sb.from('profiles').update({status:'approved'}).eq('id',id); }
+async function adminReject(id){ await adminDelete(id); }
+async function adminAllowDevice(id){ await sb.from('profiles').update({bound_device_id:null, device_flag:false}).eq('id',id); }
+async function adminDenyDevice(id){ await sb.from('profiles').update({device_flag:false, status:'blocked'}).eq('id',id); }
+async function adminKick(id){ await sb.from('profiles').update({status:'pending', device_flag:false}).eq('id',id); }
+async function adminUnblock(id){ await sb.from('profiles').update({status:'approved', device_flag:false}).eq('id',id); }
+async function adminDelete(id){
+  await sb.from('progress').delete().eq('user_id', id);
+  await sb.from('quiz_attempts').delete().eq('user_id', id);
+  await sb.from('user_stats').delete().eq('user_id', id);
+  await sb.from('profiles').delete().eq('id', id);
+}
+
+/* ============================================================
+   التنقّل والعرض — تطبيق المستخدم
+   ============================================================ */
+const SCREENS = ['auth','pending','blocked','device','dashboard','levels','level','lesson','quiz','drill','leaderboard'];
+const IN_APP_SCREENS = new Set(['dashboard','levels','level','lesson','quiz','drill','leaderboard']);
+
+function showScreen(name){
+  SCREENS.forEach(s=>{ const el=document.getElementById('screen-'+s); if(el) el.classList.toggle('hidden', s!==name); });
+  const showChrome = IN_APP_SCREENS.has(name);
+  document.getElementById('topbar').style.display = showChrome ? 'flex' : 'none';
+  document.getElementById('mobile-nav').style.display = showChrome ? 'flex' : 'none';
   document.querySelectorAll('.nav-tabs button, .mobile-nav button').forEach(b=>{
     b.classList.toggle('active', b.dataset.go===name);
   });
   window.scrollTo({top:0, behavior:'smooth'});
+}
+function goTo(name){
+  showScreen(name);
   if(name==='dashboard') renderDashboard();
   if(name==='levels') renderLevelsList();
   if(name==='leaderboard') renderLeaderboardFull();
+  if(name==='drill') startDrillRound();
 }
 
 function levelState(levelId){
@@ -1024,18 +1336,17 @@ function levelUnlocked(levelId){ return levelId <= (STATE.stats?STATE.stats.curr
 function lessonsCompletedInLevel(level){ return level.lessons.filter(ls=>STATE.progress[level.id+'-'+ls.id]).length; }
 
 /* ---------- شاشة الدخول ---------- */
-async function renderMiniLeaderboard(targetId, rowClass){
+async function renderMiniLeaderboard(){
   const rows = await fetchLeaderboard(5);
-  const host = document.getElementById(targetId);
+  const host = document.getElementById('mini-leaderboard');
   if(!rows.length){ host.innerHTML = `<p style="font-size:12.5px;color:var(--ink-soft)">كوني أوّل المتسابقين!</p>`; return; }
   host.innerHTML = rows.map((r,i)=>`
-    <div class="${rowClass}">
+    <div class="mini-row">
       <span class="rank">${i+1}</span>
       <span class="name">${escapeHtml(r.username)}</span>
       <span class="xp mono">${r.xp} XP</span>
     </div>`).join('');
 }
-function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 /* ---------- لوحة التحكم ---------- */
 function renderDashboard(){
@@ -1058,9 +1369,7 @@ function renderDashboard(){
       <div class="gstate ${st}">${label}</div>
     </div>`;
   }).join('');
-  LEVELS.forEach(l=>{
-    document.getElementById(`gate-${l.id}`).innerHTML = gateSVG(levelState(l.id));
-  });
+  LEVELS.forEach(l=>{ document.getElementById(`gate-${l.id}`).innerHTML = gateSVG(levelState(l.id)); });
   gp.querySelectorAll('.gate-stop').forEach(el=>{
     el.addEventListener('click', ()=>{
       const id = Number(el.dataset.level);
@@ -1071,7 +1380,7 @@ function renderDashboard(){
   const curLevel = LEVELS.find(l=>l.id===Math.min(STATE.stats.current_level, LEVELS.length));
   const cont = document.getElementById('continue-lessons');
   if(curLevel){
-    const rows = curLevel.lessons.map((ls,i)=>{
+    cont.innerHTML = curLevel.lessons.map((ls,i)=>{
       const done = !!STATE.progress[curLevel.id+'-'+ls.id];
       return `<div class="lesson-row ${done?'done':''}" data-level="${curLevel.id}" data-lesson="${i}">
         <div class="lesson-num">${done?'✓':i+1}</div>
@@ -1079,29 +1388,25 @@ function renderDashboard(){
         <div class="chev">‹</div>
       </div>`;
     }).join('');
-    cont.innerHTML = rows;
     cont.querySelectorAll('.lesson-row').forEach(el=>{
       el.addEventListener('click', ()=> openLesson(Number(el.dataset.level), Number(el.dataset.lesson)));
     });
   } else {
-    cont.innerHTML = `<p style="color:var(--ink-soft);font-size:13.5px;padding:20px">🎉 أنهيتِ كل المستويات! راجعي أي درس من صفحة المستويات.</p>`;
+    cont.innerHTML = `<p style="color:var(--ink-soft);font-size:13.5px;padding:20px">🎉 أنهيتِ كل المستويات! راجعي أي درس من صفحة المستويات، أو واصلي التدريب السريع.</p>`;
   }
-
   renderSideLeaderboard();
 }
 
 async function renderSideLeaderboard(){
   const rows = await fetchLeaderboard(50);
   const host = document.getElementById('dash-leaderboard');
-  const meIdx = rows.findIndex(r=>r.user_id===STATE.user.id);
+  const meIdx = rows.findIndex(r=>r.user_id===STATE.profile.id);
   let html = rows.slice(0,5).map((r,i)=>lbRowHtml(r,i)).join('');
-  if(meIdx>4){
-    html += `<div style="text-align:center;padding:4px;color:var(--ink-soft);font-size:11px">⋯</div>` + lbRowHtml(rows[meIdx], meIdx);
-  }
+  if(meIdx>4){ html += `<div style="text-align:center;padding:4px;color:var(--ink-soft);font-size:11px">⋯</div>` + lbRowHtml(rows[meIdx], meIdx); }
   host.innerHTML = html || `<p style="font-size:12.5px;color:var(--ink-soft)">لا يوجد متسابقون بعد</p>`;
 }
 function lbRowHtml(r,i){
-  const me = STATE.user && r.user_id===STATE.user.id;
+  const me = STATE.profile && r.user_id===STATE.profile.id;
   const medal = i===0?'badge-top1':'';
   return `<div class="lb-row ${me?'me':''}">
     <span class="rank ${medal}">${i+1}</span>
@@ -1145,18 +1450,16 @@ function openLevel(levelId){
   document.getElementById('level-illustration').outerHTML = ILLUSTRATIONS[level.icon]().replace('<svg ', '<svg id="level-illustration" class="ill" ');
 
   const body = document.getElementById('screen-level');
+  const existingLock = body.querySelector('.lock-msg'); if(existingLock) existingLock.remove();
   if(!unlocked){
     body.querySelector('.lesson-list').innerHTML = '';
     body.querySelector('.level-quiz-cta').classList.add('hidden');
-    if(!body.querySelector('.lock-msg')){
-      const div = document.createElement('div');
-      div.className='lock-msg';
-      div.innerHTML = `<svg viewBox="0 0 100 100"><circle cx="50" cy="55" r="16" fill="none" stroke="#8f8467" stroke-width="4"/><rect x="38" y="50" width="24" height="20" rx="3" fill="#8f8467"/></svg><p>هذه البوابة مقفلة — أكملي اختبار المستوى ${level.id-1} أولاً لفتحها.</p>`;
-      body.appendChild(div);
-    }
+    const div = document.createElement('div');
+    div.className='lock-msg';
+    div.innerHTML = `<svg viewBox="0 0 100 100"><circle cx="50" cy="55" r="16" fill="none" stroke="#8f8467" stroke-width="4"/><rect x="38" y="50" width="24" height="20" rx="3" fill="#8f8467"/></svg><p>هذه البوابة مقفلة — أكملي اختبار المستوى ${level.id-1} أولاً لفتحها.</p>`;
+    body.appendChild(div);
     return;
   }
-  const existingLock = body.querySelector('.lock-msg'); if(existingLock) existingLock.remove();
   body.querySelector('.level-quiz-cta').classList.remove('hidden');
 
   const lessonsHost = document.getElementById('level-lessons');
@@ -1178,7 +1481,7 @@ function openLevel(levelId){
   const st = levelState(level.id);
   btnQuiz.disabled = !allDone;
   document.getElementById('level-quiz-hint').textContent = allDone
-    ? (st==='passed' ? `اجتزتِ هذا الاختبار — يمكنك إعادته لتحسين نتيجتك` : `أكملتِ كل الدروس، الاختبار جاهز (يتطلّب ٪${PASS_THRESHOLD} للنجاح)`)
+    ? (st==='passed' ? `اجتزتِ هذا الاختبار — أسئلة كل محاولة عشوائية، يمكنك إعادته لتحسين نتيجتك` : `أكملتِ كل الدروس، الاختبار جاهز (يتطلّب ٪${PASS_THRESHOLD} للنجاح)`)
     : `أكملي ${level.lessons.length-done} دروس متبقّية لفتح الاختبار`;
   btnQuiz.textContent = st==='passed' ? 'إعادة الاختبار' : 'ابدئي الاختبار';
 }
@@ -1219,19 +1522,23 @@ function openLesson(levelId, lessonIdx){
   document.getElementById('btn-back-to-level').onclick = ()=> openLevel(levelId);
 }
 
-/* ---------- الاختبار ---------- */
+/* ---------- الاختبار (أسئلة عشوائية مختلفة كل محاولة) ---------- */
 function openQuiz(levelId){
   const level = LEVELS.find(l=>l.id===levelId);
   const done = lessonsCompletedInLevel(level);
   if(done < level.lessons.length){ toast("أكملي كل دروس المستوى أولاً"); return; }
-  STATE.quiz = { levelId, qIndex:0, answers:new Array(level.quiz.questions.length).fill(null) };
+  const picked = shuffle(level.quiz.questions).slice(0, 6).map(q=>{
+    const order = shuffle(q.options.map((_,i)=>i));
+    return { q: q.q, options: order.map(i=>q.options[i]), correct: order.indexOf(q.correct) };
+  });
+  STATE.quiz = { levelId, qIndex:0, questions: picked, answers:new Array(picked.length).fill(null) };
   goTo('quiz');
   renderQuizQuestion();
 }
 function renderQuizQuestion(){
   const level = LEVELS.find(l=>l.id===STATE.quiz.levelId);
-  const total = level.quiz.questions.length;
-  const q = level.quiz.questions[STATE.quiz.qIndex];
+  const total = STATE.quiz.questions.length;
+  const q = STATE.quiz.questions[STATE.quiz.qIndex];
   document.getElementById('quiz-progress-bar').style.width = `${(STATE.quiz.qIndex/total)*100}%`;
   const selected = STATE.quiz.answers[STATE.quiz.qIndex];
   document.getElementById('quiz-body').innerHTML = `
@@ -1247,39 +1554,111 @@ function renderQuizQuestion(){
       </div>
     </div>`;
   document.querySelectorAll('.q-opt').forEach(b=>{
-    b.addEventListener('click', ()=>{
-      STATE.quiz.answers[STATE.quiz.qIndex] = Number(b.dataset.i);
-      renderQuizQuestion();
-    });
+    b.addEventListener('click', ()=>{ STATE.quiz.answers[STATE.quiz.qIndex] = Number(b.dataset.i); renderQuizQuestion(); });
   });
   const prevBtn = document.getElementById('quiz-prev');
   if(prevBtn) prevBtn.addEventListener('click', ()=>{ STATE.quiz.qIndex--; renderQuizQuestion(); });
   const nextBtn = document.getElementById('quiz-next');
   if(nextBtn) nextBtn.addEventListener('click', ()=>{
-    if(STATE.quiz.qIndex < total-1){ STATE.quiz.qIndex++; renderQuizQuestion(); }
-    else finishQuiz();
+    if(STATE.quiz.qIndex < total-1){ STATE.quiz.qIndex++; renderQuizQuestion(); } else finishQuiz();
   });
 }
 async function finishQuiz(){
   const level = LEVELS.find(l=>l.id===STATE.quiz.levelId);
-  const total = level.quiz.questions.length;
+  const total = STATE.quiz.questions.length;
   let correct = 0;
-  level.quiz.questions.forEach((q,i)=>{ if(STATE.quiz.answers[i]===q.correct) correct++; });
+  STATE.quiz.questions.forEach((q,i)=>{ if(STATE.quiz.answers[i]===q.correct) correct++; });
   const score = Math.round((correct/total)*100);
   const passed = score >= PASS_THRESHOLD;
   document.getElementById('quiz-progress-bar').style.width='100%';
   document.getElementById('quiz-body').innerHTML = `<div class="q-card quiz-result ${passed?'pass':'fail'}">
     <div class="score-ring">٪${score}</div>
     <h3>${passed?'🎉 اجتزتِ الاختبار!':'حاولي مرة أخرى'}</h3>
-    <p>${passed? `أحسنتِ! فُتحت البوابة التالية. حصلتِ على ${correct} من ${total} إجابات صحيحة.` : `تحتاجين ٪${PASS_THRESHOLD} على الأقل للنجاح. حصلتِ على ${correct} من ${total}. راجعي الدروس وحاولي مجدداً.`}</p>
+    <p>${passed? `أحسنتِ! فُتحت البوابة التالية. حصلتِ على ${correct} من ${total} إجابات صحيحة.` : `تحتاجين ٪${PASS_THRESHOLD} على الأقل للنجاح. حصلتِ على ${correct} من ${total}. راجعي الدروس وحاولي مجدداً — الأسئلة تتغيّر في كل محاولة.`}</p>
     <button class="btn-primary" style="width:auto;padding:14px 30px;margin-top:22px" id="quiz-continue">متابعة</button>
   </div>`;
   await submitQuizAttempt(level.id, score, passed);
-  document.getElementById('quiz-continue').addEventListener('click', ()=>{
-    STATE.quiz = null;
-    openLevel(level.id);
-  });
+  document.getElementById('quiz-continue').addEventListener('click', ()=>{ STATE.quiz = null; openLevel(level.id); });
   if(passed) toast(`+${30+Math.round(score/10)} XP · فُتح المستوى التالي`);
+}
+
+/* ---------- تدريب سريع: يتجدّد عشوائياً من مفردات الدروس المكتملة ---------- */
+function buildVocabPool(){
+  const pool = [];
+  LEVELS.forEach(level=>{
+    level.lessons.forEach(lesson=>{
+      if(!STATE.progress[level.id+'-'+lesson.id]) return;
+      if(lesson.vocab) lesson.vocab.forEach(v=> pool.push({ko:v[0], ar:v[2]}));
+      if(lesson.sentences) lesson.sentences.forEach(s=> pool.push({ko:s.ko, ar:s.ar}));
+    });
+  });
+  return pool;
+}
+function startDrillRound(){
+  const pool = buildVocabPool();
+  if(pool.length < 4){
+    toast("أكملي بعض الدروس أولاً لتتوفّر لكِ أسئلة تدريب");
+    showScreen('dashboard'); renderDashboard();
+    return;
+  }
+  const rounds = Math.min(8, pool.length);
+  STATE.drill = { items: shuffle(pool).slice(0, rounds), pool, idx:0, correct:0 };
+  renderDrillQuestion();
+}
+function renderDrillQuestion(){
+  const total = STATE.drill.items.length;
+  const item = STATE.drill.items[STATE.drill.idx];
+  const direction = Math.random() < 0.5 ? 'ko2ar' : 'ar2ko';
+  const promptText = direction==='ko2ar' ? item.ko : item.ar;
+  const correctAnswer = direction==='ko2ar' ? item.ar : item.ko;
+  const others = STATE.drill.pool.filter(p=>p!==item);
+  const distractors = shuffle(others).slice(0,3).map(p=> direction==='ko2ar'?p.ar:p.ko);
+  const options = shuffle([correctAnswer, ...distractors]);
+  STATE.drill.currentCorrect = correctAnswer;
+  document.getElementById('drill-progress-bar').style.width = `${(STATE.drill.idx/total)*100}%`;
+  document.getElementById('drill-body').innerHTML = `
+    <div class="drill-card">
+      <div class="q-eyebrow" style="text-align:center">سؤال ${STATE.drill.idx+1} من ${total} · تدريب سريع متجدّد</div>
+      <div class="drill-prompt ${direction==='ko2ar'?'kr':'ar'}">${escapeHtml(promptText)}</div>
+      <div class="q-options">
+        ${options.map(opt=>`<button class="q-opt ${direction==='ar2ko'?'kr':''}" data-opt="${escapeHtml(opt)}">${escapeHtml(opt)}</button>`).join('')}
+      </div>
+    </div>`;
+  document.querySelectorAll('#drill-body .q-opt').forEach(b=>{
+    b.addEventListener('click', ()=> answerDrill(b.dataset.opt, b));
+  });
+}
+function answerDrill(selected, btnEl){
+  const correct = selected === STATE.drill.currentCorrect;
+  document.querySelectorAll('#drill-body .q-opt').forEach(b=>{
+    b.disabled = true;
+    if(b.dataset.opt === STATE.drill.currentCorrect) b.classList.add('correct');
+    else if(b===btnEl) b.classList.add('wrong');
+  });
+  if(correct) STATE.drill.correct++;
+  setTimeout(()=>{
+    STATE.drill.idx++;
+    if(STATE.drill.idx < STATE.drill.items.length) renderDrillQuestion(); else finishDrill();
+  }, 650);
+}
+async function finishDrill(){
+  const total = STATE.drill.items.length;
+  const correct = STATE.drill.correct;
+  const xpGain = Math.min(correct*2, 20);
+  document.getElementById('drill-progress-bar').style.width='100%';
+  document.getElementById('drill-body').innerHTML = `<div class="q-card drill-summary">
+    <div class="score-ring">${correct}/${total}</div>
+    <h3 style="margin-top:10px">🎯 أحسنتِ!</h3>
+    <p style="color:var(--ink-soft);margin-top:8px">الأسئلة تتجدّد عشوائياً في كل مرة — عودي للتدريب متى شئتِ.</p>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:20px">
+      <button class="btn-primary" style="width:auto;padding:13px 24px" id="drill-again">تدريب آخر</button>
+      <button class="btn-outline" id="drill-home">العودة للرئيسية</button>
+    </div>
+  </div>`;
+  if(xpGain>0){ STATE.stats.xp += xpGain; await syncStats(); }
+  document.getElementById('drill-again').addEventListener('click', startDrillRound);
+  document.getElementById('drill-home').addEventListener('click', ()=> goTo('dashboard'));
+  if(xpGain>0) toast(`+${xpGain} XP من التدريب السريع`);
 }
 
 /* ---------- لوحة المتصدّرين الكاملة ---------- */
@@ -1288,7 +1667,7 @@ async function renderLeaderboardFull(){
   const body = document.getElementById('leaderboard-full-body');
   if(!rows.length){ body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--ink-soft)">لا يوجد متسابقون بعد</td></tr>`; return; }
   body.innerHTML = rows.map((r,i)=>{
-    const me = STATE.user && r.user_id===STATE.user.id;
+    const me = STATE.profile && r.user_id===STATE.profile.id;
     const g = i===0?'g1':i===1?'g2':i===2?'g3':'';
     return `<tr class="${me?'me':''}">
       <td class="rank-badge ${g}">${i+1}</td>
@@ -1302,6 +1681,87 @@ async function renderLeaderboardFull(){
 }
 
 /* ============================================================
+   لوحة الإدارة
+   ============================================================ */
+function showAdminScreen(name){
+  ['setup','login','dashboard'].forEach(s=> document.getElementById('admin-screen-'+s).classList.toggle('hidden', s!==name));
+}
+async function renderAdminDashboard(){
+  const all = await adminFetchAll();
+  const ids = all.map(p=>p.id);
+  const statsMap = await adminFetchStatsMap(ids);
+  const pending = all.filter(p=>p.status==='pending' && p.role==='user');
+  const deviceFlagged = all.filter(p=>p.device_flag);
+  const active = all.filter(p=>p.status==='approved' && p.role==='user' && !p.device_flag);
+  const blocked = all.filter(p=>p.status==='blocked' && !p.device_flag);
+
+  document.getElementById('count-pending').textContent = pending.length;
+  document.getElementById('count-device').textContent = deviceFlagged.length;
+  document.getElementById('count-active').textContent = active.length;
+  document.getElementById('count-blocked').textContent = blocked.length;
+
+  document.getElementById('admin-pending-list').innerHTML = pending.length ? pending.map(p=>`
+    <div class="admin-row">
+      <div class="who"><b>${escapeHtml(p.username)}</b><span>@${escapeHtml(p.login_handle)}</span></div>
+      <div class="meta">${new Date(p.created_at).toLocaleDateString('ar-EG')}</div>
+      <div class="actions">
+        <button class="admin-btn ok" data-act="approve" data-id="${p.id}">قبول</button>
+        <button class="admin-btn no" data-act="reject" data-id="${p.id}">رفض</button>
+      </div>
+    </div>`).join('') : `<div class="admin-empty">لا توجد طلبات جديدة</div>`;
+
+  document.getElementById('admin-device-list').innerHTML = deviceFlagged.length ? deviceFlagged.map(p=>`
+    <div class="admin-row">
+      <div class="who"><b>${escapeHtml(p.username)}</b><span>@${escapeHtml(p.login_handle)}</span></div>
+      <div class="meta">حاول الدخول من جهاز مختلف</div>
+      <div class="actions">
+        <button class="admin-btn ok" data-act="allow-device" data-id="${p.id}">السماح بالجهاز الجديد</button>
+        <button class="admin-btn no" data-act="deny-device" data-id="${p.id}">رفض وإيقاف الحساب</button>
+      </div>
+    </div>`).join('') : `<div class="admin-empty">لا توجد طلبات أجهزة</div>`;
+
+  document.getElementById('admin-active-list').innerHTML = active.length ? active.map(p=>{
+    const s = statsMap[p.id] || {current_level:1,xp:0,lessons_completed:0};
+    return `<div class="admin-row">
+      <div class="who"><b>${escapeHtml(p.username)}</b><span>@${escapeHtml(p.login_handle)}</span></div>
+      <div class="meta">م${s.current_level} · ${s.xp} XP · ${s.lessons_completed} دروس</div>
+      <div class="actions">
+        <button class="admin-btn neutral" data-act="kick" data-id="${p.id}">إخراج</button>
+        <button class="admin-btn no" data-act="delete" data-id="${p.id}">حذف الحساب</button>
+      </div>
+    </div>`;
+  }).join('') : `<div class="admin-empty">لا يوجد مستخدمون نشطون بعد</div>`;
+
+  document.getElementById('admin-blocked-list').innerHTML = blocked.length ? blocked.map(p=>`
+    <div class="admin-row">
+      <div class="who"><b>${escapeHtml(p.username)}</b><span>@${escapeHtml(p.login_handle)}</span></div>
+      <div class="actions">
+        <button class="admin-btn ok" data-act="unblock" data-id="${p.id}">إعادة التفعيل</button>
+        <button class="admin-btn no" data-act="delete" data-id="${p.id}">حذف الحساب</button>
+      </div>
+    </div>`).join('') : `<div class="admin-empty">لا توجد حسابات موقوفة</div>`;
+
+  document.querySelectorAll('#admin-screen-dashboard .admin-btn').forEach(b=>{
+    b.addEventListener('click', async ()=>{
+      const id = b.dataset.id, act = b.dataset.act;
+      if(act==='delete' && !confirm('حذف هذا الحساب نهائياً مع كل تقدّمه؟')) return;
+      b.disabled = true;
+      try{
+        if(act==='approve') await adminApprove(id);
+        else if(act==='reject') await adminReject(id);
+        else if(act==='allow-device') await adminAllowDevice(id);
+        else if(act==='deny-device') await adminDenyDevice(id);
+        else if(act==='kick') await adminKick(id);
+        else if(act==='unblock') await adminUnblock(id);
+        else if(act==='delete') await adminDelete(id);
+        toast('تم التنفيذ');
+        renderAdminDashboard();
+      }catch(e){ toast('حدث خطأ، حاولي مجدداً'); b.disabled=false; }
+    });
+  });
+}
+
+/* ============================================================
    تصدير الكتاب المصوّر (طباعة → حفظ كـ PDF من المتصفح)
    ============================================================ */
 function buildBookHTML(levelsArr, bookTitle){
@@ -1309,7 +1769,7 @@ function buildBookHTML(levelsArr, bookTitle){
      <div class="ill" style="width:160px;height:160px;margin:0 auto 30px" id="pb-cover-ill"></div>
      <h1>${escapeHtml(bookTitle)}</h1>
      <p style="margin-top:14px;color:var(--ink-soft);font-family:var(--font-kr)">한글이랑 · مع الهانغل</p>
-     <p style="margin-top:30px;color:var(--ink-soft);font-size:13px">أُعدّ خصيصاً لـ ${escapeHtml(STATE.user.username)} · ${new Date().toLocaleDateString('ar-EG')}</p>
+     <p style="margin-top:30px;color:var(--ink-soft);font-size:13px">أُعدّ خصيصاً لـ ${escapeHtml(STATE.profile.username)} · ${new Date().toLocaleDateString('ar-EG')}</p>
   </div>`;
   levelsArr.forEach(level=>{
     level.lessons.forEach(lesson=>{
@@ -1332,7 +1792,6 @@ function buildBookHTML(levelsArr, bookTitle){
   });
   return html;
 }
-
 function exportBook(scope){
   const levelsArr = scope==='all' ? LEVELS : [LEVELS.find(l=>l.id===STATE.currentLevelId)];
   const title = scope==='all' ? 'كتاب 한글이랑 الكامل لتعلّم الكورية' : `كتاب المستوى ${levelsArr[0].id} — ${levelsArr[0].title}`;
@@ -1344,41 +1803,179 @@ function exportBook(scope){
 }
 
 /* ============================================================
-   الإقلاع وربط الأحداث
+   تسجيل الدخول / حساب جديد / تسجيل الخروج
    ============================================================ */
-async function handleStart(){
-  const input = document.getElementById('username-input');
-  const btn = document.getElementById('btn-start');
-  const errEl = document.getElementById('auth-error');
-  errEl.style.display='none';
-  const name = input.value.trim();
-  if(name.length < 2){ errEl.textContent='الرجاء إدخال اسم لا يقلّ عن حرفين'; errEl.style.display='block'; return; }
-  btn.textContent = '...جارٍ التحضير'; btn.disabled = true;
-  try{
-    STATE.user = await ensureUser(name);
-    await loadUserData(STATE.user);
-    afterLogin();
-  }catch(e){
-    errEl.textContent = 'تعذّر الاتصال بالخادم، حاولي مجدداً';
-    errEl.style.display='block';
-  }
-  btn.textContent = 'ابدأ التعلّم ←'; btn.disabled=false;
+function clearAuthError(){ const e=document.getElementById('auth-error'); e.style.display='none'; e.textContent=''; }
+function showAuthError(msg){ const e=document.getElementById('auth-error'); e.textContent=msg; e.style.display='block'; }
+
+function friendlyAuthError(err){
+  const m = err && err.message;
+  if(m==='BAD_NAME') return 'الرجاء إدخال اسم معروض لا يقلّ عن حرفين';
+  if(m==='BAD_HANDLE') return 'اسم الدخول يجب أن يكون حروفاً إنجليزية وأرقاماً فقط (3 أحرف على الأقل)';
+  if(m==='BAD_PASSWORD') return 'كلمة السر يجب ألا تقلّ عن 4 أحرف';
+  if(m==='HANDLE_TAKEN') return 'اسم الدخول هذا محجوز مسبقاً، اختاري اسماً آخر';
+  if(m==='BAD_CREDENTIALS') return 'اسم الدخول أو كلمة السر غير صحيحة';
+  if(m==='DEVICE_MISMATCH') return null; // يُعالَج بشاشة مخصّصة
+  return 'حدث خطأ غير متوقّع، حاولي مجدداً';
 }
 
-function afterLogin(){
-  document.getElementById('topbar').style.display='flex';
-  document.getElementById('mobile-nav').style.display='flex';
+async function handleLogin(){
+  clearAuthError();
+  const handle = document.getElementById('login-handle').value;
+  const password = document.getElementById('login-password').value;
+  const btn = document.getElementById('btn-login');
+  btn.disabled = true; btn.textContent = '...جارٍ الدخول';
+  try{
+    STATE.profile = await loginUser(handle, password);
+    await loadLearningData();
+    routeAfterAuth();
+  }catch(e){
+    if(e.message==='DEVICE_MISMATCH'){ showScreen('device'); }
+    else showAuthError(friendlyAuthError(e));
+  }
+  btn.disabled = false; btn.textContent = 'تسجيل الدخول ←';
+}
+async function handleSignup(){
+  clearAuthError();
+  const name = document.getElementById('signup-name').value;
+  const handle = document.getElementById('signup-handle').value;
+  const password = document.getElementById('signup-password').value;
+  const btn = document.getElementById('btn-signup');
+  btn.disabled = true; btn.textContent = '...جارٍ الإنشاء';
+  try{
+    await signUpUser(name, handle, password);
+    const { data: sessionData } = await sb.auth.getSession();
+    const uid = sessionData.session.user.id;
+    const { data: profile } = await sb.from('profiles').select('*').eq('id',uid).maybeSingle();
+    STATE.profile = profile;
+    await loadLearningData();
+    routeAfterAuth();
+  }catch(e){
+    showAuthError(friendlyAuthError(e));
+  }
+  btn.disabled = false; btn.textContent = 'إنشاء الحساب ←';
+}
+async function logout(){
+  try{ await sb.auth.signOut(); }catch(e){}
+  STATE.profile = null; STATE.stats = null; STATE.progress = {};
+  document.getElementById('login-handle').value='';
+  document.getElementById('login-password').value='';
+  showScreen('auth');
+  renderMiniLeaderboard();
+}
+function routeAfterAuth(){
+  const p = STATE.profile;
+  if(p.status === 'blocked'){ showScreen('blocked'); return; }
+  if(p.status === 'pending'){ showScreen('pending'); return; }
   const bg = document.getElementById('brand-gate');
   if(bg) bg.outerHTML = gateSVG('passed').replace('<svg ', '<svg id="brand-gate" class="brand-mark" ');
-  document.getElementById('user-pill-name').textContent = STATE.user.username;
+  document.getElementById('user-pill-name').textContent = STATE.profile.username;
   goTo('dashboard');
 }
 
-document.addEventListener('DOMContentLoaded', async ()=>{
-  renderMiniLeaderboard('mini-leaderboard','mini-row');
+/* ============================================================
+   الإدارة — إقلاع مسار #admin منفصل تماماً عن تطبيق المستخدمين
+   ============================================================ */
+async function adminBoot(){
+  document.getElementById('app-shell').style.display = 'none';
+  document.getElementById('admin-shell').classList.remove('hidden');
+  const { data: sessionData } = await sb.auth.getSession();
+  if(sessionData.session){
+    const uid = sessionData.session.user.id;
+    const { data: profile } = await sb.from('profiles').select('*').eq('id', uid).maybeSingle();
+    if(profile && profile.role==='admin'){
+      STATE.profile = profile;
+      showAdminScreen('dashboard');
+      renderAdminDashboard();
+      return;
+    }
+    await sb.auth.signOut();
+  }
+  const exists = await adminExists();
+  showAdminScreen(exists ? 'login' : 'setup');
+}
+async function handleAdminBootstrap(){
+  const errEl = document.getElementById('admsetup-error');
+  errEl.style.display='none';
+  const handle = document.getElementById('admsetup-handle').value;
+  const password = document.getElementById('admsetup-password').value;
+  const btn = document.getElementById('btn-admin-bootstrap');
+  btn.disabled = true; btn.textContent = '...جارٍ الإنشاء';
+  try{
+    await adminBootstrap(handle, password, 'الإدارة');
+    STATE.profile = { role:'admin' };
+    showAdminScreen('dashboard');
+    renderAdminDashboard();
+  }catch(e){
+    errEl.textContent = friendlyAuthError(e) || 'تعذّر إنشاء الحساب — قد يكون هناك حساب إدارة بالفعل';
+    errEl.style.display='block';
+  }
+  btn.disabled=false; btn.textContent='إنشاء حساب الإدارة ←';
+}
+async function handleAdminLogin(){
+  const errEl = document.getElementById('admlogin-error');
+  errEl.style.display='none';
+  const handle = document.getElementById('admlogin-handle').value;
+  const password = document.getElementById('admlogin-password').value;
+  const btn = document.getElementById('btn-admin-login');
+  btn.disabled = true; btn.textContent = '...جارٍ الدخول';
+  try{
+    STATE.profile = await adminLogin(handle, password);
+    showAdminScreen('dashboard');
+    renderAdminDashboard();
+  }catch(e){
+    errEl.textContent = 'بيانات الدخول غير صحيحة';
+    errEl.style.display='block';
+  }
+  btn.disabled=false; btn.textContent='دخول ←';
+}
+async function adminLogout(){
+  try{ await sb.auth.signOut(); }catch(e){}
+  STATE.profile = null;
+  const exists = await adminExists();
+  showAdminScreen(exists ? 'login' : 'setup');
+}
 
-  document.getElementById('btn-start').addEventListener('click', handleStart);
-  document.getElementById('username-input').addEventListener('keydown', e=>{ if(e.key==='Enter') handleStart(); });
+/* ============================================================
+   الإقلاع وربط الأحداث
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', async ()=>{
+  if(location.hash === '#admin'){
+    await adminBoot();
+    document.getElementById('btn-admin-bootstrap').addEventListener('click', handleAdminBootstrap);
+    document.getElementById('btn-admin-login').addEventListener('click', handleAdminLogin);
+    document.getElementById('btn-admin-logout').addEventListener('click', adminLogout);
+    return;
+  }
+
+  renderMiniLeaderboard();
+
+  document.querySelectorAll('.auth-tab').forEach(t=>{
+    t.addEventListener('click', ()=>{
+      document.querySelectorAll('.auth-tab').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      document.getElementById('auth-form-login').classList.toggle('hidden', t.dataset.mode!=='login');
+      document.getElementById('auth-form-signup').classList.toggle('hidden', t.dataset.mode!=='signup');
+      clearAuthError();
+    });
+  });
+  document.getElementById('btn-login').addEventListener('click', handleLogin);
+  document.getElementById('btn-signup').addEventListener('click', handleSignup);
+  document.getElementById('login-password').addEventListener('keydown', e=>{ if(e.key==='Enter') handleLogin(); });
+  document.getElementById('signup-password').addEventListener('keydown', e=>{ if(e.key==='Enter') handleSignup(); });
+
+  document.getElementById('btn-logout').addEventListener('click', logout);
+  document.getElementById('btn-pending-logout').addEventListener('click', logout);
+  document.getElementById('btn-blocked-logout').addEventListener('click', logout);
+  document.getElementById('btn-device-back').addEventListener('click', ()=> showScreen('auth'));
+  document.getElementById('btn-pending-refresh').addEventListener('click', async ()=>{
+    try{
+      const { data: profile } = await sb.from('profiles').select('*').eq('id', STATE.profile.id).maybeSingle();
+      if(profile){ STATE.profile = profile; }
+      if(STATE.profile.status==='pending') toast('لا تزال قيد المراجعة');
+      else { await loadLearningData(); routeAfterAuth(); }
+    }catch(e){ toast('تعذّر التحقّق، حاولي مجدداً'); }
+  });
 
   document.querySelectorAll('.nav-tabs button, .mobile-nav button').forEach(b=>{
     b.addEventListener('click', ()=> goTo(b.dataset.go));
@@ -1401,15 +1998,17 @@ document.addEventListener('DOMContentLoaded', async ()=>{
     else openLevel(level.id);
   });
 
-  const savedId = localStorage.getItem('hi_user_id');
-  const savedName = localStorage.getItem('hi_username');
-  if(savedId && savedName){
-    try{
-      STATE.user = { id: savedId, username: savedName };
-      await loadUserData(STATE.user);
-      afterLogin();
-    }catch(e){ /* فشل الاسترجاع التلقائي — تبقى شاشة الدخول ظاهرة */ }
-  }
+  // محاولة استرجاع الجلسة تلقائياً (نفس الجهاز)
+  try{
+    const profile = await restoreSession();
+    if(profile){
+      STATE.profile = profile;
+      if(profile.role !== 'admin'){
+        await loadLearningData();
+        routeAfterAuth();
+      }
+    }
+  }catch(e){ /* تبقى شاشة الدخول ظاهرة */ }
 });
 </script>
 </body>
