@@ -363,6 +363,18 @@ img,svg{display:block}
 .drill-prompt.ar{font-family:var(--font-ar);font-size:20px}
 .drill-summary{text-align:center;padding:44px 30px}
 .drill-summary .score-ring{font-family:var(--font-mono);font-size:40px;font-weight:700;color:var(--jade)}
+
+/* ---------- fatal connection error ---------- */
+#fatal-error{
+  position:fixed;inset:0;z-index:200;background:rgba(18,25,47,.92);
+  display:flex;align-items:center;justify-content:center;padding:24px;
+}
+.fatal-card{
+  max-width:380px;text-align:center;background:var(--card);border-radius:var(--radius);
+  padding:36px 28px;box-shadow:var(--shadow);
+}
+.fatal-card h3{font-size:18px;font-weight:800;color:var(--navy);margin:10px 0}
+.fatal-card p{font-size:13.5px;color:var(--ink-soft);line-height:1.8;margin-bottom:18px}
 </style>
 </head>
 <body>
@@ -634,6 +646,15 @@ img,svg{display:block}
 <div id="toast"></div>
 <div id="print-book"></div>
 
+<div id="fatal-error" class="hidden">
+  <div class="fatal-card">
+    <div style="font-size:34px">📡</div>
+    <h3>تعذّر الاتصال بالخادم</h3>
+    <p>لم تتمكّن الصفحة من تحميل مكوّن الاتصال اللازم — قد يكون بسبب الشبكة أو حجب المتصفح لأحد الموارد. تحقّقي من اتصالك بالإنترنت ثم أعيدي المحاولة.</p>
+    <button class="btn-primary" style="width:auto;padding:12px 26px" id="btn-fatal-retry">أعيدي المحاولة</button>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 /* ============================================================
@@ -643,7 +664,7 @@ img,svg{display:block}
 // ---------- Supabase config ----------
 const SUPABASE_URL = "https://qisyjglrwwfboxahdupg.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpc3lqZ2xyd3dmYm94YWhkdXBnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwMTE2NjgsImV4cCI6MjA5OTU4NzY2OH0.tcmEoZ2Gb1S9SD2s6GOAqbkq044rhAsKzxkBiIcEuak";
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let sb = null; // يُهيَّأ لاحقاً بأمان داخل ensureSupabase() — حتى لا يوقف تحميل المكتبة كل الصفحة
 
 const PASS_THRESHOLD = 70; // النسبة المطلوبة لاجتياز اختبار المستوى
 
@@ -1937,19 +1958,40 @@ async function adminLogout(){
 }
 
 /* ============================================================
-   الإقلاع وربط الأحداث
+   الاتصال بمكتبة Supabase بأمان (مع بديل احتياطي إن تعذّر المصدر الأساسي)
+   لا نسمح لفشل تحميل المكتبة بإيقاف بقية الصفحة عن العمل بصمت.
    ============================================================ */
-document.addEventListener('DOMContentLoaded', async ()=>{
-  if(location.hash === '#admin'){
-    await adminBoot();
-    document.getElementById('btn-admin-bootstrap').addEventListener('click', handleAdminBootstrap);
-    document.getElementById('btn-admin-login').addEventListener('click', handleAdminLogin);
-    document.getElementById('btn-admin-logout').addEventListener('click', adminLogout);
-    return;
+function loadScriptOnce(src){
+  return new Promise((resolve, reject)=>{
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = ()=> resolve(true);
+    s.onerror = ()=> reject(new Error('load failed: '+src));
+    document.head.appendChild(s);
+  });
+}
+async function ensureSupabaseLib(){
+  if(window.supabase && window.supabase.createClient) return true;
+  const fallbacks = [
+    'https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js',
+    'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js'
+  ];
+  for(const url of fallbacks){
+    try{
+      await loadScriptOnce(url);
+      if(window.supabase && window.supabase.createClient) return true;
+    }catch(e){ /* جرّب المصدر التالي */ }
   }
+  return false;
+}
+function showFatalError(){ document.getElementById('fatal-error').classList.remove('hidden'); }
+function hideFatalError(){ document.getElementById('fatal-error').classList.add('hidden'); }
 
-  renderMiniLeaderboard();
-
+/* ============================================================
+   ربط كل الأزرار — يحدث دائماً بغضّ النظر عن نجاح الاتصال بالخادم،
+   حتى لا تصبح الواجهة كاملةً بلا استجابة إن تعذّر تحميل مكوّن خارجي.
+   ============================================================ */
+function wireAppEvents(){
   document.querySelectorAll('.auth-tab').forEach(t=>{
     t.addEventListener('click', ()=>{
       document.querySelectorAll('.auth-tab').forEach(x=>x.classList.remove('active'));
@@ -1969,6 +2011,7 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   document.getElementById('btn-blocked-logout').addEventListener('click', logout);
   document.getElementById('btn-device-back').addEventListener('click', ()=> showScreen('auth'));
   document.getElementById('btn-pending-refresh').addEventListener('click', async ()=>{
+    if(!sb){ toast('تعذّر الاتصال بالخادم'); return; }
     try{
       const { data: profile } = await sb.from('profiles').select('*').eq('id', STATE.profile.id).maybeSingle();
       if(profile){ STATE.profile = profile; }
@@ -1998,7 +2041,36 @@ document.addEventListener('DOMContentLoaded', async ()=>{
     else openLevel(level.id);
   });
 
-  // محاولة استرجاع الجلسة تلقائياً (نفس الجهاز)
+  document.getElementById('btn-admin-bootstrap').addEventListener('click', handleAdminBootstrap);
+  document.getElementById('btn-admin-login').addEventListener('click', handleAdminLogin);
+  document.getElementById('btn-admin-logout').addEventListener('click', adminLogout);
+
+  document.getElementById('btn-fatal-retry').addEventListener('click', boot);
+}
+
+/* ============================================================
+   الإقلاع
+   ============================================================ */
+let eventsWired = false;
+
+async function boot(){
+  hideFatalError();
+  const ok = await ensureSupabaseLib();
+  if(!ok){ showFatalError(); return; }
+  if(!sb){
+    try{ sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }
+    catch(e){ showFatalError(); return; }
+  }
+
+  if(location.hash === '#admin'){
+    await adminBoot();
+    return;
+  }
+
+  document.getElementById('app-shell').style.display = '';
+  document.getElementById('admin-shell').classList.add('hidden');
+  renderMiniLeaderboard();
+
   try{
     const profile = await restoreSession();
     if(profile){
@@ -2009,6 +2081,11 @@ document.addEventListener('DOMContentLoaded', async ()=>{
       }
     }
   }catch(e){ /* تبقى شاشة الدخول ظاهرة */ }
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  if(!eventsWired){ wireAppEvents(); eventsWired = true; }
+  boot();
 });
 </script>
 </body>
