@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=2.0">
+  <title>منصة كوريا - تعلم الكورية من الصفر</title>
+  <!-- Font Awesome 6 للأيقونات -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background: #f9f7f3;
+      color: #2c3e50;
+      line-height: 1.6;
+      padding-bottom: 30px;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 15px;
+    }
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #c92a2a 0%, #a61e4d 100%);
+      color: white;
+      padding: 25px 20px;
+      border-radius: 0 0 30px 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    header h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    header i {
+      font-size: 2.8rem;
+      color: #ffd43b;
+    }
+    .subtitle {
+      font-size: 1.2rem;
+      margin-top: 8px;
+      opacity: 0.95;
+    }
+    /* التنقل بين المستويات */
+    .levels-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin: 20px 0 30px;
+    }
+    .level-btn {
+      background: white;
+      border: 2px solid #dee2e6;
+      padding: 12px 25px;
+      border-radius: 50px;
+      font-weight: bold;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      background: #fff;
+      color: #2c3e50;
+    }
+    .level-btn i {
+      color: #c92a2a;
+    }
+    .level-btn.active {
+      background: #c92a2a;
+      color: white;
+      border-color: #c92a2a;
+      box-shadow: 0 8px 15px rgba(201,42,42,0.3);
+    }
+    .level-btn.active i {
+      color: white;
+    }
+    .level-btn.locked {
+      opacity: 0.6;
+      background: #e9ecef;
+      cursor: not-allowed;
+      color: #6c757d;
+    }
+    .level-btn.locked i {
+      color: #adb5bd;
+    }
+    /* المحتوى الرئيسي */
+    .dashboard {
+      background: white;
+      border-radius: 28px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      margin-bottom: 25px;
+    }
+    .progress-section {
+      background: #f1f3f5;
+      border-radius: 20px;
+      padding: 15px 20px;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .progress-bar {
+      flex: 2;
+      min-width: 200px;
+      height: 18px;
+      background: #dee2e6;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: #2b8a3e;
+      border-radius: 20px;
+      transition: width 0.4s ease;
+    }
+    .progress-text {
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .lesson-grid, .books-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #e9ecef;
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      transition: transform 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+    }
+    .card i {
+      font-size: 2.2rem;
+      color: #c92a2a;
+      margin-bottom: 12px;
+    }
+    .card h3 {
+      margin-bottom: 8px;
+      font-size: 1.25rem;
+    }
+    .btn {
+      background: #c92a2a;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.2s;
+      font-size: 0.95rem;
+    }
+    .btn:hover {
+      background: #a61e4d;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 2px solid #c92a2a;
+      color: #c92a2a;
+    }
+    .btn-outline:hover {
+      background: #c92a2a;
+      color: white;
+    }
+    .export-btn {
+      background: #2b8a3e;
+    }
+    .export-btn:hover {
+      background: #206b30;
+    }
+    /* قسم الامتحان */
+    .quiz-container {
+      background: #fff8f0;
+      border-radius: 20px;
+      padding: 20px;
+      margin-top: 25px;
+      border: 1px solid #ffc078;
+    }
+    .quiz-question {
+      font-weight: bold;
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+    }
+    .answers {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .answer-btn {
+      background: white;
+      border: 2px solid #dee2e6;
+      padding: 12px 15px;
+      border-radius: 12px;
+      text-align: right;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 1rem;
+    }
+    .answer-btn:hover {
+      background: #f1f3f5;
+      border-color: #c92a2a;
+    }
+    .selected-correct {
+      background: #d3f9d8 !important;
+      border-color: #2b8a3e !important;
+    }
+    .selected-wrong {
+      background: #ffe3e3 !important;
+      border-color: #c92a2a !important;
+    }
+    .result-message {
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    .hidden {
+      display: none !important;
+    }
+    .book-image {
+      width: 100%;
+      height: 140px;
+      background: #f8f9fa;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      font-size: 2.5rem;
+      color: #c92a2a;
+      background: #fff5f5;
+    }
+    hr {
+      margin: 20px 0;
+      border: 0.5px solid #eee;
+    }
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1><i class="fas fa-language"></i> منصة كوريا التعليمية</h1>
+    <p class="subtitle">تعلم الكورية من الصفر مع ترجمة وتوضيح بالعربية</p>
+  </header>
+
+  <!-- أزرار المستويات -->
+  <div class="levels-nav" id="levelButtons">
+    <!-- يتم بناؤها بواسطة JS -->
+  </div>
+
+  <!-- لوحة التحكم الرئيسية -->
+  <div class="dashboard" id="dashboard">
+    <div class="progress-section" id="progressArea">
+      <span class="progress-text"><i class="fas fa-chart-line"></i> تقدم المستوى الحالي</span>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+      </div>
+      <span id="progressPercentage">0%</span>
+    </div>
+
+    <!-- عرض الدروس والكتب يتغير حسب المستوى -->
+    <div id="dynamicContent">
+      <!-- دروس وكتب + اختبار -->
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ---------- بيانات المنصة ----------
+    const levels = [
+      { id: 0, name: 'المبتدئ', icon: 'fa-seedling', requiredScore: 70 },
+      { id: 1, name: 'المتوسط', icon: 'fa-tree', requiredScore: 70 },
+      { id: 2, name: 'المتقدم', icon: 'fa-star', requiredScore: 70 }
+    ];
+
+    // دروس كل مستوى (عناوين توضيحية)
+    const lessonsData = {
+      0: [
+        { title: 'الحروف الكورية (هانغول) - الجزء الأول', desc: 'تعلم الحروف الأساسية مع النطق العربي', icon: 'fa-font' },
+        { title: 'التحيات والمقدمات', desc: '안녕하세요! كيف تقدم نفسك', icon: 'fa-handshake' },
+        { title: 'الأرقام الكورية', desc: 'الأعداد الأصلية والترتيبية', icon: 'fa-sort-numeric-up' }
+      ],
+      1: [
+        { title: 'تصريف الأفعال المضارع', desc: 'أكل، شرب، ذهب مع أمثلة', icon: 'fa-edit' },
+        { title: 'المحادثات اليومية', desc: 'في المطعم، السوق، المواصلات', icon: 'fa-comments' },
+        { title: 'الجمل المركبة', desc: 'استخدام 로/으로 و 연결', icon: 'fa-link' }
+      ],
+      2: [
+        { title: 'القواعد المتقدمة', desc: 'الجمل الشرطية و السببية', icon: 'fa-brain' },
+        { title: 'الكتابة الرسمية', desc: 'رسائل البريد الإلكتروني', icon: 'fa-pen-fancy' },
+        { title: 'الثقافة الكورية', desc: 'التعبيرات الاصطلاحية', icon: 'fa-theater-masks' }
+      ]
+    };
+
+    // كتب مصورة (مع رابط تنزيل وهمي للتصدير)
+    const booksData = {
+      0: [
+        { title: 'كتاب هانغول المصور', desc: 'PDF ملون لتعلم الحروف', icon: 'fa-book-open', file: 'hangul_book.pdf' },
+        { title: 'كلماتي الأولى', desc: 'قاموس مصور عربي-كوري', icon: 'fa-images', file: 'first_words.pdf' }
+      ],
+      1: [
+        { title: 'قواعد المستوى المتوسط', desc: 'شرح وافي مع تمارين', icon: 'fa-book', file: 'grammar_mid.pdf' },
+        { title: 'محادثات الحياة اليومية', desc: 'حوارات مترجمة', icon: 'fa-file-pdf', file: 'daily_talk.pdf' }
+      ],
+      2: [
+        { title: 'الكتابة المتقدمة', desc: 'نماذج كتابة وتعبير', icon: 'fa-pencil-alt', file: 'advanced_writing.pdf' },
+        { title: 'الأمثال الكورية', desc: '속담 مع الشرح العربي', icon: 'fa-quote-right', file: 'proverbs.pdf' }
+      ]
+    };
+
+    // أسئلة الاختبارات (لكل مستوى)
+    const quizzes = {
+      0: [
+        { q: 'كيف تقول "مرحباً" بالكورية؟', options: ['감사합니다', '안녕하세요', '미안합니다', '사랑해요'], correct: 1 },
+        { q: 'ما هو الرقم 3 بالكورية الأصلية؟', options: ['하나', '둘', '셋', '넷'], correct: 2 },
+        { q: 'الحرف ㄱ ينطق مثل؟', options: ['ك/غ', 'ن', 'م', 'س'], correct: 0 }
+      ],
+      1: [
+        { q: 'أي جملة تعني "أنا أكل التفاح"؟', options: ['나는 사과를 먹어요', '나는 물을 마셔요', '나는 학교에 가요', '나는 책을 읽어요'], correct: 0 },
+        { q: 'كيف تقول "من فضلك"؟', options: ['빨리', '제발', '천천히', '많이'], correct: 1 },
+        { q: 'المقطع "에" يستخدم للدلالة على؟', options: ['المفعول به', 'الاتجاه/المكان', 'الفاعل', 'الجمع'], correct: 1 }
+      ],
+      2: [
+        { q: 'أي تعبير يعني "لا بد أن"؟', options: ['~지 마세요', '~아/어야 하다', '~고 싶다', '~을 수 있다'], correct: 1 },
+        { q: 'ما معنى "눈이 높다" حرفياً؟', options: ['عين مرتفعة', 'طموح/صعب الإرضاء', 'ثلج كثيف', 'نظر حاد'], correct: 1 },
+        { q: 'أكمل: 비가 와서...', options: ['집에 있었어요', '학교에 가요', '밥을 먹어요', '친구를 만나요'], correct: 0 }
+      ]
+    };
+
+    // حالة المستخدم (محاكاة - تخزين في localStorage)
+    let userProgress = {
+      currentLevel: 0,
+      unlockedLevels: [0], // المبتدئ مفتوح افتراضيًا
+      completedLessons: {0: [], 1: [], 2: []},
+      levelTestPassed: {0: false, 1: false, 2: false},
+      quizScores: {0: 0, 1: 0, 2: 0}
+    };
+
+    // تحميل من localStorage إن وجد
+    function loadProgress() {
+      const saved = localStorage.getItem('korean_platform_progress');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          userProgress = { ...userProgress, ...parsed };
+        } catch(e) {}
+      }
+      // تأكد أن المستوى 0 مفتوح دائمًا
+      if (!userProgress.unlockedLevels.includes(0)) {
+        userProgress.unlockedLevels.push(0);
+      }
+    }
+    function saveProgress() {
+      localStorage.setItem('korean_platform_progress', JSON.stringify(userProgress));
+    }
+
+    // تحديث الواجهة
+    function updateUI() {
+      renderLevelButtons();
+      renderDashboardForLevel(userProgress.currentLevel);
+    }
+
+    // رسم أزرار المستويات
+    function renderLevelButtons() {
+      const container = document.getElementById('levelButtons');
+      if (!container) return;
+      container.innerHTML = '';
+      levels.forEach((level, index) => {
+        const unlocked = userProgress.unlockedLevels.includes(index);
+        const active = userProgress.currentLevel === index;
+        const btn = document.createElement('button');
+        btn.className = `level-btn ${active ? 'active' : ''} ${!unlocked ? 'locked' : ''}`;
+        btn.innerHTML = `<i class="fas ${level.icon}"></i> ${level.name}`;
+        if (!unlocked) {
+          btn.innerHTML += ' <i class="fas fa-lock"></i>';
+        }
+        btn.addEventListener('click', () => {
+          if (!unlocked) {
+            alert('هذا المستوى مقفل. يجب اجتياز اختبار المستوى السابق بنجاح.');
+            return;
+          }
+          userProgress.currentLevel = index;
+          saveProgress();
+          updateUI();
+        });
+        container.appendChild(btn);
+      });
+    }
+
+    // حساب نسبة التقدم داخل المستوى (بناءً على الدروس المكتملة)
+    function getLevelProgress(levelId) {
+      const totalLessons = lessonsData[levelId]?.length || 3;
+      const completed = userProgress.completedLessons[levelId]?.length || 0;
+      return Math.round((completed / totalLessons) * 100);
+    }
+
+    // عرض الدروس والكتب والاختبار
+    function renderDashboardForLevel(levelId) {
+      const dynamic = document.getElementById('dynamicContent');
+      const progressFill = document.getElementById('progressFill');
+      const progressPercent = document.getElementById('progressPercentage');
+      if (!dynamic) return;
+      
+      const progress = getLevelProgress(levelId);
+      if (progressFill) progressFill.style.width = `${progress}%`;
+      if (progressPercent) progressPercent.textContent = `${progress}%`;
+
+      const lessons = lessonsData[levelId] || [];
+      const books = booksData[levelId] || [];
+      const levelQuiz = quizzes[levelId] || [];
+      const testPassed = userProgress.levelTestPassed[levelId] || false;
+      
+      let html = `
+        <h2 style="margin-bottom:15px;"><i class="fas fa-chalkboard-teacher"></i> دروس المستوى ${levels[levelId].name}</h2>
+        <div class="lesson-grid">
+      `;
+      lessons.forEach((lesson, idx) => {
+        const completed = userProgress.completedLessons[levelId]?.includes(idx);
+        html += `
+          <div class="card">
+            <i class="fas ${lesson.icon}"></i>
+            <h3>${lesson.title}</h3>
+            <p>${lesson.desc}</p>
+            <button class="btn ${completed ? 'btn-outline' : ''}" onclick="markLessonComplete(${levelId}, ${idx})">
+              <i class="fas ${completed ? 'fa-check-circle' : 'fa-play'}"></i> ${completed ? 'مكتمل' : 'بدء الدرس'}
+            </button>
+            <small style="margin-top:6px; color:#555;">ترجمة وتوضيح بالعربية</small>
+          </div>
+        `;
+      });
+      html += `</div>`;
+
+      // الكتب المصورة
+      html += `<h2 style="margin:25px 0 15px;"><i class="fas fa-book-reader"></i> كتب تعليمية مصورة</h2>`;
+      html += `<div class="books-grid">`;
+      books.forEach(book => {
+        html += `
+          <div class="card">
+            <div class="book-image"><i class="fas ${book.icon}"></i></div>
+            <h3>${book.title}</h3>
+            <p>${book.desc}</p>
+            <button class="btn export-btn" onclick="exportBook('${book.file}', '${book.title}')">
+              <i class="fas fa-download"></i> تصدير/تنزيل
+            </button>
+          </div>
+        `;
+      });
+      html += `</div>`;
+
+      // قسم الاختبار
+      html += `<hr>`;
+      html += `<div class="quiz-container" id="quizSection">`;
+      html += `<h3><i class="fas fa-question-circle"></i> اختبار المستوى (نسبة النجاح ${levels[levelId].requiredScore}%)</h3>`;
+      
+      if (testPassed) {
+        html += `<p style="color:green; font-weight:bold;"><i class="fas fa-check-circle"></i> لقد اجتزت اختبار هذا المستوى بنجاح. يمكنك الانتقال للمستوى التالي.</p>`;
+        if (levelId < levels.length-1) {
+          html += `<button class="btn" onclick="goToNextLevel()"><i class="fas fa-arrow-left"></i> الانتقال للمستوى التالي</button>`;
+        }
+      } else {
+        html += `<div id="quizInner"></div>`;
+      }
+      html += `</div>`;
+      
+      dynamic.innerHTML = html;
+
+      // إذا لم يجتاز الاختبار بعد، قم ببناء أسئلة الاختبار
+      if (!testPassed && levelQuiz.length > 0) {
+        renderQuiz(levelId, levelQuiz);
+      }
+    }
+
+    // عرض اختبار تفاعلي
+    function renderQuiz(levelId, questions) {
+      const quizInner = document.getElementById('quizInner');
+      if (!quizInner) return;
+      let currentQuestion = 0;
+      let userAnswers = [];
+      let score = 0;
+
+      function showQuestion(index) {
+        if (index >= questions.length) {
+          // إنهاء الاختبار وحساب النتيجة
+          const percent = Math.round((score / questions.length) * 100);
+          userProgress.quizScores[levelId] = percent;
+          const required = levels[levelId].requiredScore;
+          if (percent >= required) {
+            userProgress.levelTestPassed[levelId] = true;
+            // فتح المستوى التالي إذا وجد
+            if (levelId + 1 < levels.length && !userProgress.unlockedLevels.includes(levelId+1)) {
+              userProgress.unlockedLevels.push(levelId+1);
+            }
+            quizInner.innerHTML = `<p style="color:green; font-weight:bold;">🎉 مبروك! لقد حققت ${percent}% ونجحت في الاختبار.</p>`;
+          } else {
+            quizInner.innerHTML = `<p style="color:#c92a2a;">للأسف، نسبتك ${percent}% أقل من المطلوب (${required}%). أعد المحاولة بعد مراجعة الدروس.</p>
+            <button class="btn" onclick="retryQuiz(${levelId})"><i class="fas fa-redo"></i> إعادة الاختبار</button>`;
+          }
+          saveProgress();
+          updateUI();
+          return;
+        }
+
+        const q = questions[index];
+        let answersHtml = '';
+        q.options.forEach((opt, optIdx) => {
+          answersHtml += `<button class="answer-btn" onclick="selectAnswer(${index}, ${optIdx}, this)">${opt}</button>`;
+        });
+
+        quizInner.innerHTML = `
+          <div class="quiz-question">${index+1}. ${q.q}</div>
+          <div class="answers" id="answersContainer">${answersHtml}</div>
+          <button id="nextQBtn" class="btn" disabled onclick="nextQuestion()">السؤال التالي</button>
+          <span class="result-message" id="msg"></span>
+        `;
+        window.currentQuizState = { levelId, questions, currentQuestion: index, score, userAnswers };
+      }
+
+      window.selectAnswer = function(qIndex, optIdx, btnElement) {
+        const state = window.currentQuizState;
+        if (!state || state.currentQuestion !== qIndex) return;
+        // تعطيل كل الأزرار
+        const allBtns = document.querySelectorAll('#answersContainer .answer-btn');
+        allBtns.forEach(b => b.disabled = true);
+        
+        const correctIdx = state.questions[qIndex].correct;
+        const isCorrect = (optIdx === correctIdx);
+        
+        if (isCorrect) {
+          btnElement.classList.add('selected-correct');
+          state.score++;
+        } else {
+          btnElement.classList.add('selected-wrong');
+          // إظهار الإجابة الصحيحة
+          allBtns[correctIdx].classList.add('selected-correct');
+        }
+        document.getElementById('msg').textContent = isCorrect ? '✅ إجابة صحيحة' : '❌ إجابة خاطئة';
+        document.getElementById('nextQBtn').disabled = false;
+        window.currentQuizState = state;
+      };
+
+      window.nextQuestion = function() {
+        const state = window.currentQuizState;
+        if (!state) return;
+        const nextIdx = state.currentQuestion + 1;
+        if (nextIdx < state.questions.length) {
+          state.currentQuestion = nextIdx;
+          window.currentQuizState = state;
+          showQuestion(nextIdx);
+        } else {
+          // إنهاء
+          window.currentQuizState.score = state.score;
+          const percent = Math.round((state.score / state.questions.length)*100);
+          userProgress.quizScores[levelId] = percent;
+          const required = levels[levelId].requiredScore;
+          if (percent >= required) {
+            userProgress.levelTestPassed[levelId] = true;
+            if (levelId+1 < levels.length && !userProgress.unlockedLevels.includes(levelId+1)) {
+              userProgress.unlockedLevels.push(levelId+1);
+            }
+          }
+          saveProgress();
+          updateUI();
+        }
+      };
+
+      window.retryQuiz = function(lvl) {
+        userProgress.levelTestPassed[lvl] = false;
+        saveProgress();
+        updateUI();
+      };
+
+      showQuestion(0);
+    }
+
+    // دوال عامة
+    window.markLessonComplete = function(levelId, lessonIndex) {
+      if (!userProgress.completedLessons[levelId]) {
+        userProgress.completedLessons[levelId] = [];
+      }
+      if (!userProgress.completedLessons[levelId].includes(lessonIndex)) {
+        userProgress.completedLessons[levelId].push(lessonIndex);
+      } else {
+        // إزالة إذا كان مكتمل (toggle)
+        userProgress.completedLessons[levelId] = userProgress.completedLessons[levelId].filter(i => i !== lessonIndex);
+      }
+      saveProgress();
+      updateUI();
+    };
+
+    window.exportBook = function(filename, title) {
+      // محاكاة تصدير - في الحقيقة ينشئ رابط تنزيل وهمي
+      alert(`📘 جاري تصدير كتاب "${title}" باسم ${filename}. (للتطبيق الفعلي يتم رفع الملفات على GitHub وإتاحتها)`);
+      // يمكن استخدام رابط مباشر: window.open('books/'+filename) لكن هنا تنبيه توضيحي.
+    };
+
+    window.goToNextLevel = function() {
+      const next = userProgress.currentLevel + 1;
+      if (next < levels.length && userProgress.unlockedLevels.includes(next)) {
+        userProgress.currentLevel = next;
+        saveProgress();
+        updateUI();
+      } else {
+        alert('المستوى التالي غير متاح بعد.');
+      }
+    };
+
+    // تهيئة
+    loadProgress();
+    updateUI();
+
+    // ربط الدوال العامة
+    window.retryQuiz = window.retryQuiz || function(){};
+    window.goToNextLevel = window.goToNextLevel || function(){};
+  })();
+</script>
+</body>
+</html>
