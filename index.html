@@ -1163,7 +1163,11 @@ async function signUpUser(displayName, loginHandle, password){
     id: uid, username: name, login_handle: handle, role:'user', status:'pending',
     device_flag:false, bound_device_id: getDeviceId()
   });
-  if(profErr){ await sb.auth.signOut(); throw profErr; }
+  if(profErr){
+    await sb.auth.signOut();
+    if(/username/i.test(profErr.message||'')) throw new Error('NAME_TAKEN');
+    throw profErr;
+  }
   return uid;
 }
 
@@ -1849,6 +1853,7 @@ function friendlyAuthError(err){
   if(m==='BAD_HANDLE') return 'اسم الدخول يجب أن يكون حروفاً إنجليزية وأرقاماً فقط (3 أحرف على الأقل)';
   if(m==='BAD_PASSWORD') return 'كلمة السر يجب ألا تقلّ عن 4 أحرف';
   if(m==='HANDLE_TAKEN') return 'اسم الدخول هذا محجوز مسبقاً، اختاري اسماً آخر';
+  if(m==='NAME_TAKEN') return 'هذا الاسم المعروض مستخدم من قبل مشارك آخر، اختاري اسماً مختلفاً';
   if(m==='BAD_CREDENTIALS') return 'اسم الدخول أو كلمة السر غير صحيحة';
   if(m==='DEVICE_MISMATCH') return null; // يُعالَج بشاشة مخصّصة
   return 'حدث خطأ غير متوقّع، حاولي مجدداً';
