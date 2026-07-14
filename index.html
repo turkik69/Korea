@@ -416,6 +416,40 @@ img,svg{display:block}
 #impersonate-bar.show{display:flex}
 #impersonate-bar button{background:var(--navy-deep);color:#fff;padding:7px 16px;border-radius:8px;font-size:12px;font-weight:800}
 .admin-btn.view{background:rgba(29,41,81,.1);color:var(--navy)}
+
+/* ---------- dialogue bubbles ---------- */
+.dialogue-box{display:flex;flex-direction:column;gap:10px}
+.dlg-line{display:flex;gap:10px;max-width:88%}
+.dlg-line.b{flex-direction:row-reverse;align-self:flex-end;text-align:left}
+.dlg-speaker{
+  flex:none;font-size:10.5px;font-weight:800;color:var(--ink-soft);width:52px;
+  display:flex;align-items:center;justify-content:center;text-align:center;padding-top:4px;
+}
+.dlg-bubble{background:var(--bg-soft);border-radius:14px;padding:11px 14px}
+.dlg-line.a .dlg-bubble{border-bottom-right-radius:3px}
+.dlg-line.b .dlg-bubble{border-bottom-left-radius:3px;background:rgba(29,41,81,.06)}
+.dlg-bubble .kr{font-size:15.5px;font-weight:700;color:var(--navy)}
+.dlg-ar{font-size:12.5px;color:var(--ink-soft);margin-top:4px}
+
+/* ---------- reading comprehension ---------- */
+.reading-passage{padding:22px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:18px}
+.reading-passage .rline{margin-bottom:12px}
+.reading-passage .rline .kr{font-size:16.5px;font-weight:700;color:var(--navy);line-height:1.9}
+.reading-passage .rline .ar{font-size:12.5px;color:var(--ink-soft);margin-top:3px}
+
+/* ---------- challenges ---------- */
+.challenge-card{
+  padding:22px;border-radius:var(--radius);background:var(--card);border:1px solid var(--line);
+  display:flex;align-items:center;gap:18px;margin-bottom:16px;flex-wrap:wrap;
+}
+.challenge-card .ic{font-size:34px;flex:none}
+.challenge-card .info{flex:1;min-width:180px}
+.challenge-card .info b{font-size:15px;color:var(--navy)}
+.challenge-card .info p{font-size:12.5px;color:var(--ink-soft);margin-top:3px}
+.challenge-card.done{opacity:.7}
+.challenge-card .badge-done{font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--jade);background:rgba(47,111,98,.14);padding:5px 12px;border-radius:100px}
+.weekly-progress{height:8px;background:var(--line);border-radius:100px;overflow:hidden;margin-top:10px;width:100%}
+.weekly-progress i{display:block;height:100%;background:var(--jade)}
 </style>
 </head>
 <body>
@@ -437,6 +471,7 @@ img,svg{display:block}
       <button data-go="dashboard" class="active">الرئيسية</button>
       <button data-go="levels">المستويات</button>
       <button data-go="drill">تدريب سريع</button>
+      <button data-go="challenges">التحديات</button>
       <button data-go="leaderboard">لوحة المتصدّرين</button>
     </nav>
     <div style="display:flex;align-items:center;gap:14px">
@@ -587,6 +622,7 @@ img,svg{display:block}
       </div>
       <div style="display:flex;gap:10px">
         <button class="btn-light" id="btn-export-level">📖 تصدير كتاب الدرس</button>
+        <button class="btn-light hidden" id="btn-open-reading">📰 تمرين قراءة</button>
         <button class="btn-light" id="btn-open-quiz" disabled>ابدئي الاختبار</button>
       </div>
     </div>
@@ -610,6 +646,16 @@ img,svg{display:block}
   </section>
 
   <!-- ---------- الاختبار ---------- -->
+  <section class="screen hidden" id="screen-reading">
+    <button class="btn-outline" style="padding:8px 16px;font-size:12.5px;margin-bottom:16px" id="btn-back-from-reading">→ رجوع للمستوى</button>
+    <div id="reading-body"></div>
+  </section>
+
+  <section class="screen hidden" id="screen-challenges">
+    <div class="section-head"><h2>🔥 التحديات اليومية والأسبوعية</h2></div>
+    <div id="challenges-body"></div>
+  </section>
+
   <section class="screen hidden" id="screen-quiz">
     <div class="quiz-progress"><i id="quiz-progress-bar" style="width:0%"></i></div>
     <div id="quiz-body"></div>
@@ -638,6 +684,7 @@ img,svg{display:block}
   <button data-go="dashboard" class="active">الرئيسية</button>
   <button data-go="levels">المستويات</button>
   <button data-go="drill">تدريب</button>
+  <button data-go="challenges">تحديات</button>
   <button data-go="leaderboard">المتصدّرون</button>
 </nav>
 
@@ -796,7 +843,10 @@ const LEVELS = [
       { q:"كم عدد الحروف المتحركة الأساسية؟", options:["8","10","12","14"], correct:1 },
       { q:"المقطع «물» يعني:", options:["نار","ماء","هواء","طعام"], correct:1 }
       ]
-    }
+    },
+    bonusVocab:[
+      ["나무","namu","شجرة"],["사과","sagwa","تفاحة"],["우유","uyu","حليب"],["바다","bada","بحر"],["하늘","haneul","سماء"],["눈","nun","عين / ثلج"],["손","son","يد"],["발","bal","قدم"],["얼굴","eolgul","وجه"],["머리","meori","رأس"]
+    ]
   },
   {
     id: 2,
@@ -816,7 +866,17 @@ const LEVELS = [
           {ko:"죄송합니다",ar:"أنا آسف/آسفة (رسمي)"},
           {ko:"괜찮아요",ar:"لا بأس / أنا بخير"}
         ],
-        note:"لاحظي أن أغلب هذه العبارات تنتهي بـ«요 -yo» أو «다 -da» وهي علامة الأدب في الكورية — لا تُسقطيها أبداً مع الغرباء أو كبار السن."
+        note:"لاحظي أن أغلب هذه العبارات تنتهي بـ«요 -yo» أو «다 -da» وهي علامة الأدب في الكورية — لا تُسقطيها أبداً مع الغرباء أو كبار السن.",
+        dialogue:{
+          title:"محادثة: أول لقاء",
+          lines:[
+            {speaker:"أ",ko:"안녕하세요!",ar:"مرحباً!"},
+            {speaker:"ب",ko:"안녕하세요! 만나서 반가워요.",ar:"مرحباً! سعيد بلقائك."},
+            {speaker:"أ",ko:"저는 사라예요. 당신은요؟",ar:"أنا سارة (사라). وأنتَ؟"},
+            {speaker:"ب",ko:"저는 민수예요.",ar:"أنا مين سو."},
+            {speaker:"أ",ko:"만나서 반가워요, 민수 씨!",ar:"سعيدة بلقائك يا مين سو!"}
+          ]
+        }
       },
       {
         id:"2-2", title:"تقديم النفس", subtitle:"التعارف بالكورية",
@@ -867,6 +927,23 @@ const LEVELS = [
       { q:"الرقم الصيني-الكوري لـ 5 هو:", options:["오","다섯","일","십"], correct:0 },
       { q:"«죄송합니다» تعني:", options:["شكراً","مرحباً","أنا آسف","مع السلامة"], correct:2 },
       { q:"«만나서 반갑습니다» تعني:", options:["من أين أتيتَ؟","سعيد بلقائك","كم الساعة؟","أين الحمّام؟"], correct:1 }
+      ]
+    },
+    bonusVocab:[
+      ["가족","gajok","عائلة"],["아버지","abeoji","أب"],["어머니","eomeoni","أم"],["형제","hyeongje","إخوة"],["나이","nai","عمر"],["이름","ireum","اسم"],["나라","nara","بلد"],["언어","eoneo","لغة"],["시간","sigan","وقت"],["오늘","oneul","اليوم"]
+    ],
+    reading:{
+      title:"في اللقاء الأول",
+      passage:[
+        {ko:"저는 하미드예요.",ar:"أنا حميد."},
+        {ko:"오만에서 왔어요.",ar:"أتيتُ من عُمان."},
+        {ko:"한국어를 공부해요.",ar:"أدرس اللغة الكورية."},
+        {ko:"만나서 반가워요!",ar:"سعيد بلقائك!"}
+      ],
+      questions:[
+        { q:"من أين أتى المتحدث؟", options:["عُمان","كوريا","مصر","السعودية"], correct:0 },
+        { q:"ماذا يدرس؟", options:["الإنجليزية","اللغة الكورية","الرياضيات","التاريخ"], correct:1 },
+        { q:"«만나서 반가워요» تعني:", options:["وداعاً","شكراً","سعيد باللقاء","آسف"], correct:2 }
       ]
     }
   },
@@ -937,6 +1014,23 @@ const LEVELS = [
       { q:"ضمير «당신» يُستخدم:", options:["بشكل يومي جداً","نادراً وبحذر (قد يبدو غير مهذّب أحياناً)","فقط مع الأطفال","فقط في الكتابة"], correct:1 },
       { q:"عكس «있다» هو:", options:["하다","없다","가다","오다"], correct:1 }
       ]
+    },
+    bonusVocab:[
+      ["공부","gongbu","دراسة"],["일","il","عمل"],["회사","hoesa","شركة"],["병원","byeongwon","مستشفى"],["공원","gongwon","حديقة"],["도서관","doseogwan","مكتبة"],["커피","keopi","قهوة"],["음악","eumak","موسيقى"],["영화","yeonghwa","فيلم"],["운동","undong","رياضة"]
+    ],
+    reading:{
+      title:"يومي الدراسي",
+      passage:[
+        {ko:"저는 매일 학교에 가요.",ar:"أذهب إلى المدرسة كل يوم."},
+        {ko:"학교에서 친구들과 공부해요.",ar:"أدرس مع أصدقائي في المدرسة."},
+        {ko:"저는 학생이에요.",ar:"أنا طالب/طالبة."},
+        {ko:"공부는 재미있어요.",ar:"الدراسة ممتعة."}
+      ],
+      questions:[
+        { q:"أين يدرس المتحدث؟", options:["في المنزل","في المدرسة","في المكتبة","في العمل"], correct:1 },
+        { q:"مع من يدرس؟", options:["وحده","مع المعلم","مع أصدقائه","مع عائلته"], correct:2 },
+        { q:"ما رأيه في الدراسة؟", options:["مملة","صعبة","ممتعة","سهلة"], correct:2 }
+      ]
     }
   },
   {
@@ -965,7 +1059,18 @@ const LEVELS = [
           {ko:"맛있어요",ar:"لذيذ"},
           {ko:"계산해 주세요",ar:"الفاتورة من فضلك"}
         ],
-        note:"من المعتاد في كوريا عدم ترك بقشيش في المطاعم — تُعتبر الخدمة جزءاً من السعر المعلن، وترك بقشيش قد يُسبّب حرجاً لا تقديراً."
+        note:"من المعتاد في كوريا عدم ترك بقشيش في المطاعم — تُعتبر الخدمة جزءاً من السعر المعلن، وترك بقشيش قد يُسبّب حرجاً لا تقديراً.",
+        dialogue:{
+          title:"محادثة: في المطعم",
+          lines:[
+            {speaker:"النادل",ko:"어서 오세요! 몇 분이세요؟",ar:"تفضّلي! كم عدد الأشخاص؟"},
+            {speaker:"الزبونة",ko:"두 명이요.",ar:"شخصان."},
+            {speaker:"النادل",ko:"메뉴 여기 있어요.",ar:"القائمة هنا."},
+            {speaker:"الزبونة",ko:"이거 두 개 주세요.",ar:"اثنان من هذا من فضلك."},
+            {speaker:"النادل",ko:"네, 알겠습니다!",ar:"حسناً، فهمت!"},
+            {speaker:"الزبونة",ko:"계산해 주세요.",ar:"الفاتورة من فضلك."}
+          ]
+        }
       },
       {
         id:"4-3", title:"السؤال عن الاتجاهات", subtitle:"في الشارع",
@@ -1002,6 +1107,23 @@ const LEVELS = [
       { q:"«똑바로 가세요» تعني:", options:["توقّف","ارجع","اذهب مباشرة","اذهب يساراً"], correct:2 },
       { q:"«너무 비싸요» تعني:", options:["رخيص جداً","غالٍ جداً","لذيذ جداً","بعيد جداً"], correct:1 },
       { q:"«약속» تعني:", options:["موعد","طعام","نقود","حمّام"], correct:0 }
+      ]
+    },
+    bonusVocab:[
+      ["버스","beoseu","حافلة"],["택시","taeksi","سيارة أجرة"],["지하철","jihacheol","مترو"],["공항","gonghang","مطار"],["호텔","hotel","فندق"],["약국","yakguk","صيدلية"],["은행","eunhaeng","بنك"],["우체국","ucheguk","مكتب بريد"],["편의점","pyeonuijeom","متجر صغير"],["시장","sijang","سوق"]
+    ],
+    reading:{
+      title:"في السوق",
+      passage:[
+        {ko:"저는 시장에 가요.",ar:"أذهب إلى السوق."},
+        {ko:"사과가 얼마예요؟",ar:"كم سعر التفاح؟"},
+        {ko:"이천 원이에요.",ar:"إنه ألفا وون."},
+        {ko:"너무 비싸요! 깎아 주세요.",ar:"غالٍ جداً! خفّض السعر من فضلك."}
+      ],
+      questions:[
+        { q:"أين ذهب المتحدث؟", options:["المطعم","السوق","المدرسة","البنك"], correct:1 },
+        { q:"عن سعر أي شيء سأل؟", options:["الموز","التفاح","الحليب","الخبز"], correct:1 },
+        { q:"ماذا طلب من البائع؟", options:["المزيد من التفاح","تخفيض السعر","كيس إضافي","فاتورة"], correct:1 }
       ]
     }
   },
@@ -1068,6 +1190,22 @@ const LEVELS = [
       { q:"«봤어요» (فعل «يشاهد») في زمن:", options:["المستقبل","الماضي","المضارع المستمر","الأمر"], correct:1 },
       { q:"أفضل طريقة لمواصلة التعلّم بعد هذا المستوى:", options:["التوقّف عن الدراسة","مشاهدة محتوى كوري والتحدث مع ناطقين أصليين","حفظ القاموس فقط","تجاهل النطق"], correct:1 },
       { q:"«일어나요» تعني:", options:["ينام","يستيقظ","يأكل","يذهب"], correct:1 }
+      ]
+    },
+    bonusVocab:[
+      ["경험","gyeongheom","خبرة"],["미래","mirae","مستقبل"],["과거","gwageo","ماضٍ"],["목표","mokpyo","هدف"],["노력","noryeok","جهد"],["성공","seonggong","نجاح"],["실패","silpae","فشل"],["기회","gihoe","فرصة"],["습관","seupgwan","عادة"],["문화","munhwa","ثقافة"]
+    ],
+    reading:{
+      title:"يوم ممطر",
+      passage:[
+        {ko:"어제는 비가 와서 집에 있었어요.",ar:"بالأمس كان المطر ينزل فبقيتُ في المنزل."},
+        {ko:"그래서 책을 읽고 음악을 들었어요.",ar:"لذلك قرأتُ كتاباً واستمعتُ للموسيقى."},
+        {ko:"내일은 날씨가 좋으면 친구를 만날 거예요.",ar:"غداً إن كان الطقس جميلاً سأقابل صديقي."}
+      ],
+      questions:[
+        { q:"لماذا بقي المتحدث في المنزل بالأمس؟", options:["كان مريضاً","كان المطر ينزل","كان متعباً","لم يكن لديه وقت"], correct:1 },
+        { q:"ماذا فعل في المنزل؟", options:["نام فقط","قرأ واستمع للموسيقى","طبخ","لعب"], correct:1 },
+        { q:"ماذا سيفعل غداً إن كان الطقس جميلاً؟", options:["سيبقى في المنزل","سيقابل صديقه","سيذهب للعمل","سينام"], correct:1 }
       ]
     }
   }
@@ -1285,6 +1423,25 @@ function toast(msg, ms=2800){
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function totalLessonCount(){ return LEVELS.reduce((s,l)=>s+l.lessons.length,0); }
 function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function seededRandomFn(seed){
+  let h = 0;
+  for(let i=0;i<seed.length;i++){ h = (h*31 + seed.charCodeAt(i)) >>> 0; }
+  return function(){ h = (h*1664525 + 1013904223) >>> 0; return h/4294967296; };
+}
+function seededShuffle(arr, seed){
+  const rnd = seededRandomFn(seed);
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+function weekStartStr(){
+  const d = new Date();
+  const day = d.getUTCDay();
+  const diff = (day===0?6:day-1);
+  const monday = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()-diff));
+  return monday.toISOString().slice(0,10);
+}
 
 /* ---------- أدوات الحساب ---------- */
 const HANDLE_RE = /^[a-z0-9_]{3,20}$/;
@@ -1502,10 +1659,62 @@ async function adminDelete(id){
 }
 
 /* ============================================================
+   التحديات اليومية والأسبوعية
+   ============================================================ */
+async function fetchDailyChallenge(){
+  try{
+    const { data } = await sb.from('daily_challenges').select('*').eq('user_id', STATE.profile.id).eq('challenge_date', todayStr()).maybeSingle();
+    return data;
+  }catch(e){ return null; }
+}
+async function completeDailyChallenge(score){
+  try{
+    await sb.from('daily_challenges').upsert(
+      { user_id:STATE.profile.id, challenge_date: todayStr(), completed:true, score },
+      { onConflict:'user_id,challenge_date' }
+    );
+  }catch(e){}
+}
+async function fetchWeeklyClaim(){
+  try{
+    const { data } = await sb.from('weekly_claims').select('*').eq('user_id', STATE.profile.id).eq('week_start', weekStartStr()).maybeSingle();
+    return data;
+  }catch(e){ return null; }
+}
+async function claimWeeklyReward(){
+  try{
+    await sb.from('weekly_claims').upsert(
+      { user_id:STATE.profile.id, week_start: weekStartStr(), claimed:true },
+      { onConflict:'user_id,week_start' }
+    );
+  }catch(e){}
+}
+async function countThisWeekActivity(){
+  const ws = weekStartStr()+'T00:00:00.000Z';
+  try{
+    const { data: lessons } = await sb.from('progress').select('id').eq('user_id',STATE.profile.id).eq('completed',true).gte('updated_at', ws);
+    const { data: quizzes } = await sb.from('quiz_attempts').select('id').eq('user_id',STATE.profile.id).eq('passed',true).gte('created_at', ws);
+    return { lessons:(lessons||[]).length, quizzes:(quizzes||[]).length };
+  }catch(e){ return { lessons:0, quizzes:0 }; }
+}
+function unlockedVocabPool(){
+  const pool = [];
+  LEVELS.forEach(level=>{
+    if(level.id > (STATE.stats?STATE.stats.current_level:1)) return;
+    level.lessons.forEach(lesson=>{
+      if(lesson.vocab) lesson.vocab.forEach(v=> pool.push({ko:v[0], ar:v[2]}));
+      if(lesson.sentences) lesson.sentences.forEach(s=> pool.push({ko:s.ko, ar:s.ar}));
+    });
+    if(level.bonusVocab) level.bonusVocab.forEach(v=> pool.push({ko:v[0], ar:v[2]}));
+  });
+  return pool;
+}
+
+/* ============================================================
    التنقّل والعرض — تطبيق المستخدم
    ============================================================ */
-const SCREENS = ['auth','pending','blocked','device','dashboard','levels','level','lesson','quiz','drill','leaderboard'];
-const IN_APP_SCREENS = new Set(['dashboard','levels','level','lesson','quiz','drill','leaderboard']);
+const SCREENS = ['auth','pending','blocked','device','dashboard','levels','level','lesson','quiz','drill','reading','challenges','leaderboard'];
+const IN_APP_SCREENS = new Set(['dashboard','levels','level','lesson','quiz','drill','reading','challenges','leaderboard']);
 
 function showScreen(name){
   SCREENS.forEach(s=>{ const el=document.getElementById('screen-'+s); if(el) el.classList.toggle('hidden', s!==name); });
@@ -1523,6 +1732,7 @@ function goTo(name){
   if(name==='levels') renderLevelsList();
   if(name==='leaderboard') renderLeaderboardFull();
   if(name==='drill') startDrillRound();
+  if(name==='challenges') renderChallenges();
 }
 
 function levelState(levelId){
@@ -1686,6 +1896,9 @@ function openLevel(levelId){
     ? (st==='passed' ? `اجتزتِ هذا الاختبار — أسئلة كل محاولة عشوائية، يمكنك إعادته لتحسين نتيجتك` : `أكملتِ كل الدروس، الاختبار جاهز (يتطلّب ٪${PASS_THRESHOLD} للنجاح)`)
     : `أكملي ${level.lessons.length-done} دروس متبقّية لفتح الاختبار`;
   btnQuiz.textContent = st==='passed' ? 'إعادة الاختبار' : 'ابدئي الاختبار';
+
+  const btnReading = document.getElementById('btn-open-reading');
+  btnReading.classList.toggle('hidden', !level.reading);
 }
 
 /* ---------- شاشة الدرس ---------- */
@@ -1712,6 +1925,15 @@ function openLesson(levelId, lessonIdx){
     html += `</div>`;
   }
   if(lesson.note) html += `<div class="content-block"><div class="note-box">💡 ${escapeHtml(lesson.note)}</div></div>`;
+  if(lesson.dialogue){
+    html += `<div class="content-block"><h4>🎭 ${escapeHtml(lesson.dialogue.title)}</h4><div class="dialogue-box">`;
+    html += lesson.dialogue.lines.map((ln,i)=>`
+      <div class="dlg-line ${i%2===0?'a':'b'}">
+        <span class="dlg-speaker">${escapeHtml(ln.speaker)}</span>
+        <div class="dlg-bubble"><span class="kr">${escapeHtml(ln.ko)}</span> ${speakBtn(ln.ko)}<div class="dlg-ar">${escapeHtml(ln.ar)}</div></div>
+      </div>`).join('');
+    html += `</div></div>`;
+  }
   document.getElementById('lesson-body').innerHTML = html;
 
   const doneAlready = !!STATE.progress[levelId+'-'+lesson.id];
@@ -1857,22 +2079,148 @@ function answerDrill(selected, btnEl){
 async function finishDrill(){
   const total = STATE.drill.items.length;
   const correct = STATE.drill.correct;
-  const xpGain = Math.min(correct*2, 20);
+  const isDaily = STATE.drill.isDaily;
+  const score = Math.round((correct/total)*100);
+  const xpGain = isDaily ? Math.round(correct*2 * 1.2) : Math.min(correct*2, 20);
   document.getElementById('drill-progress-bar').style.width='100%';
   document.getElementById('drill-body').innerHTML = `<div class="q-card drill-summary">
     <div class="score-ring">${correct}/${total}</div>
-    <h3 style="margin-top:10px">🎯 أحسنتِ!</h3>
-    <p style="color:var(--ink-soft);margin-top:8px">الأسئلة تتجدّد عشوائياً في كل مرة — عودي للتدريب متى شئتِ.</p>
+    <h3 style="margin-top:10px">${isDaily ? '🔥 أنجزتِ تحدي اليوم!' : '🎯 أحسنتِ!'}</h3>
+    <p style="color:var(--ink-soft);margin-top:8px">${isDaily ? 'عودي غداً لتحدٍ جديد — سيحصل عليه كل المشاركين معكِ في نفس اليوم.' : 'الأسئلة تتجدّد عشوائياً في كل مرة — عودي للتدريب متى شئتِ.'}</p>
     <div style="display:flex;gap:10px;justify-content:center;margin-top:20px">
-      <button class="btn-primary" style="width:auto;padding:13px 24px" id="drill-again">تدريب آخر</button>
+      <button class="btn-primary" style="width:auto;padding:13px 24px" id="drill-again">${isDaily?'تدريب حرّ':'تدريب آخر'}</button>
       <button class="btn-outline" id="drill-home">العودة للرئيسية</button>
     </div>
   </div>`;
   if(xpGain>0){ STATE.stats.xp += xpGain; await syncStats(); }
+  if(isDaily){ await completeDailyChallenge(score); fireConfetti(); }
   document.getElementById('drill-again').addEventListener('click', startDrillRound);
   document.getElementById('drill-home').addEventListener('click', ()=> goTo('dashboard'));
-  if(xpGain>0) toast(`+${xpGain} XP من التدريب السريع`);
+  if(xpGain>0) toast(`+${xpGain} XP ${isDaily?'من تحدي اليوم':'من التدريب السريع'}`);
 }
+
+/* ---------- لوحة المتصدّرين الكاملة ---------- */
+/* ---------- تمرين القراءة ---------- */
+function openReading(levelId){
+  const level = LEVELS.find(l=>l.id===levelId);
+  if(!level.reading) return;
+  STATE.currentLevelId = levelId;
+  goTo('reading');
+  renderReadingPassage(level);
+}
+function renderReadingPassage(level){
+  const r = level.reading;
+  document.getElementById('reading-body').innerHTML = `
+    <div class="lesson-hero">
+      <svg class="ill" id="reading-ill"></svg>
+      <div><h2>${escapeHtml(r.title)}</h2><p>تمرين قراءة · المستوى ${level.id}</p></div>
+    </div>
+    <div class="reading-passage">
+      ${r.passage.map(l=>`<div class="rline"><div class="kr">${escapeHtml(l.ko)} ${speakBtn(l.ko)}</div><div class="ar">${escapeHtml(l.ar)}</div></div>`).join('')}
+    </div>
+    <button class="btn-primary" style="width:auto;padding:14px 28px" id="btn-reading-questions">ابدئي أسئلة الفهم ←</button>`;
+  document.getElementById('reading-ill').outerHTML = ILLUSTRATIONS[level.icon]().replace('<svg ', '<svg id="reading-ill" class="ill" ');
+  document.getElementById('btn-reading-questions').addEventListener('click', ()=> startReadingQuestions(level));
+}
+function startReadingQuestions(level){
+  STATE.readingQuiz = { level, qIndex:0, answers:new Array(level.reading.questions.length).fill(null) };
+  renderReadingQuestion();
+}
+function renderReadingQuestion(){
+  const { level, qIndex, answers } = STATE.readingQuiz;
+  const total = level.reading.questions.length;
+  const q = level.reading.questions[qIndex];
+  const selected = answers[qIndex];
+  document.getElementById('reading-body').innerHTML = `
+    <div class="q-card">
+      <div class="q-eyebrow">أسئلة الفهم · سؤال ${qIndex+1} من ${total}</div>
+      <div class="q-text">${escapeHtml(q.q)}</div>
+      <div class="q-options">
+        ${q.options.map((opt,i)=>`<button class="q-opt ${selected===i?'selected':''}" data-i="${i}">${escapeHtml(opt)}</button>`).join('')}
+      </div>
+      <div class="quiz-nav">
+        <button class="btn-outline" id="rq-prev" ${qIndex===0?'disabled':''}>→ السابق</button>
+        <button class="btn-primary" style="width:auto;padding:13px 26px" id="rq-next" ${selected===null?'disabled':''}>${qIndex===total-1?'إنهاء':'التالي ←'}</button>
+      </div>
+    </div>`;
+  document.querySelectorAll('#reading-body .q-opt').forEach(b=>{
+    b.addEventListener('click', ()=>{ STATE.readingQuiz.answers[qIndex] = Number(b.dataset.i); renderReadingQuestion(); });
+  });
+  const prevBtn = document.getElementById('rq-prev');
+  if(prevBtn) prevBtn.addEventListener('click', ()=>{ STATE.readingQuiz.qIndex--; renderReadingQuestion(); });
+  document.getElementById('rq-next').addEventListener('click', ()=>{
+    if(qIndex < total-1){ STATE.readingQuiz.qIndex++; renderReadingQuestion(); } else finishReading();
+  });
+}
+async function finishReading(){
+  const { level, answers } = STATE.readingQuiz;
+  const total = level.reading.questions.length;
+  let correct = 0;
+  level.reading.questions.forEach((q,i)=>{ if(answers[i]===q.correct) correct++; });
+  document.getElementById('reading-body').innerHTML = `<div class="q-card quiz-result ${correct===total?'pass':''}">
+    <div class="score-ring">${correct}/${total}</div>
+    <h3>📰 أحسنتِ في تمرين القراءة!</h3>
+    <p>حصلتِ على ${correct} من ${total} إجابات صحيحة.</p>
+    <button class="btn-primary" style="width:auto;padding:14px 30px;margin-top:22px" id="reading-continue">رجوع للمستوى</button>
+  </div>`;
+  const xpGain = correct*3;
+  STATE.stats.xp += xpGain;
+  await syncStats();
+  bumpEl('stat-xp');
+  if(xpGain>0) toast(`+${xpGain} XP من تمرين القراءة`);
+  document.getElementById('reading-continue').addEventListener('click', ()=> openLevel(level.id));
+}
+
+/* ---------- التحديات اليومية والأسبوعية ---------- */
+async function renderChallenges(){
+  const host = document.getElementById('challenges-body');
+  host.innerHTML = `<p style="color:var(--ink-soft);text-align:center;padding:30px">...جارٍ التحميل</p>`;
+  const [daily, weekly, weekActivity] = await Promise.all([fetchDailyChallenge(), fetchWeeklyClaim(), countThisWeekActivity()]);
+  const dailyDone = daily && daily.completed;
+  const weeklyMet = weekActivity.lessons >= 3 || weekActivity.quizzes >= 1;
+  const weeklyClaimed = weekly && weekly.claimed;
+  const lessonsPct = Math.min(100, Math.round((weekActivity.lessons/3)*100));
+
+  host.innerHTML = `
+    <div class="challenge-card ${dailyDone?'done':''}">
+      <div class="ic">🔥</div>
+      <div class="info">
+        <b>تحدي اليوم</b>
+        <p>8 أسئلة عشوائية يتشاركها كل المشاركين اليوم — تُحسب لكِ ٪20 نقاط خبرة إضافية عند الإجابة الصحيحة.</p>
+      </div>
+      ${dailyDone ? `<span class="badge-done">✓ أُنجز اليوم (${daily.score}٪)</span>` : `<button class="btn-primary" style="width:auto;padding:12px 22px" id="btn-start-daily">ابدئي التحدي</button>`}
+    </div>
+    <div class="challenge-card ${weeklyClaimed?'done':''}">
+      <div class="ic">🏅</div>
+      <div class="info">
+        <b>تحدي الأسبوع</b>
+        <p>أكملي 3 دروس أو اجتازي اختباراً واحداً هذا الأسبوع (${weekActivity.lessons}/3 دروس${weekActivity.quizzes?' · اختبار مُجتاز ✓':''})</p>
+        <div class="weekly-progress"><i style="width:${lessonsPct}%"></i></div>
+      </div>
+      ${weeklyClaimed ? `<span class="badge-done">✓ استُلمت المكافأة</span>` : weeklyMet ? `<button class="btn-primary" style="width:auto;padding:12px 22px" id="btn-claim-weekly">استلمي 40 XP</button>` : `<span class="status-chip locked">لم يتحقّق بعد</span>`}
+    </div>`;
+
+  const dBtn = document.getElementById('btn-start-daily');
+  if(dBtn) dBtn.addEventListener('click', startDailyChallenge);
+  const wBtn = document.getElementById('btn-claim-weekly');
+  if(wBtn) wBtn.addEventListener('click', async ()=>{
+    wBtn.disabled = true;
+    STATE.stats.xp += 40; await syncStats(); bumpEl('stat-xp');
+    await claimWeeklyReward();
+    toast('+40 XP · تهانينا على إنجاز تحدي الأسبوع!');
+    fireConfetti();
+    renderChallenges();
+  });
+}
+function startDailyChallenge(){
+  const pool = unlockedVocabPool();
+  if(pool.length < 6){ toast('أكملي دروساً أكثر أولاً لفتح تحدي اليوم'); return; }
+  const items = seededShuffle(pool, todayStr()).slice(0, 8);
+  STATE.drill = { items, pool, idx:0, correct:0, isDaily:true };
+  showScreen('drill');
+  renderDrillQuestion();
+}
+
 
 /* ---------- لوحة المتصدّرين الكاملة ---------- */
 async function renderLeaderboardFull(){
@@ -2244,6 +2592,8 @@ function wireAppEvents(){
 
   document.getElementById('btn-open-quiz').addEventListener('click', ()=> openQuiz(STATE.currentLevelId));
   document.getElementById('btn-export-level').addEventListener('click', ()=> exportBook('level'));
+  document.getElementById('btn-open-reading').addEventListener('click', ()=> openReading(STATE.currentLevelId));
+  document.getElementById('btn-back-from-reading').addEventListener('click', ()=> openLevel(STATE.currentLevelId));
   document.getElementById('btn-export-all').addEventListener('click', ()=> exportBook('all'));
 
   document.getElementById('btn-complete-lesson').addEventListener('click', async ()=>{
