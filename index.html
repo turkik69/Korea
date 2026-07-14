@@ -8,6 +8,1576 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
+:root{
+  --bg:#F5EFE1;
+  --bg-soft:#EFE6D2;
+  --card:#FFFDF8;
+  --ink:#23252B;
+  --ink-soft:#5B5748;
+  --navy:#1D2951;
+  --navy-deep:#12192F;
+  --red:#C1443C;
+  --gold:#D9A441;
+  --jade:#2F6F62;
+  --line:#E3D6B8;
+  --shadow:0 10px 30px -12px rgba(18,25,47,.25);
+  --shadow-sm:0 4px 14px -6px rgba(18,25,47,.18);
+  --radius:18px;
+  --font-ar:'Cairo',sans-serif;
+  --font-kr:'Noto Sans KR',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-ar);
+  background:
+    radial-gradient(circle at 12% 8%, rgba(29,41,81,.05), transparent 40%),
+    radial-gradient(circle at 90% 85%, rgba(193,68,60,.05), transparent 45%),
+    var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+  line-height:1.6;
+}
+.kr{font-family:var(--font-kr)}
+.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+a{color:inherit}
+::selection{background:var(--gold);color:var(--navy-deep)}
+.hidden{display:none !important}
+img,svg{display:block}
+
+#app-shell{max-width:1080px;margin:0 auto;padding:0 20px 80px}
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:22px 0 18px;position:sticky;top:0;z-index:40;
+  background:linear-gradient(var(--bg) 78%, transparent);
+  backdrop-filter:blur(2px);
+}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-mark{width:40px;height:40px;flex:none}
+.brand-text{display:flex;flex-direction:column;line-height:1.15}
+.brand-text b{font-size:19px;font-weight:800;color:var(--navy)}
+.brand-text span{font-size:11.5px;color:var(--ink-soft);font-family:var(--font-kr)}
+.nav-tabs{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);padding:5px;border-radius:100px;box-shadow:var(--shadow-sm)}
+.nav-tabs button{
+  padding:9px 16px;border-radius:100px;font-weight:700;font-size:13.5px;color:var(--ink-soft);
+  transition:.2s;
+}
+.nav-tabs button.active{background:var(--navy);color:#fff}
+.user-pill{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--ink-soft);font-weight:600}
+.user-pill .dot{width:8px;height:8px;border-radius:50%;background:var(--jade)}
+.user-pill .admin-badge{background:var(--gold);color:var(--navy);padding:0 10px;border-radius:20px;font-size:10px;font-weight:800}
+
+.screen{animation:rise .45s cubic-bezier(.2,.8,.25,1)}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+#screen-auth{min-height:82vh;display:flex;align-items:center;justify-content:center}
+.auth-wrap{
+  width:100%;display:grid;grid-template-columns:1.1fr .9fr;gap:38px;align-items:center;
+  padding:44px 0;
+}
+.auth-hero h1{
+  font-size:clamp(30px,4.4vw,46px);font-weight:900;color:var(--navy);letter-spacing:-.5px;line-height:1.18;
+}
+.auth-hero h1 .kr-accent{font-family:var(--font-kr);color:var(--red);display:inline-block}
+.auth-hero p{margin-top:14px;color:var(--ink-soft);font-size:16px;max-width:46ch}
+.auth-hero .stat-row{display:flex;gap:26px;margin-top:30px}
+.auth-hero .stat-row div b{display:block;font-family:var(--font-mono);font-size:22px;color:var(--navy);font-weight:700}
+.auth-hero .stat-row div span{font-size:12px;color:var(--ink-soft)}
+.auth-card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:30px;box-shadow:var(--shadow);
+}
+.auth-card h2{font-size:20px;font-weight:800;color:var(--navy);margin-bottom:6px}
+.auth-card p.sub{font-size:13px;color:var(--ink-soft);margin-bottom:20px}
+.field label{font-size:12.5px;font-weight:700;color:var(--ink-soft);display:block;margin-bottom:7px}
+.field input{
+  width:100%;padding:14px 16px;border-radius:12px;border:1.5px solid var(--line);
+  background:#fff;font-family:inherit;font-size:15.5px;font-weight:600;color:var(--ink);
+  transition:.15s;
+}
+.field input:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 4px rgba(29,41,81,.08)}
+.btn-primary{
+  margin-top:16px;width:100%;padding:15px;border-radius:12px;background:var(--navy);color:#fff;
+  font-weight:800;font-size:15.5px;display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:.15s;
+}
+.btn-primary:hover{background:var(--navy-deep);transform:translateY(-1px)}
+.btn-primary:active{transform:translateY(0)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.auth-note{margin-top:14px;font-size:12px;color:var(--ink-soft);display:flex;gap:7px;align-items:flex-start}
+.mini-board{margin-top:22px;border-top:1px dashed var(--line);padding-top:16px}
+.mini-board h3{font-size:12px;color:var(--ink-soft);font-weight:700;margin-bottom:10px}
+.mini-row{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:13.5px}
+.mini-row .rank{width:20px;font-family:var(--font-mono);font-weight:700;color:var(--gold);text-align:center}
+.mini-row .name{flex:1;font-weight:700}
+.mini-row .xp{font-family:var(--font-mono);font-size:12px;color:var(--ink-soft)}
+.pending-badge{background:var(--gold);color:var(--navy);padding:0 10px;border-radius:20px;font-size:10px;font-weight:700}
+
+.gate-path{display:flex;align-items:flex-end;gap:0;overflow-x:auto;padding:26px 4px 14px;position:relative}
+.gate-path::before{
+  content:'';position:absolute;right:38px;left:38px;bottom:38px;height:3px;
+  background:repeating-linear-gradient(to left,var(--line) 0 10px,transparent 10px 18px);
+  z-index:0;
+}
+.gate-stop{display:flex;flex-direction:column;align-items:center;gap:8px;flex:none;width:150px;position:relative;z-index:1;cursor:pointer;transition:.2s}
+.gate-stop:hover{transform:translateY(-3px)}
+.gate-stop .glabel{font-size:12.5px;font-weight:800;color:var(--navy);text-align:center}
+.gate-stop .gsub{font-size:10.5px;color:var(--ink-soft);text-align:center}
+.gate-stop .gstate{
+  font-family:var(--font-mono);font-size:10px;font-weight:700;padding:2px 9px;border-radius:100px;
+  margin-top:2px;
+}
+.gstate.locked{background:#e7e0cc;color:var(--ink-soft)}
+.gstate.progress{background:rgba(217,164,65,.18);color:#8a6416}
+.gstate.passed{background:rgba(47,111,98,.15);color:var(--jade)}
+
+.dash-grid{display:grid;grid-template-columns:2fr 1fr;gap:22px;margin-top:8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-sm)}
+.stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat-card{padding:18px 16px;background:var(--card);border:1px solid var(--line);border-radius:14px}
+.stat-card .k{font-size:11.5px;color:var(--ink-soft);font-weight:700;display:flex;align-items:center;gap:6px}
+.stat-card .v{font-family:var(--font-mono);font-size:25px;font-weight:700;color:var(--navy);margin-top:6px}
+.stat-card.accent .v{color:var(--red)}
+.section-head{display:flex;align-items:baseline;justify-content:space-between;margin:26px 0 12px}
+.section-head h2{font-size:18px;font-weight:800;color:var(--navy)}
+.section-head .link{font-size:12.5px;font-weight:700;color:var(--red);cursor:pointer}
+.side-card{padding:20px}
+.side-card h3{font-size:14.5px;font-weight:800;color:var(--navy);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.lb-row{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--line)}
+.lb-row:last-child{border:none}
+.lb-row .rank{width:22px;font-family:var(--font-mono);font-weight:700;color:var(--ink-soft);text-align:center;font-size:13px}
+.lb-row.me{background:rgba(217,164,65,.12);margin:0 -12px;padding:9px 12px;border-radius:10px}
+.lb-row .name{flex:1;font-weight:700;font-size:13.5px}
+.lb-row .lvl{font-size:10.5px;color:var(--ink-soft);font-family:var(--font-mono)}
+.lb-row .xp{font-family:var(--font-mono);font-weight:700;font-size:12.5px;color:var(--jade)}
+.badge-top1{color:var(--gold)}
+
+.lesson-list{display:grid;gap:12px;margin-top:6px}
+.lesson-row{
+  display:flex;align-items:center;gap:14px;padding:16px 18px;background:var(--card);
+  border:1px solid var(--line);border-radius:14px;transition:.15s;
+}
+.lesson-row.locked{opacity:.5;filter:grayscale(.4)}
+.lesson-row:not(.locked):hover{border-color:var(--navy);transform:translateX(-2px)}
+.lesson-num{
+  width:36px;height:36px;border-radius:10px;background:var(--navy);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;flex:none;
+}
+.lesson-row.done .lesson-num{background:var(--jade)}
+.lesson-title{flex:1}
+.lesson-title b{font-size:14.5px;display:block}
+.lesson-title span{font-size:12px;color:var(--ink-soft)}
+.chev{font-size:18px;color:var(--ink-soft)}
+.level-quiz-cta{
+  margin-top:20px;padding:20px;border-radius:14px;background:var(--navy);color:#fff;
+  display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+}
+.level-quiz-cta h4{font-size:15.5px;font-weight:800}
+.level-quiz-cta p{font-size:12.5px;opacity:.75;margin-top:3px}
+.btn-light{background:#fff;color:var(--navy);padding:11px 20px;border-radius:10px;font-weight:800;font-size:13.5px}
+.btn-light:disabled{opacity:.4;cursor:not-allowed}
+
+.lesson-hero{display:flex;gap:22px;align-items:center;padding:24px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:22px}
+.lesson-hero .ill{width:96px;height:96px;flex:none}
+.lesson-hero h2{font-size:21px;font-weight:800;color:var(--navy)}
+.lesson-hero p{font-size:13.5px;color:var(--ink-soft);margin-top:5px}
+.vocab-table{width:100%;border-collapse:collapse;margin:10px 0 4px}
+.vocab-table th{font-size:11px;color:var(--ink-soft);text-align:right;padding:8px 10px;border-bottom:2px solid var(--line)}
+.vocab-table td{padding:11px 10px;border-bottom:1px solid var(--line);font-size:14px}
+.vocab-table td.ko{font-family:var(--font-kr);font-weight:700;color:var(--navy);font-size:16px}
+.vocab-table td.rom{font-family:var(--font-mono);font-size:12px;color:var(--ink-soft)}
+.content-block{padding:22px 24px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:18px}
+.content-block h4{font-size:14px;font-weight:800;color:var(--red);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sentence-line{padding:12px 14px;background:var(--bg-soft);border-radius:10px;margin-bottom:8px}
+.sentence-line .sko{font-family:var(--font-kr);font-weight:700;font-size:15.5px;color:var(--navy)}
+.sentence-line .sar{font-size:13px;color:var(--ink-soft);margin-top:4px}
+.note-box{background:rgba(217,164,65,.12);border-right:3px solid var(--gold);padding:14px 16px;border-radius:8px;font-size:13.5px;color:#6b4f14}
+.lesson-actions{display:flex;gap:12px;margin-top:8px}
+.btn-outline{padding:13px 22px;border-radius:12px;border:1.5px solid var(--navy);color:var(--navy);font-weight:800;font-size:14px;background:transparent}
+.btn-outline:hover{background:var(--navy);color:#fff}
+.btn-outline:disabled{opacity:.4;cursor:not-allowed}
+.btn-danger{padding:8px 16px;border-radius:10px;border:1.5px solid var(--red);color:var(--red);font-weight:700;font-size:12px;background:transparent}
+.btn-danger:hover{background:var(--red);color:#fff}
+
+.quiz-progress{height:6px;background:var(--line);border-radius:100px;overflow:hidden;margin-bottom:26px}
+.quiz-progress i{display:block;height:100%;background:var(--gold);transition:.3s}
+.q-card{padding:26px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius)}
+.q-eyebrow{font-family:var(--font-mono);font-size:11.5px;color:var(--ink-soft);margin-bottom:10px}
+.q-text{font-size:18px;font-weight:800;color:var(--navy);margin-bottom:22px}
+.q-options{display:grid;gap:10px}
+.q-opt{
+  padding:14px 16px;border:1.5px solid var(--line);border-radius:12px;text-align:right;font-size:14.5px;font-weight:600;
+  transition:.15s;
+}
+.q-opt.kr{font-size:16px}
+.q-opt:hover{border-color:var(--navy)}
+.q-opt.selected{border-color:var(--navy);background:rgba(29,41,81,.06)}
+.q-opt.correct{border-color:var(--jade);background:rgba(47,111,98,.14)}
+.q-opt.wrong{border-color:var(--red);background:rgba(193,68,60,.12)}
+.quiz-nav{display:flex;justify-content:space-between;margin-top:20px}
+.quiz-result{text-align:center;padding:44px 30px}
+.quiz-result .score-ring{font-family:var(--font-mono);font-size:46px;font-weight:700;color:var(--navy)}
+.quiz-result h3{font-size:22px;font-weight:900;margin:14px 0 6px}
+.quiz-result.pass h3{color:var(--jade)}
+.quiz-result.fail h3{color:var(--red)}
+.quiz-result p{color:var(--ink-soft);font-size:14px;max-width:42ch;margin:0 auto}
+
+.lb-table{width:100%;border-collapse:collapse}
+.lb-table th{text-align:right;font-size:11.5px;color:var(--ink-soft);padding:10px 12px;border-bottom:2px solid var(--line)}
+.lb-table td{padding:13px 12px;border-bottom:1px solid var(--line);font-size:14px}
+.lb-table tr.me td{background:rgba(217,164,65,.12)}
+.rank-badge{font-family:var(--font-mono);font-weight:700}
+.rank-badge.g1{color:var(--gold)}.rank-badge.g2{color:#8b96ab}.rank-badge.g3{color:#b07a4e}
+
+.admin-users-list{display:grid;gap:10px;margin-top:10px}
+.admin-user-row{
+  display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;
+}
+.admin-user-row .info{flex:1}
+.admin-user-row .info b{font-size:14px}
+.admin-user-row .info span{font-size:11.5px;color:var(--ink-soft);display:block}
+.admin-user-row .status-badge{
+  font-size:10.5px;font-weight:700;padding:3px 12px;border-radius:100px;
+}
+.status-badge.approved{background:rgba(47,111,98,.15);color:var(--jade)}
+.status-badge.pending{background:rgba(217,164,65,.18);color:#8a6416}
+.status-badge.rejected{background:rgba(193,68,60,.12);color:var(--red)}
+
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;
+  background:var(--navy-deep);color:#fff;padding:13px 22px;border-radius:100px;font-size:13.5px;font-weight:700;
+  box-shadow:var(--shadow);transition:.25s;z-index:100;pointer-events:none;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+#print-book{display:none}
+@media print{
+  #app-shell,#toast{display:none !important}
+  #print-book{display:block !important}
+  body{background:#fff}
+  .pb-page{page-break-after:always;padding:30px}
+  .pb-page:last-child{page-break-after:auto}
+  .pb-cover{text-align:center;padding-top:120px}
+  .pb-cover h1{font-size:40px;color:var(--navy);font-weight:900}
+  .pb-cover .ill{width:160px;height:160px;margin:30px auto}
+}
+
+@media (max-width:840px){
+  .auth-wrap{grid-template-columns:1fr;gap:26px;padding:20px 0}
+  .dash-grid{grid-template-columns:1fr}
+  .stat-cards{grid-template-columns:repeat(2,1fr)}
+  .nav-tabs{display:none}
+}
+@media (max-width:520px){
+  .lesson-hero{flex-direction:column;text-align:center}
+  .topbar{flex-wrap:wrap;gap:12px}
+}
+.mobile-nav{display:none}
+@media (max-width:840px){
+  .mobile-nav{
+    display:flex;position:fixed;bottom:0;right:0;left:0;z-index:50;
+    background:var(--card);border-top:1px solid var(--line);
+    box-shadow:0 -6px 20px -10px rgba(18,25,47,.2);padding:8px 6px calc(8px + env(safe-area-inset-bottom));
+  }
+  .mobile-nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px;border-radius:12px;font-size:10.5px;font-weight:700;color:var(--ink-soft)}
+  .mobile-nav button.active{color:var(--navy)}
+  .mobile-nav svg{width:20px;height:20px}
+  #app-shell{padding-bottom:90px}
+}
+.level-card{
+  display:flex;align-items:center;gap:18px;padding:20px;background:var(--card);
+  border:1px solid var(--line);border-radius:16px;transition:.15s;
+}
+.level-card.clickable:hover{border-color:var(--navy);transform:translateX(-3px);box-shadow:var(--shadow-sm)}
+.level-card.locked{opacity:.55;filter:grayscale(.35)}
+.level-card .ico{width:66px;height:66px;flex:none}
+.level-card .info{flex:1}
+.level-card .info b{font-size:16px;color:var(--navy)}
+.level-card .info p{font-size:12.5px;color:var(--ink-soft);margin-top:3px}
+.status-chip{
+  font-family:var(--font-mono);font-size:11px;font-weight:700;padding:5px 12px;border-radius:100px;flex:none;
+}
+.status-chip.locked{background:#e7e0cc;color:var(--ink-soft)}
+.status-chip.progress{background:rgba(217,164,65,.18);color:#8a6416}
+.status-chip.passed{background:rgba(47,111,98,.15);color:var(--jade)}
+.lock-msg{padding:40px;text-align:center;color:var(--ink-soft)}
+.lock-msg svg{width:56px;height:56px;margin:0 auto 14px}
+.pb-page .pb-ill{width:70px;height:70px;margin-bottom:14px}
+.pb-page h2{font-size:22px;color:var(--navy);font-weight:800;margin-bottom:4px}
+.pb-page h3{font-size:13px;color:var(--ink-soft);font-weight:600;margin-bottom:16px}
+.pb-page .pb-intro{font-size:13.5px;line-height:1.8;margin-bottom:14px}
+.pb-page table{width:100%;border-collapse:collapse;margin-bottom:10px}
+.pb-page th{font-size:10.5px;text-align:right;padding:6px 8px;border-bottom:2px solid var(--line);color:var(--ink-soft)}
+.pb-page td{padding:8px;border-bottom:1px solid var(--line);font-size:12.5px}
+.pb-page td.ko{font-family:var(--font-kr);font-weight:700;color:var(--navy)}
+.pb-page .pb-sentence{padding:8px 10px;background:var(--bg-soft);border-radius:6px;margin-bottom:6px;font-size:12.5px}
+.pb-page .pb-note{font-size:11.5px;background:rgba(217,164,65,.12);border-right:3px solid var(--gold);padding:8px 12px;margin-top:8px}
+</style>
+</head>
+<body>
+
+<div id="app-shell">
+
+  <header class="topbar" id="topbar" style="display:none">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 48 48" id="brand-gate"></svg>
+      <div class="brand-text"><b>한글이랑</b><span>مع الهانغل · تعلّم الكورية</span></div>
+    </div>
+    <nav class="nav-tabs" id="nav-tabs">
+      <button data-go="dashboard" class="active">الرئيسية</button>
+      <button data-go="levels">المستويات</button>
+      <button data-go="leaderboard">لوحة المتصدرين</button>
+      <button data-go="admin" id="admin-tab-btn" style="display:none">👤 إدارة المستخدمين</button>
+    </nav>
+    <div class="user-pill"><span class="dot"></span><span id="user-pill-name">—</span><span class="admin-badge" id="admin-badge" style="display:none">مشرف</span></div>
+  </header>
+
+  <section class="screen" id="screen-auth">
+    <div class="auth-wrap">
+      <div class="auth-hero">
+        <h1>ابدئي رحلتك مع<br><span class="kr-accent">한글</span> من الصفر</h1>
+        <p>منصّة تعليمية متدرّجة لتعلّم اللغة الكورية باللغة العربية — دروس، مفردات، محادثات، واختبارات تفتح لك كل مستوى جديد بعد إتقان الذي قبله.</p>
+        <div class="stat-row">
+          <div><b>5</b><span>مستويات</span></div>
+          <div><b>20</b><span>درساً</span></div>
+          <div><b>٪70</b><span>نسبة النجاح المطلوبة</span></div>
+        </div>
+      </div>
+      <div class="auth-card">
+        <h2>تسجيل الدخول</h2>
+        <p class="sub">أدخلي اسم المستخدم ورقم الهاتف ورمز المرور لتسجيل الدخول</p>
+        <div class="field">
+          <label for="login-username-input">اسم المستخدم</label>
+          <input id="login-username-input" type="text" placeholder="مثال: ورد" maxlength="24" autocomplete="off">
+        </div>
+        <div class="field" style="margin-top:12px">
+          <label for="login-phone-input">رقم الهاتف (للتحقق من هويتك)</label>
+          <input id="login-phone-input" type="text" placeholder="مثال: 98765432" maxlength="15" autocomplete="off">
+        </div>
+        <div class="field" style="margin-top:12px">
+          <label for="login-password-input">رمز المرور</label>
+          <input id="login-password-input" type="password" placeholder="••••••••" maxlength="20" autocomplete="off">
+        </div>
+        <button class="btn-primary" id="btn-login">تسجيل الدخول ←</button>
+        <p class="auth-note" id="auth-error" style="color:var(--red);display:none"></p>
+        <div style="margin-top:18px;border-top:1px dashed var(--line);padding-top:14px">
+          <p style="font-size:12.5px;color:var(--ink-soft)">🔹 الحساب الجديد بحاجة موافقة المشرف "ورد"</p>
+        </div>
+        <div class="mini-board">
+          <h3>المتصدّرون حالياً</h3>
+          <div id="mini-leaderboard"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen hidden" id="screen-dashboard">
+    <div class="stat-cards">
+      <div class="stat-card"><div class="k">المستوى الحالي</div><div class="v" id="stat-level">1</div></div>
+      <div class="stat-card accent"><div class="k">نقاط الخبرة (XP)</div><div class="v" id="stat-xp">0</div></div>
+      <div class="stat-card"><div class="k">دروس مكتملة</div><div class="v" id="stat-lessons">0</div></div>
+      <div class="stat-card"><div class="k">متوسط الاختبارات</div><div class="v" id="stat-avg">—</div></div>
+    </div>
+
+    <div class="card" style="padding:22px 20px 8px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+        <div>
+          <h2 style="font-size:16.5px;font-weight:800;color:var(--navy)">طريق البوابات الخمس</h2>
+          <p style="font-size:12.5px;color:var(--ink-soft);margin-top:2px">كل بوابة تمثّل مستوى — اجتازي اختبارها لتُفتح البوابة التالية</p>
+        </div>
+        <div id="proficiency-tag" style="font-family:var(--font-mono);font-size:11.5px;font-weight:700;background:var(--bg-soft);padding:6px 14px;border-radius:100px;color:var(--navy)"></div>
+      </div>
+      <div class="gate-path" id="gate-path"></div>
+    </div>
+
+    <div class="dash-grid">
+      <div>
+        <div class="section-head"><h2>تابعي من حيث توقّفتِ</h2><span class="link" data-go="levels">كل المستويات ←</span></div>
+        <div id="continue-lessons" class="lesson-list"></div>
+      </div>
+      <div class="card side-card">
+        <h3>🏆 لوحة المتصدّرين</h3>
+        <div id="dash-leaderboard"></div>
+        <button class="btn-outline" style="width:100%;margin-top:16px;padding:10px" data-go="leaderboard">عرض الكل</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen hidden" id="screen-levels">
+    <div class="section-head">
+      <h2>كل المستويات</h2>
+      <button class="btn-outline" style="padding:9px 18px;font-size:12.5px" id="btn-export-all">📖 تصدير الكتاب الكامل</button>
+    </div>
+    <div id="levels-list" style="display:grid;gap:16px"></div>
+  </section>
+
+  <section class="screen hidden" id="screen-level">
+    <button class="btn-outline" style="padding:8px 16px;font-size:12.5px;margin-bottom:16px" data-go="levels">→ رجوع للمستويات</button>
+    <div class="lesson-hero">
+      <svg class="ill" id="level-illustration"></svg>
+      <div>
+        <h2 id="level-title-full"></h2>
+        <p id="level-subtitle-full"></p>
+      </div>
+    </div>
+    <div class="lesson-list" id="level-lessons"></div>
+    <div class="level-quiz-cta">
+      <div>
+        <h4>اختبار المستوى</h4>
+        <p id="level-quiz-hint">أكملي كل الدروس أولاً لفتح الاختبار</p>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn-light" id="btn-export-level">📖 تصدير كتاب الدرس</button>
+        <button class="btn-light" id="btn-open-quiz" disabled>ابدئي الاختبار</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen hidden" id="screen-lesson">
+    <button class="btn-outline" style="padding:8px 16px;font-size:12.5px;margin-bottom:16px" id="btn-back-to-level">→ رجوع للمستوى</button>
+    <div class="lesson-hero">
+      <svg class="ill" id="lesson-illustration"></svg>
+      <div>
+        <h2 id="lesson-title"></h2>
+        <p id="lesson-subtitle"></p>
+      </div>
+    </div>
+    <div id="lesson-body"></div>
+    <div class="lesson-actions">
+      <button class="btn-primary" style="width:auto;padding:14px 26px" id="btn-complete-lesson">✓ أكملتُ هذا الدرس</button>
+      <button class="btn-outline" id="btn-next-lesson">الدرس التالي ←</button>
+    </div>
+  </section>
+
+  <section class="screen hidden" id="screen-quiz">
+    <div class="quiz-progress"><i id="quiz-progress-bar" style="width:0%"></i></div>
+    <div id="quiz-body"></div>
+  </section>
+
+  <section class="screen hidden" id="screen-leaderboard">
+    <div class="section-head"><h2>🏆 لوحة المتصدّرين الكاملة</h2></div>
+    <div class="card" style="padding:8px 20px">
+      <table class="lb-table">
+        <thead><tr><th>#</th><th>المستخدم</th><th>المستوى</th><th>دروس</th><th>متوسط النتائج</th><th>XP</th></tr></thead>
+        <tbody id="leaderboard-full-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="screen hidden" id="screen-admin">
+    <div class="section-head"><h2>👤 إدارة المستخدمين — المشرفة ورد</h2></div>
+    <div class="card" style="padding:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <div>
+          <p style="font-size:13px;color:var(--ink-soft)">هنا يمكنك الموافقة على المستخدمين الجدد أو حذف حساباتهم</p>
+        </div>
+        <div style="display:flex;gap:10px">
+          <span id="admin-stats" style="font-size:12px;color:var(--ink-soft)"></span>
+        </div>
+      </div>
+      <div id="admin-users-container" style="margin-top:16px"></div>
+    </div>
+  </section>
+
+</div>
+
+<nav class="mobile-nav" id="mobile-nav" style="display:none">
+  <button data-go="dashboard" class="active">الرئيسية</button>
+  <button data-go="levels">المستويات</button>
+  <button data-go="leaderboard">المتصدّرون</button>
+  <button data-go="admin" id="mobile-admin-btn" style="display:none">الإدارة</button>
+</nav>
+
+<div id="toast"></div>
+<div id="print-book"></div>
+
+<script>
+/* ============================================================
+   한글이랑 — منصّة تعلّم اللغة الكورية
+   نظام كامل يعمل بـ localStorage (بدون Supabase)
+   ============================================================ */
+
+const PASS_THRESHOLD = 70;
+const ADMIN_USERNAME = "ورد";
+const ADMIN_PASSWORD = "ward123";
+
+// ---------- بيانات المستويات والدروس ----------
+const LEVELS = [
+  {
+    id: 1,
+    title: "الأبجدية الكورية",
+    subtitle: "Hangeul · الحروف والأصوات",
+    icon: "alphabet",
+    lessons: [
+      {
+        id: "1-1", title: "الحروف الساكنة الأساسية", subtitle: "14 حرفاً ساكناً",
+        intro: "الهانغل (한글) هو نظام الكتابة الكوري، اخترعه الملك سيجونغ الكبير عام 1443م ليكون سهل التعلّم. لنبدأ بالحروف الساكنة الأربعة عشر الأساسية.",
+        vocab: [
+          ["ㄱ","g / k","قريب من الكاف الخفيفة"],["ㄴ","n","صوت النون"],
+          ["ㄷ","d / t","قريب من الدال"],["ㄹ","r / l","مزيج بين الراء واللام"],
+          ["ㅁ","m","صوت الميم"],["ㅂ","b / p","قريب من الباء"],
+          ["ㅅ","s","صوت السين"],["ㅇ","ng / صامت","بلا صوت في أول المقطع، و«نج» في آخره"],
+          ["ㅈ","j","قريب من الجيم المصرية"],["ㅊ","ch","صوت التش"],
+          ["ㅋ","k","كاف مفخّمة بنفَس قوي"],["ㅌ","t","تاء مفخّمة"],
+          ["ㅍ","p","باء مفخّمة"],["ㅎ","h","صوت الهاء"]
+        ],
+        note: "كل حرف كوري له اسم يبدأ وينتهي بصوته غالباً، مثل ㄱ الذي يُسمّى «기역 giyeok»."
+      },
+      {
+        id: "1-2", title: "الحروف المتحركة الأساسية", subtitle: "10 حروف متحركة",
+        intro: "الحروف المتحركة في الهانغل تُبنى من خطوط أفقية وعمودية بسيطة. الخط القصير الإضافي يحوّل الصوت من «بسيط» إلى صوت يبدأ بـ«ي».",
+        vocab: [
+          ["ㅏ","a","كالألف المفتوحة"],["ㅑ","ya","ياء + ألف"],
+          ["ㅓ","eo","صوت خلفي مفتوح، بلا مقابل دقيق بالعربية"],["ㅕ","yeo","ياء + eo"],
+          ["ㅗ","o","كالواو المفتوحة"],["ㅛ","yo","ياء + o"],
+          ["ㅜ","u","كالواو المضمومة"],["ㅠ","yu","ياء + u"],
+          ["ㅡ","eu","صوت مغلق مسطّح، بلا مقابل دقيق بالعربية"],["ㅣ","i","كالياء المكسورة"]
+        ],
+        note: "احفظي هذه العشرة جيداً — كل الحروف المتحركة الأخرى (المركّبة) تُبنى منها."
+      },
+      {
+        id: "1-3", title: "تركيب المقاطع", subtitle: "كيف تُبنى الكلمات الكورية",
+        intro: "كل مقطع كوري = صامت أول + صائت (+ صامت أخير اختياري)، تُكتب مجتمعة داخل مربّع افتراضي واحد.",
+        vocab: [
+          ["가","ga","ㄱ + ㅏ"],["한","han","ㅎ + ㅏ + ㄴ"],
+          ["물","mul","ㅁ + ㅜ + ㄹ (تعني: ماء)"],["상","sang","ㅅ + ㅏ + ㅇ"],
+          ["나","na","ㄴ + ㅏ"],["국","guk","ㄱ + ㅜ + ㄱ"]
+        ],
+        note: "لاحظي أن نفس الحرف ㄱ يُنطق بشكل مختلف قليلاً في بداية المقطع (g) وفي نهايته (k) — هذا طبيعي في الكورية."
+      },
+      {
+        id: "1-4", title: "الحروف المضاعفة والمركّبة", subtitle: "أصوات مشدّدة وثنائية",
+        intro: "توجد 5 حروف ساكنة مضاعفة (تُنطق بشدّة وتوتر في الحلق دون نفَس)، و9 حروف متحركة مركّبة (diphthongs) تنتج من دمج حرفين متحركين.",
+        vocab: [
+          ["ㄲ","kk","ساكن مضاعف مشدّد"],["ㄸ","tt","ساكن مضاعف مشدّد"],
+          ["ㅃ","pp","ساكن مضاعف مشدّد"],["ㅆ","ss","ساكن مضاعف مشدّد"],
+          ["ㅉ","jj","ساكن مضاعف مشدّد"],["ㅐ","ae","بين الفتحة الممالة والياء الخفيفة"],
+          ["ㅔ","e","قريب من الفتحة الممالة"],["ㅘ","wa","و + a"],["ㅝ","wo","و + eo"]
+        ],
+        note: "حتى الكوريون أنفسهم قلّما يُميّزون سمعياً بين ㅐ و ㅔ في الكلام اليومي الحديث."
+      }
+    ],
+    quiz: {
+      questions: [
+        { q:"ما الصوت الذي يمثّله الحرف «ㄱ»؟", options:["g / k","n","m","s"], correct:0 },
+        { q:"أي حرف يمثّل صوت «ن» (n)؟", options:["ㄹ","ㄴ","ㅁ","ㅇ"], correct:1 },
+        { q:"الحرف «ㅏ» يمثّل الصوت:", options:["o","u","a","i"], correct:2 },
+        { q:"ما ناتج دمج ㅎ + ㅏ + ㄴ؟", options:["하","항","한","흔"], correct:2 },
+        { q:"أي ممّا يلي حرف متحرك مركّب (diphthong)؟", options:["ㄲ","ㅌ","ㅅ","ㅘ"], correct:3 },
+        { q:"كم عدد الحروف الساكنة الأساسية في الهانغل؟", options:["10","14","19","21"], correct:1 }
+      ]
+    }
+  },
+  {
+    id: 2,
+    title: "التحيات والعبارات الأساسية",
+    subtitle:"محادثة قصيرة للتعارف",
+    icon:"greeting",
+    lessons:[
+      {
+        id:"2-1", title:"التحيات", subtitle:"كيف تُحيّين وتودّعين",
+        intro:"العبارات التالية ستستخدمينها في أي موقف تقريباً — احفظيها جيداً فهي حجر الأساس.",
+        sentences:[
+          {ko:"안녕하세요",ar:"مرحباً (تحية مهذّبة عامة، تُقال في أي وقت)"},
+          {ko:"안녕히 가세요",ar:"مع السلامة (تُقال لِمَن يغادر وأنتِ باقية)"},
+          {ko:"안녕히 계세요",ar:"مع السلامة (تُقال لِمَن يبقى وأنتِ من تغادرين)"},
+          {ko:"감사합니다",ar:"شكراً لك (صيغة رسمية مهذّبة)"},
+          {ko:"고맙습니다",ar:"شكراً لك (بديل شائع بنفس المعنى)"},
+          {ko:"죄송합니다",ar:"أنا آسف/آسفة (رسمي)"},
+          {ko:"괜찮아요",ar:"لا بأس / أنا بخير"}
+        ],
+        note:"لاحظي أن أغلب هذه العبارات تنتهي بـ«요 -yo» أو «다 -da» وهي علامة الأدب في الكورية."
+      },
+      {
+        id:"2-2", title:"تقديم النفس", subtitle:"التعارف بالكورية",
+        intro:"إليكِ الجمل الأساسية اللازمة لأي تعارف أول.",
+        sentences:[
+          {ko:"제 이름은 ○○입니다",ar:"اسمي هو ○○"},
+          {ko:"저는 ○○예요",ar:"أنا ○○ (أسلوب مهذّب أقل رسمية)"},
+          {ko:"만나서 반갑습니다",ar:"سعيد/سعيدة بلقائك"},
+          {ko:"어디에서 왔어요؟",ar:"من أين أتيتَ/أتيتِ؟"},
+          {ko:"오만에서 왔어요",ar:"أتيتُ من عُمان"}
+        ],
+        note:"استبدلي ○○ باسمكِ الفعلي عند الاستخدام — جرّبي ذلك بصوت مرتفع الآن!"
+      },
+      {
+        id:"2-3", title:"الأرقام الكورية", subtitle:"نظامان مختلفان للعدّ",
+        intro:"تمتلك الكورية نظامين للأرقام: الأرقام الكورية الأصلية (تُستخدم للعدّ والعمر)، والأرقام الصينية-الكورية (تُستخدم للتواريخ والنقود والهواتف).",
+        vocab:[
+          ["하나 / 일","hana / il","١ (أصلي / صيني-كوري)"],
+          ["둘 / 이","dul / i","٢"],["셋 / 삼","set / sam","٣"],
+          ["넷 / 사","net / sa","٤"],["다섯 / 오","daseot / o","٥"],
+          ["여섯 / 육","yeoseot / yuk","٦"],["일곱 / 칠","ilgop / chil","٧"],
+          ["여덟 / 팔","yeodeol / pal","٨"],["아홉 / 구","ahop / gu","٩"],
+          ["열 / 십","yeol / sip","١٠"]
+        ],
+        note:"تُستخدم الأرقام الأصلية مع «كلمات العدّ» مثل الأعمار وعدد الأشخاص."
+      },
+      {
+        id:"2-4", title:"كلمات يومية شائعة", subtitle:"مفردات لا غنى عنها",
+        intro:"مفردات بسيطة ستتكرر معكِ في كل درس تقريباً.",
+        vocab:[
+          ["네","ne","نعم"],["아니요","aniyo","لا"],
+          ["물","mul","ماء"],["밥","bap","أرز / طعام"],
+          ["친구","chingu","صديق"],["학교","hakgyo","مدرسة"],
+          ["집","jip","منزل"],["사랑","sarang","حب"]
+        ]
+      }
+    ],
+    quiz:{
+      questions:[
+        { q:"«감사합니다» تعني:", options:["آسف","شكراً","مرحباً","وداعاً"], correct:1 },
+        { q:"كيف تقولين «مرحباً» بأدب؟", options:["미안해요","감사","안녕","안녕하세요"], correct:3 },
+        { q:"الرقم الكوري الأصلي «셋» يعني:", options:["1","3","5","7"], correct:1 },
+        { q:"«네» تعني:", options:["لا","ربما","نعم","لماذا"], correct:2 },
+        { q:"لتقديم نفسكِ تقولين:", options:["맛있어요","제 이름은 ○○입니다","어디예요؟","감사합니다"], correct:1 },
+        { q:"«물» تعني:", options:["نار","طعام","هواء","ماء"], correct:3 }
+      ]
+    }
+  },
+  {
+    id:3,
+    title:"القواعد الأساسية",
+    subtitle:"بناء الجملة البسيطة",
+    icon:"grammar",
+    lessons:[
+      {
+        id:"3-1", title:"الضمائر وأدوات الجر", subtitle:"من الفاعل؟ ومن الموضوع؟",
+        intro:"الجملة الكورية البسيطة تحتاج ضميراً وأداة تتبعه مباشرة لتحديد دوره في الجملة.",
+        vocab:[
+          ["저 / 나","jeo / na","أنا (رسمي / غير رسمي)"],
+          ["당신 / 너","dangsin / neo","أنتَ (رسمي نادر / غير رسمي)"],
+          ["그 사람","geu saram","ذلك الشخص (هو / هي)"],
+          ["은 / 는","eun / neun","أداة «الموضوع» — تُختار حسب آخر حرف بالكلمة"],
+          ["이 / 가","i / ga","أداة «الفاعل» — تُختار حسب آخر حرف بالكلمة"]
+        ],
+        sentences:[{ko:"저는 학생이에요",ar:"أنا طالب/طالبة"}],
+        note:"القاعدة: إذا انتهت الكلمة بحرف متحرك استُخدم 는/가، وإذا انتهت بحرف ساكن استُخدم 은/이."
+      },
+      {
+        id:"3-2", title:"صيغة المضارع المهذّبة", subtitle:"لاحقتان أساسيتان",
+        intro:"لتصريف أي فعل في المضارع المهذّب، أزيلي «다» من نهاية الفعل الأصلي وأضيفي إحدى هاتين اللاحقتين.",
+        vocab:[
+          ["-아요 / 어요","-ayo / eoyo","صيغة مهذّبة غير رسمية (الأكثر استخداماً يومياً)"],
+          ["-ㅂ니다 / 습니다","-mnida / seumnida","صيغة مهذّبة رسمية (أخبار، عمل، تقديم رسمي)"]
+        ],
+        sentences:[
+          {ko:"저는 매일 학교에 가요",ar:"أذهب إلى المدرسة كل يوم (غير رسمي مهذّب)"},
+          {ko:"저는 매일 학교에 갑니다",ar:"أذهب إلى المدرسة كل يوم (رسمي)"}
+        ]
+      },
+      {
+        id:"3-3", title:"النفي والسؤال", subtitle:"لا... / هل...؟",
+        intro:"طريقتان شائعتان للنفي، وطريقة لتكوين سؤال مهذّب.",
+        vocab:[
+          ["안 + الفعل","an + verb","نفي بسيط مباشر قبل الفعل"],
+          ["-지 않다","-ji anta","نفي أطول يُضاف بعد جذع الفعل"],
+          ["-까요؟","-kkayo؟","صيغة سؤال مهذّبة (هل...؟)"]
+        ],
+        sentences:[{ko:"비가 올까요?",ar:"هل ستمطر؟"}]
+      },
+      {
+        id:"3-4", title:"الإشارة والملكية", subtitle:"هذا / يوجد / لا يوجد",
+        intro:"أدوات إشارة بسيطة، وفعلا «الوجود» الأساسيان في الكورية.",
+        vocab:[
+          ["이것 / 그것 / 저것","igeot / geugeot / jeogeot","هذا (قريب) / ذلك (متوسط) / ذلك (بعيد)"],
+          ["있다","itda","يوجد / لديه"],["없다","eopda","لا يوجد / ليس لديه"]
+        ],
+        sentences:[{ko:"시간이 없어요",ar:"ليس لديّ وقت"}]
+      }
+    ],
+    quiz:{
+      questions:[
+        { q:"أداة الجر التي تتبع اسماً ينتهي بحرف متحرك (موضوع الجملة):", options:["은","는","을","이"], correct:1 },
+        { q:"صيغة السؤال المهذّبة تنتهي عادة بـ:", options:["-다","-까요؟","-고","-지만"], correct:1 },
+        { q:"«있어요» تعني:", options:["لا يوجد","يوجد / لديه","ذهب","أكل"], correct:1 },
+        { q:"لنفي فعل بأسلوب مهذّب بسيط، نضع قبل الفعل:", options:["안","-고","-지만","-을"], correct:0 },
+        { q:"«이것» تعني:", options:["ذلك البعيد","من","هذا القريب","متى"], correct:2 },
+        { q:"الصيغة الرسمية المهذّبة لفعل «يأكل» (먹다) هي:", options:["먹고","먹지","먹어","먹습니다"], correct:3 }
+      ]
+    }
+  },
+  {
+    id:4,
+    title:"المحادثة اليومية",
+    subtitle:"تسوّق، مطعم، اتجاهات، وقت",
+    icon:"conversation",
+    lessons:[
+      {
+        id:"4-1", title:"التسوّق", subtitle:"في المتجر",
+        intro:"عبارات ستحتاجينها عند الشراء في أي متجر أو سوق كوري.",
+        sentences:[
+          {ko:"이거 얼마예요؟",ar:"كم سعر هذا؟"},
+          {ko:"너무 비싸요",ar:"غالٍ جداً"},
+          {ko:"깎아 주세요",ar:"خفّض السعر من فضلك"},
+          {ko:"이거 주세요",ar:"أعطني هذا من فضلك"}
+        ]
+      },
+      {
+        id:"4-2", title:"الطلب في المطعم", subtitle:"أثناء تناول الطعام",
+        intro:"عبارات المطعم الأساسية من الطلب إلى الحساب.",
+        sentences:[
+          {ko:"메뉴 주세요",ar:"أعطني القائمة من فضلك"},
+          {ko:"이거 하나 주세요",ar:"واحدة من هذا من فضلك"},
+          {ko:"맛있어요",ar:"لذيذ"},
+          {ko:"계산해 주세요",ar:"الفاتورة من فضلك"}
+        ]
+      },
+      {
+        id:"4-3", title:"السؤال عن الاتجاهات", subtitle:"في الشارع",
+        intro:"كيف تسألين عن مكان ما وتفهمين الإجابة.",
+        sentences:[
+          {ko:"화장실이 어디예요؟",ar:"أين الحمّام؟"},
+          {ko:"오른쪽/왼쪽으로 가세요",ar:"اذهب يميناً / يساراً"},
+          {ko:"똑바로 가세요",ar:"اذهب مباشرة"},
+          {ko:"얼마나 걸려요؟",ar:"كم يستغرق ذلك؟"}
+        ]
+      },
+      {
+        id:"4-4", title:"الوقت والمواعيد", subtitle:"متى؟ وكم الساعة؟",
+        intro:"التعبير عن الوقت والمواعيد اليومية.",
+        sentences:[
+          {ko:"지금 몇 시예요؟",ar:"كم الساعة الآن؟"},
+          {ko:"세 시예요",ar:"الساعة الثالثة"},
+          {ko:"오늘 / 내일 / 어제",ar:"اليوم / غداً / أمس"},
+          {ko:"약속이 있어요",ar:"لديّ موعد"}
+        ]
+      }
+    ],
+    quiz:{
+      questions:[
+        { q:"«이거 얼마예요؟» تعني:", options:["أين هذا؟","كم سعر هذا؟","ما هذا؟","متى هذا؟"], correct:1 },
+        { q:"لطلب صنف طعام تقولين:", options:["~ 주세요","~ 어디예요","~ 감사합니다","~ 미안해요"], correct:0 },
+        { q:"«왼쪽» تعني:", options:["يمين","يسار","أمام","خلف"], correct:1 },
+        { q:"للسؤال عن الوقت تقولين:", options:["몇 시예요؟","뭐예요؟","어디예요؟","누구예요؟"], correct:0 },
+        { q:"«오른쪽으로 가세요» تعني:", options:["اذهب يساراً","توقّف هنا","اذهب يميناً","ارجع"], correct:2 },
+        { q:"«맛있어요» تعني:", options:["غالٍ","بارد","رخيص","لذيذ"], correct:3 }
+      ]
+    }
+  },
+  {
+    id:5,
+    title:"القراءة والكتابة المتقدّمة",
+    subtitle:"جمل مركّبة وأزمنة",
+    icon:"advanced",
+    lessons:[
+      {
+        id:"5-1", title:"قراءة نصوص قصيرة", subtitle:"فقرة يومية بسيطة",
+        intro:"اقرئي هذه الفقرة القصيرة عدّة مرات بصوت مرتفع قبل النظر إلى الترجمة.",
+        sentences:[
+          {ko:"저는 매일 아침 7시에 일어나요.",ar:"أستيقظ كل صباح في الساعة السابعة."},
+          {ko:"학교에 가서 친구들과 공부해요.",ar:"أذهب إلى المدرسة وأدرس مع أصدقائي."},
+          {ko:"저녁에는 집에서 밥을 먹고 쉬어요.",ar:"في المساء آكل في المنزل وأستريح."}
+        ]
+      },
+      {
+        id:"5-2", title:"كتابة جمل مركّبة", subtitle:"أدوات الربط",
+        intro:"ثلاث لواحق ربط أساسية تتيح لكِ تكوين جمل أطول وأكثر طبيعية.",
+        vocab:[
+          ["-고","-go","«و» — لربط فعلين متتاليين"],
+          ["-지만","-jiman","«لكن»"],
+          ["-아서 / 어서","-aseo / eoseo","«لأنّ... / فَـ...» (سبب ونتيجة)"]
+        ],
+        sentences:[{ko:"비가 와서 집에 있어요",ar:"بما أن المطر ينزل، أنا في المنزل"}]
+      },
+      {
+        id:"5-3", title:"الماضي والمستقبل", subtitle:"التعبير عن الزمن",
+        intro:"لاحقتان تحوّلان أي فعل إلى الماضي أو المستقبل.",
+        vocab:[
+          ["-았 / 었-","-at / eot-","لاحقة الماضي"],
+          ["-(으)ㄹ 거예요","-(eu)l geoyeyo","صيغة المستقبل («سوف»)"]
+        ],
+        sentences:[
+          {ko:"어제 영화를 봤어요",ar:"شاهدتُ فيلماً بالأمس (ماضٍ)"},
+          {ko:"내일 학교에 갈 거예요",ar:"سأذهب إلى المدرسة غداً (مستقبل)"}
+        ]
+      },
+      {
+        id:"5-4", title:"مراجعة شاملة", subtitle:"خطوات لما بعد هذا المستوى",
+        intro:"راجعي أهمّ ما تعلّمتِه، ثم استمرّي بهذه الخطوات: شاهدي محتوى كورياً بترجمة، كرّري المفردات يومياً على فترات متباعدة، وتحدّثي مع متحدّثين أصليين عبر الإنترنت.",
+        sentences:[
+          {ko:"안녕하세요, 제 이름은 ○○예요.",ar:"مرحباً، اسمي ○○."},
+          {ko:"한국어를 배우고 있어요.",ar:"أنا أتعلّم اللغة الكورية الآن."},
+          {ko:"더 열심히 공부할 거예요!",ar:"سأدرس بجدّ أكبر!"}
+        ]
+      }
+    ],
+    quiz:{
+      questions:[
+        { q:"أداة الربط التي تعني «لكن»:", options:["-고","-지만","-아서","-면"], correct:1 },
+        { q:"تتكوّن صيغة الماضي بإضافة:", options:["-을 거예요","-았/었-","-고 있어요","-지 않다"], correct:1 },
+        { q:"«갈 거예요» تعني:", options:["ذهبتُ","سأذهب","أذهب الآن","لن أذهب"], correct:1 },
+        { q:"أداة ربط «السبب والنتيجة»:", options:["-아서/어서","-지만","-고","-까요"], correct:0 },
+        { q:"«공부하고 있어요» تعني:", options:["درستُ","سأدرس","لا أدرس","أدرس الآن (مستمر)"], correct:3 },
+        { q:"وظيفة اللاحقة «-(으)ㄹ 거예요»:", options:["التعبير عن الماضي","النفي","التعبير عن المستقبل","السؤال"], correct:2 }
+      ]
+    }
+  }
+];
+
+// ---------- رسوم SVG التوضيحية ----------
+const DANCHEONG = ["#C1443C","#D9A441","#2F6F62","#1D2951"];
+function dancheongDots(y){ return DANCHEONG.map((c,i)=>`<circle cx="${30+i*13}" cy="${y}" r="3.4" fill="${c}"/>`).join(""); }
+function badgeWrap(inner){ return `<svg viewBox="0 0 100 100" width="100%" height="100%"><rect x="3" y="3" width="94" height="94" rx="24" fill="#FFFDF8" stroke="#E3D6B8" stroke-width="2"/>${dancheongDots(16)}${inner}</svg>`; }
+const ILLUSTRATIONS = {
+  alphabet: ()=> badgeWrap(`<text x="50" y="68" text-anchor="middle" font-family="'Noto Sans KR',sans-serif" font-weight="900" font-size="44" fill="#1D2951">한</text><circle cx="50" cy="65" r="34" fill="none" stroke="#D9A441" stroke-width="2" stroke-dasharray="3 5"/>`),
+  greeting: ()=> badgeWrap(`<path d="M22 40 q0 -14 16 -14 h24 q16 0 16 14 v10 q0 14 -16 14 h-20 l-10 10 v-10 h-4 q-6 0 -6 -8 z" fill="#2F6F62"/><text x="50" y="60" text-anchor="middle" font-family="'Noto Sans KR',sans-serif" font-weight="700" font-size="16" fill="#FFFDF8">안녕</text><path d="M34 24 q4 -6 8 0" stroke="#D9A441" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M58 24 q4 -6 8 0" stroke="#D9A441" stroke-width="2.5" fill="none" stroke-linecap="round"/>`),
+  grammar: ()=> badgeWrap(`<rect x="26" y="26" width="10" height="52" rx="3" fill="#1D2951"/><rect x="64" y="26" width="10" height="52" rx="3" fill="#1D2951"/><rect x="36" y="38" width="28" height="4" rx="2" fill="#C1443C"/><rect x="36" y="48" width="28" height="4" rx="2" fill="#D9A441"/><rect x="36" y="58" width="20" height="4" rx="2" fill="#2F6F62"/>`),
+  conversation: ()=> badgeWrap(`<path d="M18 36 q0 -10 12 -10 h20 q12 0 12 10 v6 q0 10 -12 10 h-16 l-8 8 v-8 q-8 0 -8 -8 z" fill="#1D2951"/><path d="M40 56 q0 -10 12 -10 h18 q12 0 12 10 v6 q0 10 -12 10 h-4 v8 l-9 -8 h-5 q-12 0 -12 -10 z" fill="none" stroke="#C1443C" stroke-width="2.5"/>`),
+  advanced: ()=> badgeWrap(`<path d="M50 30 q-14 -8 -28 -3 v42 q14 -5 28 3 z" fill="#1D2951"/><path d="M50 30 q14 -8 28 -3 v42 q-14 -5 -28 3 z" fill="#2F6F62"/><path d="M50 30 v42" stroke="#FFFDF8" stroke-width="1.5"/><path d="M74 34 l4 -8 4 8 -4 -3 z" fill="#D9A441"/>`)
+};
+
+function mountIllustration(elId, type){ const el=document.getElementById(elId); if(!el)return; el.outerHTML=ILLUSTRATIONS[type]().replace('<svg ', `<svg id="${elId}" `); }
+
+function gateSVG(state){ const pillar=state==='locked'?'#C9C2AC':'#1D2951'; const roof=state==='locked'?'#D8D0B8':(state==='progress'?'#8a7a52':'#1D2951'); const stripes=state==='passed'?DANCHEONG.map((c,i)=>`<rect x="${20+i*15}" y="34" width="11" height="6" fill="${c}"/>`).join(""):`<rect x="16" y="34" width="68" height="6" fill="${state==='progress'?'#D9A441':'#C9C2AC'}"/>`; const lock=state==='locked'?`<circle cx="50" cy="76" r="9" fill="none" stroke="#8f8467" stroke-width="3"/><rect x="43" y="80" width="14" height="12" rx="2" fill="#8f8467"/>`:''; const badge=state==='passed'?`<path d="M50 4 l3.4 7 7.6 1 -5.5 5.4 1.3 7.6 -6.8 -3.6 -6.8 3.6 1.3 -7.6 -5.5 -5.4 7.6 -1 z" fill="#D9A441"/>`:''; return `<svg viewBox="0 0 100 120" width="100%" height="100%">${badge}<path d="M8 40 L50 16 L92 40 Z" fill="${roof}"/>${stripes}<rect x="20" y="44" width="11" height="60" rx="2" fill="${pillar}"/><rect x="69" y="44" width="11" height="60" rx="2" fill="${pillar}"/><rect x="14" y="104" width="72" height="7" rx="2" fill="${pillar}"/><line x1="50" y1="50" x2="50" y2="100" stroke="${state==='locked'?'#C9C2AC':'#E3D6B8'}" stroke-width="2" stroke-dasharray="4 4"/>${lock}</svg>`; }
+
+// ---------- الحالة العامة ----------
+const STATE = {
+  user: null,
+  stats: null,
+  progress: {},
+  currentLevelId: null,
+  currentLessonIdx: 0,
+  quiz: null,
+  isAdmin: false,
+  allUsers: []
+};
+
+function toast(msg, ms=2600){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._timer); t._timer=setTimeout(()=>t.classList.remove('show'),ms); }
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function totalLessonCount(){ return LEVELS.reduce((s,l)=>s+l.lessons.length,0); }
+
+// ---------- نظام التخزين المحلي ----------
+function getDB(){
+  let db = localStorage.getItem('hangeul_db');
+  if(!db){
+    const initial = { users: [], stats: [], progress: [], quizAttempts: [] };
+    localStorage.setItem('hangeul_db', JSON.stringify(initial));
+    return initial;
+  }
+  return JSON.parse(db);
+}
+
+function saveDB(db){
+  localStorage.setItem('hangeul_db', JSON.stringify(db));
+}
+
+function getDeviceId(){
+  let id = localStorage.getItem('hi_device_id');
+  if(!id){
+    id = 'dev_' + Math.random().toString(36).substring(2,10) + '_' + Date.now().toString(36);
+    localStorage.setItem('hi_device_id', id);
+  }
+  return id;
+}
+
+// ---------- دوال المستخدمين ----------
+function findUserByUsername(username){
+  const db = getDB();
+  return db.users.find(u => u.username === username);
+}
+
+function findUserById(id){
+  const db = getDB();
+  return db.users.find(u => u.id === id);
+}
+
+function createUser(username, phone, password){
+  const db = getDB();
+  if(db.users.find(u => u.username === username)) throw new Error('اسم المستخدم موجود بالفعل');
+  const newUser = {
+    id: 'u_' + Date.now() + '_' + Math.random().toString(36).substring(2,6),
+    username,
+    phone,
+    password,
+    status: 'pending',
+    device_id: null,
+    created_at: new Date().toISOString()
+  };
+  db.users.push(newUser);
+  saveDB(db);
+  return newUser;
+}
+
+function updateUserStatus(userId, status){
+  const db = getDB();
+  const user = db.users.find(u => u.id === userId);
+  if(!user) throw new Error('المستخدم غير موجود');
+  user.status = status;
+  saveDB(db);
+  return user;
+}
+
+function deleteUser(userId){
+  const db = getDB();
+  db.users = db.users.filter(u => u.id !== userId);
+  db.stats = db.stats.filter(s => s.user_id !== userId);
+  db.progress = db.progress.filter(p => p.user_id !== userId);
+  db.quizAttempts = db.quizAttempts.filter(q => q.user_id !== userId);
+  saveDB(db);
+}
+
+function getAllUsers(){
+  const db = getDB();
+  return db.users;
+}
+
+function getUserStats(userId){
+  const db = getDB();
+  let stats = db.stats.find(s => s.user_id === userId);
+  if(!stats){
+    stats = {
+      user_id: userId,
+      current_level: 1,
+      xp: 0,
+      lessons_completed: 0,
+      quizzes_passed: 0,
+      avg_quiz_score: 0
+    };
+    db.stats.push(stats);
+    saveDB(db);
+  }
+  return stats;
+}
+
+function updateUserStats(userId, updates){
+  const db = getDB();
+  let stats = db.stats.find(s => s.user_id === userId);
+  if(!stats){
+    stats = { user_id: userId, current_level:1, xp:0, lessons_completed:0, quizzes_passed:0, avg_quiz_score:0 };
+    db.stats.push(stats);
+  }
+  Object.assign(stats, updates);
+  saveDB(db);
+  return stats;
+}
+
+function getProgress(userId){
+  const db = getDB();
+  return db.progress.filter(p => p.user_id === userId);
+}
+
+function setProgress(userId, levelId, lessonId, completed){
+  const db = getDB();
+  let existing = db.progress.find(p => p.user_id === userId && p.level_id === levelId && p.lesson_id === lessonId);
+  if(existing){
+    existing.completed = completed;
+  } else {
+    db.progress.push({ user_id: userId, level_id: levelId, lesson_id: lessonId, completed, updated_at: new Date().toISOString() });
+  }
+  saveDB(db);
+}
+
+function addQuizAttempt(userId, levelId, score, passed){
+  const db = getDB();
+  db.quizAttempts.push({ user_id: userId, level_id: levelId, score, passed, created_at: new Date().toISOString() });
+  saveDB(db);
+  
+  // تحديث متوسط النتائج
+  const attempts = db.quizAttempts.filter(q => q.user_id === userId);
+  if(attempts.length){
+    const avg = attempts.reduce((s,a)=>s+Number(a.score),0)/attempts.length;
+    const stats = getUserStats(userId);
+    stats.avg_quiz_score = Math.round(avg*10)/10;
+    saveDB(db);
+  }
+}
+
+function getLeaderboard(){
+  const db = getDB();
+  const approvedUsers = db.users.filter(u => u.status === 'approved').map(u => u.id);
+  const stats = db.stats.filter(s => approvedUsers.includes(s.user_id));
+  stats.sort((a,b) => b.xp - a.xp);
+  return stats.map(s => {
+    const user = db.users.find(u => u.id === s.user_id);
+    return { ...s, username: user ? user.username : 'مجهول' };
+  });
+}
+
+// ---------- دوال تسجيل الدخول ----------
+function handleLogin(){
+  const username = document.getElementById('login-username-input').value.trim();
+  const phone = document.getElementById('login-phone-input').value.trim();
+  const password = document.getElementById('login-password-input').value.trim();
+  const errEl = document.getElementById('auth-error');
+  errEl.style.display='none';
+  
+  if(username.length<2){ errEl.textContent='الرجاء إدخال اسم مستخدم صحيح'; errEl.style.display='block'; return; }
+  if(phone.length<5){ errEl.textContent='الرجاء إدخال رقم هاتف صحيح'; errEl.style.display='block'; return; }
+  if(password.length<4){ errEl.textContent='الرجاء إدخال رمز مرور لا يقل عن 4 أحرف'; errEl.style.display='block'; return; }
+  
+  // التحقق من المشرف ورد
+  if(username === ADMIN_USERNAME && password === ADMIN_PASSWORD){
+    STATE.isAdmin = true;
+    STATE.user = { id: 'admin', username: ADMIN_USERNAME, isAdmin: true };
+    STATE.stats = { current_level: 5, xp: 999, lessons_completed: totalLessonCount(), quizzes_passed: 5, avg_quiz_score: 95 };
+    STATE.allUsers = getAllUsers();
+    afterLogin();
+    return;
+  }
+  
+  // التحقق من المستخدم العادي
+  const user = findUserByUsername(username);
+  if(!user || user.phone !== phone || user.password !== password){
+    errEl.textContent='اسم المستخدم أو رقم الهاتف أو رمز المرور غير صحيح';
+    errEl.style.display='block'; return;
+  }
+  
+  if(user.status === 'pending'){
+    errEl.textContent='⏳ حسابك في انتظار موافقة المشرفة ورد';
+    errEl.style.display='block'; return;
+  }
+  if(user.status === 'rejected'){
+    errEl.textContent='❌ تم رفض حسابك من قبل المشرفة';
+    errEl.style.display='block'; return;
+  }
+  if(user.status !== 'approved'){
+    errEl.textContent='حسابك غير مفعّل حالياً';
+    errEl.style.display='block'; return;
+  }
+  
+  // التحقق من الجهاز
+  const deviceId = getDeviceId();
+  if(user.device_id && user.device_id !== deviceId){
+    errEl.textContent='⚠️ هذا الحساب مرتبط بجهاز آخر. لا يمكن تسجيل الدخول من جهاز جديد.';
+    errEl.style.display='block'; return;
+  }
+  
+  if(!user.device_id){
+    const db = getDB();
+    const u = db.users.find(u => u.id === user.id);
+    if(u) u.device_id = deviceId;
+    saveDB(db);
+  }
+  
+  STATE.isAdmin = false;
+  STATE.user = { id: user.id, username: user.username };
+  STATE.stats = getUserStats(user.id);
+  STATE.progress = {};
+  getProgress(user.id).forEach(p => {
+    if(p.completed) STATE.progress[p.level_id+'-'+p.lesson_id] = true;
+  });
+  STATE.allUsers = getAllUsers();
+  afterLogin();
+}
+
+// ---------- دوال العرض ----------
+function afterLogin(){
+  document.getElementById('topbar').style.display='flex';
+  document.getElementById('mobile-nav').style.display='flex';
+  const bg = document.getElementById('brand-gate');
+  if(bg) bg.outerHTML = gateSVG('passed').replace('<svg ', '<svg id="brand-gate" class="brand-mark" ');
+  document.getElementById('user-pill-name').textContent = STATE.user.username;
+  
+  if(STATE.isAdmin){
+    document.getElementById('admin-badge').style.display='inline';
+    document.getElementById('admin-tab-btn').style.display='inline';
+    document.getElementById('mobile-admin-btn').style.display='flex';
+  } else {
+    document.getElementById('admin-badge').style.display='none';
+    document.getElementById('admin-tab-btn').style.display='none';
+    document.getElementById('mobile-admin-btn').style.display='none';
+  }
+  
+  goTo('dashboard');
+}
+
+function goTo(name){
+  const screens = ['auth','dashboard','levels','level','lesson','quiz','leaderboard','admin'];
+  screens.forEach(s=>{
+    const el = document.getElementById('screen-'+s);
+    if(el) el.classList.toggle('hidden', s!==name);
+  });
+  document.querySelectorAll('.nav-tabs button, .mobile-nav button').forEach(b=>{
+    b.classList.toggle('active', b.dataset.go===name);
+  });
+  window.scrollTo({top:0, behavior:'smooth'});
+  if(name==='dashboard') renderDashboard();
+  if(name==='levels') renderLevelsList();
+  if(name==='leaderboard') renderLeaderboardFull();
+  if(name==='admin' && STATE.isAdmin) renderAdminUsers();
+}
+
+function levelState(levelId){
+  if(!STATE.stats) return 'locked';
+  if(levelId < STATE.stats.current_level) return 'passed';
+  if(levelId === STATE.stats.current_level) return 'progress';
+  return 'locked';
+}
+function levelUnlocked(levelId){ return levelId <= (STATE.stats?STATE.stats.current_level:1); }
+function lessonsCompletedInLevel(level){ return level.lessons.filter(ls=>STATE.progress[level.id+'-'+ls.id]).length; }
+
+function renderMiniLeaderboard(){
+  const rows = getLeaderboard().slice(0,5);
+  const host = document.getElementById('mini-leaderboard');
+  if(!rows.length){ host.innerHTML = `<p style="font-size:12.5px;color:var(--ink-soft)">كوني أوّل المتسابقين!</p>`; return; }
+  host.innerHTML = rows.map((r,i)=>`
+    <div class="mini-row">
+      <span class="rank">${i+1}</span>
+      <span class="name">${escapeHtml(r.username)}</span>
+      <span class="xp mono">${r.xp} XP</span>
+    </div>`).join('');
+}
+
+function proficiencyLabel(currentLevel, avgScore){
+  if(currentLevel <= 1) return "مبتدئ · 초급";
+  if(currentLevel === 2) return "مبتدئ متقدّم · 초급+";
+  if(currentLevel === 3) return "متوسط أساسي · 중급 초";
+  if(currentLevel === 4) return "متوسط · 중급";
+  if(currentLevel >= 5 && avgScore >= 90) return "متمكّن · 고급";
+  return "متقدّم · 중고급";
+}
+
+function renderDashboard(){
+  if(!STATE.stats) return;
+  const total = totalLessonCount();
+  document.getElementById('stat-level').textContent = Math.min(STATE.stats.current_level, LEVELS.length);
+  document.getElementById('stat-xp').textContent = STATE.stats.xp;
+  document.getElementById('stat-lessons').textContent = `${STATE.stats.lessons_completed}/${total}`;
+  document.getElementById('stat-avg').textContent = STATE.stats.avg_quiz_score ? `٪${STATE.stats.avg_quiz_score}` : '—';
+  document.getElementById('proficiency-tag').textContent = proficiencyLabel(STATE.stats.current_level, STATE.stats.avg_quiz_score);
+
+  const gp = document.getElementById('gate-path');
+  gp.innerHTML = LEVELS.map(l=>{
+    const st = levelState(l.id);
+    const label = st==='locked' ? 'مقفلة' : st==='progress' ? 'قيد التقدّم' : 'مكتملة';
+    return `<div class="gate-stop" data-level="${l.id}">
+      <div style="width:74px;height:88px" id="gate-${l.id}"></div>
+      <div class="glabel">م${l.id} · ${escapeHtml(l.title)}</div>
+      <div class="gsub">${l.lessons.length} دروس</div>
+      <div class="gstate ${st}">${label}</div>
+    </div>`;
+  }).join('');
+  LEVELS.forEach(l=>{
+    document.getElementById(`gate-${l.id}`).innerHTML = gateSVG(levelState(l.id));
+  });
+  gp.querySelectorAll('.gate-stop').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const id = Number(el.dataset.level);
+      if(levelUnlocked(id)) openLevel(id); else toast("أكملي المستوى السابق أولاً لفتح هذه البوابة");
+    });
+  });
+
+  const curLevel = LEVELS.find(l=>l.id===Math.min(STATE.stats.current_level, LEVELS.length));
+  const cont = document.getElementById('continue-lessons');
+  if(curLevel){
+    const rows = curLevel.lessons.map((ls,i)=>{
+      const done = !!STATE.progress[curLevel.id+'-'+ls.id];
+      return `<div class="lesson-row ${done?'done':''}" data-level="${curLevel.id}" data-lesson="${i}">
+        <div class="lesson-num">${done?'✓':i+1}</div>
+        <div class="lesson-title"><b>${escapeHtml(ls.title)}</b><span>${escapeHtml(ls.subtitle||'')}</span></div>
+        <div class="chev">‹</div>
+      </div>`;
+    }).join('');
+    cont.innerHTML = rows;
+    cont.querySelectorAll('.lesson-row').forEach(el=>{
+      el.addEventListener('click', ()=> openLesson(Number(el.dataset.level), Number(el.dataset.lesson)));
+    });
+  } else {
+    cont.innerHTML = `<p style="color:var(--ink-soft);font-size:13.5px;padding:20px">🎉 أنهيتِ كل المستويات! راجعي أي درس من صفحة المستويات.</p>`;
+  }
+
+  renderSideLeaderboard();
+}
+
+function renderSideLeaderboard(){
+  const rows = getLeaderboard();
+  const host = document.getElementById('dash-leaderboard');
+  const meIdx = rows.findIndex(r=>r.user_id===STATE.user.id);
+  let html = rows.slice(0,5).map((r,i)=>lbRowHtml(r,i)).join('');
+  if(meIdx>4){
+    html += `<div style="text-align:center;padding:4px;color:var(--ink-soft);font-size:11px">⋯</div>` + lbRowHtml(rows[meIdx], meIdx);
+  }
+  host.innerHTML = html || `<p style="font-size:12.5px;color:var(--ink-soft)">لا يوجد متسابقون بعد</p>`;
+}
+function lbRowHtml(r,i){
+  const me = STATE.user && r.user_id===STATE.user.id;
+  const medal = i===0?'badge-top1':'';
+  return `<div class="lb-row ${me?'me':''}">
+    <span class="rank ${medal}">${i+1}</span>
+    <span class="name">${escapeHtml(r.username)}${me?' (أنتِ)':''}</span>
+    <span class="lvl">م${r.current_level}</span>
+    <span class="xp">${r.xp}</span>
+  </div>`;
+}
+
+function renderLevelsList(){
+  const host = document.getElementById('levels-list');
+  host.innerHTML = LEVELS.map(l=>{
+    const st = levelState(l.id);
+    const unlocked = levelUnlocked(l.id);
+    const label = st==='locked' ? '🔒 مقفلة' : st==='progress' ? 'قيد التقدّم' : '✓ مكتملة';
+    const done = lessonsCompletedInLevel(l);
+    return `<div class="level-card ${unlocked?'clickable':'locked'}" data-level="${l.id}">
+      <div class="ico" id="lc-ico-${l.id}"></div>
+      <div class="info">
+        <b>المستوى ${l.id} — ${escapeHtml(l.title)}</b>
+        <p>${escapeHtml(l.subtitle)} · ${done}/${l.lessons.length} دروس مكتملة</p>
+      </div>
+      <span class="status-chip ${st}">${label}</span>
+    </div>`;
+  }).join('');
+  LEVELS.forEach(l=> document.getElementById(`lc-ico-${l.id}`).innerHTML = ILLUSTRATIONS[l.icon]());
+  host.querySelectorAll('.level-card.clickable').forEach(el=>{
+    el.addEventListener('click', ()=> openLevel(Number(el.dataset.level)));
+  });
+}
+
+function openLevel(levelId){
+  const level = LEVELS.find(l=>l.id===levelId);
+  STATE.currentLevelId = levelId;
+  goTo('level');
+  const unlocked = levelUnlocked(levelId);
+  document.getElementById('level-title-full').textContent = `المستوى ${level.id} — ${level.title}`;
+  document.getElementById('level-subtitle-full').textContent = level.subtitle;
+  document.getElementById('level-illustration').outerHTML = ILLUSTRATIONS[level.icon]().replace('<svg ', '<svg id="level-illustration" class="ill" ');
+
+  const body = document.getElementById('screen-level');
+  if(!unlocked){
+    body.querySelector('.lesson-list').innerHTML = '';
+    body.querySelector('.level-quiz-cta').classList.add('hidden');
+    if(!body.querySelector('.lock-msg')){
+      const div = document.createElement('div');
+      div.className='lock-msg';
+      div.innerHTML = `<svg viewBox="0 0 100 100"><circle cx="50" cy="55" r="16" fill="none" stroke="#8f8467" stroke-width="4"/><rect x="38" y="50" width="24" height="20" rx="3" fill="#8f8467"/></svg><p>هذه البوابة مقفلة — أكملي اختبار المستوى ${level.id-1} أولاً لفتحها.</p>`;
+      body.appendChild(div);
+    }
+    return;
+  }
+  const existingLock = body.querySelector('.lock-msg'); if(existingLock) existingLock.remove();
+  body.querySelector('.level-quiz-cta').classList.remove('hidden');
+
+  const lessonsHost = document.getElementById('level-lessons');
+  lessonsHost.innerHTML = level.lessons.map((ls,i)=>{
+    const done = !!STATE.progress[level.id+'-'+ls.id];
+    return `<div class="lesson-row ${done?'done':''}" data-idx="${i}">
+      <div class="lesson-num">${done?'✓':i+1}</div>
+      <div class="lesson-title"><b>${escapeHtml(ls.title)}</b><span>${escapeHtml(ls.subtitle||'')}</span></div>
+      <div class="chev">‹</div>
+    </div>`;
+  }).join('');
+  lessonsHost.querySelectorAll('.lesson-row').forEach(el=>{
+    el.addEventListener('click', ()=> openLesson(level.id, Number(el.dataset.idx)));
+  });
+
+  const done = lessonsCompletedInLevel(level);
+  const allDone = done === level.lessons.length;
+  const btnQuiz = document.getElementById('btn-open-quiz');
+  const st = levelState(level.id);
+  btnQuiz.disabled = !allDone;
+  document.getElementById('level-quiz-hint').textContent = allDone
+    ? (st==='passed' ? `اجتزتِ هذا الاختبار — يمكنك إعادته لتحسين نتيجتك` : `أكملتِ كل الدروس، الاختبار جاهز (يتطلّب ٪${PASS_THRESHOLD} للنجاح)`)
+    : `أكملي ${level.lessons.length-done} دروس متبقّية لفتح الاختبار`;
+  btnQuiz.textContent = st==='passed' ? 'إعادة الاختبار' : 'ابدئي الاختبار';
+}
+
+function openLesson(levelId, lessonIdx){
+  const level = LEVELS.find(l=>l.id===levelId);
+  const lesson = level.lessons[lessonIdx];
+  STATE.currentLevelId = levelId;
+  STATE.currentLessonIdx = lessonIdx;
+  goTo('lesson');
+  document.getElementById('lesson-title').textContent = lesson.title;
+  document.getElementById('lesson-subtitle').textContent = lesson.subtitle||'';
+  document.getElementById('lesson-illustration').outerHTML = ILLUSTRATIONS[level.icon]().replace('<svg ', '<svg id="lesson-illustration" class="ill" ');
+
+  let html = '';
+  if(lesson.intro) html += `<div class="content-block"><h4>📘 شرح</h4><p style="font-size:14.5px;line-height:1.9">${escapeHtml(lesson.intro)}</p></div>`;
+  if(lesson.vocab){
+    html += `<div class="content-block"><h4>🔤 المفردات</h4><table class="vocab-table"><thead><tr><th>الكورية</th><th>النطق</th><th>الشرح</th></tr></thead><tbody>`;
+    html += lesson.vocab.map(v=>`<tr><td class="ko">${escapeHtml(v[0])}</td><td class="rom">${escapeHtml(v[1])}</td><td>${escapeHtml(v[2])}</td></tr>`).join('');
+    html += `</tbody></table></div>`;
+  }
+  if(lesson.sentences){
+    html += `<div class="content-block"><h4>💬 جمل وأمثلة</h4>`;
+    html += lesson.sentences.map(s=>`<div class="sentence-line"><div class="sko kr">${escapeHtml(s.ko)}</div><div class="sar">${escapeHtml(s.ar)}</div></div>`).join('');
+    html += `</div>`;
+  }
+  if(lesson.note) html += `<div class="content-block"><div class="note-box">💡 ${escapeHtml(lesson.note)}</div></div>`;
+  document.getElementById('lesson-body').innerHTML = html;
+
+  const doneAlready = !!STATE.progress[levelId+'-'+lesson.id];
+  const completeBtn = document.getElementById('btn-complete-lesson');
+  completeBtn.textContent = doneAlready ? '✓ تم إكمال هذا الدرس' : '✓ أكملتُ هذا الدرس';
+  completeBtn.disabled = doneAlready;
+
+  const isLast = lessonIdx === level.lessons.length-1;
+  document.getElementById('btn-next-lesson').textContent = isLast ? 'العودة لصفحة المستوى ←' : 'الدرس التالي ←';
+  document.getElementById('btn-back-to-level').onclick = ()=> openLevel(levelId);
+}
+
+function openQuiz(levelId){
+  const level = LEVELS.find(l=>l.id===levelId);
+  const done = lessonsCompletedInLevel(level);
+  if(done < level.lessons.length){ toast("أكملي كل دروس المستوى أولاً"); return; }
+  STATE.quiz = { levelId, qIndex:0, answers:new Array(level.quiz.questions.length).fill(null) };
+  goTo('quiz');
+  renderQuizQuestion();
+}
+function renderQuizQuestion(){
+  const level = LEVELS.find(l=>l.id===STATE.quiz.levelId);
+  const total = level.quiz.questions.length;
+  const q = level.quiz.questions[STATE.quiz.qIndex];
+  document.getElementById('quiz-progress-bar').style.width = `${(STATE.quiz.qIndex/total)*100}%`;
+  const selected = STATE.quiz.answers[STATE.quiz.qIndex];
+  document.getElementById('quiz-body').innerHTML = `
+    <div class="q-card">
+      <div class="q-eyebrow">المستوى ${level.id} · سؤال ${STATE.quiz.qIndex+1} من ${total}</div>
+      <div class="q-text">${escapeHtml(q.q)}</div>
+      <div class="q-options">
+        ${q.options.map((opt,i)=>`<button class="q-opt ${/[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(opt)?'kr':''} ${selected===i?'selected':''}" data-i="${i}">${escapeHtml(opt)}</button>`).join('')}
+      </div>
+      <div class="quiz-nav">
+        <button class="btn-outline" id="quiz-prev" ${STATE.quiz.qIndex===0?'disabled':''}>→ السابق</button>
+        <button class="btn-primary" style="width:auto;padding:13px 26px" id="quiz-next" ${selected===null?'disabled':''}>${STATE.quiz.qIndex===total-1?'إنهاء الاختبار':'التالي ←'}</button>
+      </div>
+    </div>`;
+  document.querySelectorAll('.q-opt').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      STATE.quiz.answers[STATE.quiz.qIndex] = Number(b.dataset.i);
+      renderQuizQuestion();
+    });
+  });
+  const prevBtn = document.getElementById('quiz-prev');
+  if(prevBtn) prevBtn.addEventListener('click', ()=>{ STATE.quiz.qIndex--; renderQuizQuestion(); });
+  const nextBtn = document.getElementById('quiz-next');
+  if(nextBtn) nextBtn.addEventListener('click', ()=>{
+    if(STATE.quiz.qIndex < total-1){ STATE.quiz.qIndex++; renderQuizQuestion(); }
+    else finishQuiz();
+  });
+}
+function finishQuiz(){
+  const level = LEVELS.find(l=>l.id===STATE.quiz.levelId);
+  const total = level.quiz.questions.length;
+  let correct = 0;
+  level.quiz.questions.forEach((q,i)=>{ if(STATE.quiz.answers[i]===q.correct) correct++; });
+  const score = Math.round((correct/total)*100);
+  const passed = score >= PASS_THRESHOLD;
+  document.getElementById('quiz-progress-bar').style.width='100%';
+  document.getElementById('quiz-body').innerHTML = `<div class="q-card quiz-result ${passed?'pass':'fail'}">
+    <div class="score-ring">٪${score}</div>
+    <h3>${passed?'🎉 اجتزتِ الاختبار!':'حاولي مرة أخرى'}</h3>
+    <p>${passed? `أحسنتِ! فُتحت البوابة التالية. حصلتِ على ${correct} من ${total} إجابات صحيحة.` : `تحتاجين ٪${PASS_THRESHOLD} على الأقل للنجاح. حصلتِ على ${correct} من ${total}. راجعي الدروس وحاولي مجدداً.`}</p>
+    <button class="btn-primary" style="width:auto;padding:14px 30px;margin-top:22px" id="quiz-continue">متابعة</button>
+  </div>`;
+  
+  addQuizAttempt(STATE.user.id, level.id, score, passed);
+  const stats = getUserStats(STATE.user.id);
+  if(passed) stats.quizzes_passed += 1;
+  stats.xp += passed ? (30 + Math.round(score/10)) : 5;
+  if(passed && level.id === stats.current_level && level.id < LEVELS.length){
+    stats.current_level = level.id + 1;
+  }
+  updateUserStats(STATE.user.id, stats);
+  STATE.stats = stats;
+  
+  document.getElementById('quiz-continue').addEventListener('click', ()=>{
+    STATE.quiz = null;
+    openLevel(level.id);
+  });
+  if(passed) toast(`+${30+Math.round(score/10)} XP · فُتح المستوى التالي`);
+}
+
+function renderLeaderboardFull(){
+  const rows = getLeaderboard();
+  const body = document.getElementById('leaderboard-full-body');
+  if(!rows.length){ body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--ink-soft)">لا يوجد متسابقون بعد</td></tr>`; return; }
+  body.innerHTML = rows.map((r,i)=>{
+    const me = STATE.user && r.user_id===STATE.user.id;
+    const g = i===0?'g1':i===1?'g2':i===2?'g3':'';
+    return `<tr class="${me?'me':''}">
+      <td class="rank-badge ${g}">${i+1}</td>
+      <td>${escapeHtml(r.username)}${me?' <span style="color:var(--gold)">(أنتِ)</span>':''}</td>
+      <td>${r.current_level}</td>
+      <td>${r.lessons_completed}</td>
+      <td>${r.avg_quiz_score?`٪${r.avg_quiz_score}`:'—'}</td>
+      <td class="mono" style="font-weight:700;color:var(--jade)">${r.xp}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ---------- دوال المشرف ----------
+function renderAdminUsers(){
+  const users = getAllUsers();
+  const container = document.getElementById('admin-users-container');
+  const pending = users.filter(u => u.status === 'pending').length;
+  document.getElementById('admin-stats').textContent = `📊 ${users.length} مستخدم · ${pending} في الانتظار`;
+  
+  const formHtml = `
+    <div style="background:var(--bg-soft);padding:16px;border-radius:12px;margin-bottom:14px;border:1px solid var(--line)">
+      <h4 style="margin-bottom:10px;color:var(--navy)">➕ تسجيل مستخدم جديد</h4>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end">
+        <div class="field" style="margin:0"><label>اسم المستخدم</label><input id="new-username" type="text" placeholder="اسم المستخدم"></div>
+        <div class="field" style="margin:0"><label>رقم الهاتف</label><input id="new-phone" type="text" placeholder="رقم الهاتف"></div>
+        <div class="field" style="margin:0"><label>رمز المرور</label><input id="new-password" type="text" placeholder="رمز المرور"></div>
+        <button class="btn-primary" style="width:auto;padding:10px 20px;margin:0" onclick="handleCreateUser()">تسجيل</button>
+      </div>
+    </div>
+  `;
+  
+  let listHtml = formHtml;
+  if(users.length === 0){
+    listHtml += `<p style="color:var(--ink-soft);font-size:13px">لا يوجد مستخدمون مسجّلون حتى الآن</p>`;
+  } else {
+    listHtml += users.map(u => `
+      <div class="admin-user-row">
+        <div class="info">
+          <b>${escapeHtml(u.username)}</b>
+          <span>📱 ${escapeHtml(u.phone)} · ${u.device_id ? '🔗 جهاز مرتبط' : '📱 جهاز غير مرتبط'}</span>
+        </div>
+        <span class="status-badge ${u.status}">${u.status === 'pending' ? '⏳ قيد الانتظار' : u.status === 'approved' ? '✅ موافق' : '❌ مرفوض'}</span>
+        <div style="display:flex;gap:6px">
+          ${u.status === 'pending' ? `
+            <button class="btn-primary" style="width:auto;padding:6px 14px;font-size:11px;margin:0" onclick="handleApproveUser('${u.id}')">موافقة</button>
+            <button class="btn-danger" onclick="handleRejectUser('${u.id}')">رفض</button>
+          ` : ''}
+          ${u.username !== ADMIN_USERNAME ? `<button class="btn-danger" onclick="handleDeleteUser('${u.id}')">🗑️ حذف</button>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+  container.innerHTML = listHtml;
+}
+
+function handleCreateUser(){
+  const username = document.getElementById('new-username').value.trim();
+  const phone = document.getElementById('new-phone').value.trim();
+  const password = document.getElementById('new-password').value.trim();
+  if(username.length<2 || phone.length<5 || password.length<4){
+    toast('الرجاء تعبئة جميع الحقول بشكل صحيح');
+    return;
+  }
+  try{
+    createUser(username, phone, password);
+    toast('✅ تم تسجيل المستخدم بنجاح. في انتظار الموافقة.');
+    document.getElementById('new-username').value = '';
+    document.getElementById('new-phone').value = '';
+    document.getElementById('new-password').value = '';
+    renderAdminUsers();
+  }catch(e){
+    toast('❌ ' + e.message);
+  }
+}
+
+function handleApproveUser(userId){
+  updateUserStatus(userId, 'approved');
+  toast('✅ تم الموافقة على المستخدم');
+  renderAdminUsers();
+}
+
+function handleRejectUser(userId){
+  updateUserStatus(userId, 'rejected');
+  toast('❌ تم رفض المستخدم');
+  renderAdminUsers();
+}
+
+function handleDeleteUser(userId){
+  if(!confirm('هل أنتِ متأكدة من حذف هذا المستخدم؟ سيتم حذف جميع بياناته.')) return;
+  deleteUser(userId);
+  toast('تم حذف المستخدم');
+  renderAdminUsers();
+}
+
+// ---------- تصدير الكتاب ----------
+function buildBookHTML(levelsArr, bookTitle){
+  let html = `<div class="pb-page pb-cover"><div class="ill" style="width:160px;height:160px;margin:0 auto 30px" id="pb-cover-ill"></div><h1>${escapeHtml(bookTitle)}</h1><p style="margin-top:14px;color:var(--ink-soft);font-family:var(--font-kr)">한글이랑 · مع الهانغل</p><p style="margin-top:30px;color:var(--ink-soft);font-size:13px">أُعدّ خصيصاً لـ ${escapeHtml(STATE.user.username)} · ${new Date().toLocaleDateString('ar-EG')}</p></div>`;
+  levelsArr.forEach(level=>{ level.lessons.forEach(lesson=>{ html += `<div class="pb-page"><div class="pb-ill" data-icon="${level.icon}"></div><h2>${escapeHtml(lesson.title)}</h2><h3>المستوى ${level.id} — ${escapeHtml(level.title)} · ${escapeHtml(lesson.subtitle||'')}</h3>`; if(lesson.intro) html += `<p class="pb-intro">${escapeHtml(lesson.intro)}</p>`; if(lesson.vocab){ html += `<table><thead><tr><th>الكورية</th><th>النطق</th><th>الشرح</th></tr></thead><tbody>`; html += lesson.vocab.map(v=>`<tr><td class="ko">${escapeHtml(v[0])}</td><td>${escapeHtml(v[1])}</td><td>${escapeHtml(v[2])}</td></tr>`).join(''); html += `</tbody></table>`; } if(lesson.sentences){ html += lesson.sentences.map(s=>`<div class="pb-sentence"><b class="kr">${escapeHtml(s.ko)}</b><br>${escapeHtml(s.ar)}</div>`).join(''); } if(lesson.note) html += `<div class="pb-note">💡 ${escapeHtml(lesson.note)}</div>`; html += `</div>`; }); });
+  return html;
+}
+function exportBook(scope){
+  const levelsArr = scope==='all' ? LEVELS : [LEVELS.find(l=>l.id===STATE.currentLevelId)];
+  const title = scope==='all' ? 'كتاب 한글이랑 الكامل لتعلّم الكورية' : `كتاب المستوى ${levelsArr[0].id} — ${levelsArr[0].title}`;
+  document.getElementById('print-book').innerHTML = buildBookHTML(levelsArr, title);
+  document.querySelectorAll('#print-book .pb-ill').forEach(el=>{ el.innerHTML = ILLUSTRATIONS[el.dataset.icon](); });
+  document.getElementById('pb-cover-ill').innerHTML = ILLUSTRATIONS[levelsArr[0].icon]();
+  toast("افتحي نافذة الطباعة واختاري «حفظ كـ PDF»");
+  setTimeout(()=> window.print(), 400);
+}
+
+// ---------- الإقلاع ----------
+document.addEventListener('DOMContentLoaded', ()=>{
+  renderMiniLeaderboard();
+
+  document.getElementById('btn-login').addEventListener('click', handleLogin);
+  document.getElementById('login-password-input').addEventListener('keydown', e=>{ if(e.key==='Enter') handleLogin(); });
+  document.getElementById('login-username-input').addEventListener('keydown', e=>{ if(e.key==='Enter') handleLogin(); });
+  document.getElementById('login-phone-input').addEventListener('keydown', e=>{ if(e.key==='Enter') handleLogin(); });
+
+  document.querySelectorAll('.nav-tabs button, .mobile-nav button').forEach(b=>{
+    b.addEventListener('click', ()=> goTo(b.dataset.go));
+  });
+
+  document.getElementById('btn-open-quiz').addEventListener('click', ()=> openQuiz(STATE.currentLevelId));
+  document.getElementById('btn-export-level').addEventListener('click', ()=> exportBook('level'));
+  document.getElementById('btn-export-all').addEventListener('click', ()=> exportBook('all'));
+
+  document.getElementById('btn-complete-lesson').addEventListener('click', ()=>{
+    const level = LEVELS.find(l=>l.id===STATE.currentLevelId);
+    const lesson = level.lessons[STATE.currentLessonIdx];
+    const key = level.id+'-'+lesson.id;
+    if(!STATE.progress[key]){
+      STATE.progress[key] = true;
+      setProgress(STATE.user.id, level.id, lesson.id, true);
+      const stats = getUserStats(STATE.user.id);
+      stats.lessons_completed += 1;
+      stats.xp += 10;
+      updateUserStats(STATE.user.id, stats);
+      STATE.stats = stats;
+      toast('+10 XP · أُنجز الدرس');
+    }
+    openLesson(level.id, STATE.currentLessonIdx);
+  });
+  
+  document.getElementById('btn-next-lesson').addEventListener('click', ()=>{
+    const level = LEVELS.find(l=>l.id===STATE.currentLevelId);
+    if(STATE.currentLessonIdx < level.lessons.length-1) openLesson(level.id, STATE.currentLessonIdx+1);
+    else openLevel(level.id);
+  });
+
+  // محاولة استرجاع جلسة سابقة
+  const savedId = localStorage.getItem('hi_user_id');
+  const savedName = localStorage.getItem('hi_username');
+  if(savedId && savedName){
+    const user = findUserById(savedId);
+    if(user && user.status === 'approved'){
+      const deviceId = getDeviceId();
+      if(user.device_id && user.device_id !== deviceId){
+        localStorage.removeItem('hi_user_id');
+        localStorage.removeItem('hi_username');
+        toast('⚠️ تم اكتشاف محاولة دخول من جهاز مختلف. الرجاء تسجيل الدخول مجدداً.');
+      } else {
+        STATE.user = { id: savedId, username: savedName };
+        STATE.stats = getUserStats(savedId);
+        STATE.progress = {};
+        getProgress(savedId).forEach(p => { if(p.completed) STATE.progress[p.level_id+'-'+p.lesson_id] = true; });
+        afterLogin();
+      }
+    } else if(user && user.status === 'pending'){
+      toast('⏳ حسابك لا يزال في انتظار الموافقة');
+    } else if(user && user.status === 'rejected'){
+      toast('❌ تم رفض حسابك');
+      localStorage.removeItem('hi_user_id');
+      localStorage.removeItem('hi_username');
+    } else {
+      localStorage.removeItem('hi_user_id');
+      localStorage.removeItem('hi_username');
+    }
+  }
+});
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>한글이랑 · تعلّم الكورية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
 :root{--bg:#F5EFE1;--bg-soft:#EFE6D2;--card:#FFFDF8;--ink:#23252B;--ink-soft:#5B5748;--navy:#1D2951;--navy-deep:#12192F;--red:#C1443C;--gold:#D9A441;--jade:#2F6F62;--line:#E3D6B8;--shadow:0 10px 30px -12px rgba(18,25,47,.25);--shadow-sm:0 4px 14px -6px rgba(18,25,47,.18);--radius:18px;--font-ar:'Cairo',sans-serif;--font-kr:'Noto Sans KR',sans-serif;--font-mono:'JetBrains Mono',monospace}
 *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
 body{font-family:var(--font-ar);background:radial-gradient(circle at 12% 8%, rgba(29,41,81,.05), transparent 40%),radial-gradient(circle at 90% 85%, rgba(193,68,60,.05), transparent 45%),var(--bg);color:var(--ink);min-height:100vh;line-height:1.6}
