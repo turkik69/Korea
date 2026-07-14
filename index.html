@@ -375,12 +375,58 @@ img,svg{display:block}
 }
 .fatal-card h3{font-size:18px;font-weight:800;color:var(--navy);margin:10px 0}
 .fatal-card p{font-size:13.5px;color:var(--ink-soft);line-height:1.8;margin-bottom:18px}
+
+/* ---------- speaker button & word icons ---------- */
+.speak-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:24px;height:24px;border-radius:50%;background:rgba(29,41,81,.08);color:var(--navy);
+  vertical-align:middle;margin-inline-start:4px;cursor:pointer;transition:.15s;
+}
+.speak-btn:hover{background:var(--navy);color:#fff;transform:scale(1.08)}
+.speak-btn:active{transform:scale(.92)}
+.speak-btn.playing{animation:pulse-speak .5s ease infinite}
+@keyframes pulse-speak{0%,100%{box-shadow:0 0 0 0 rgba(29,41,81,.35)}50%{box-shadow:0 0 0 6px rgba(29,41,81,0)}}
+.vocab-table td.wico{width:30px;color:var(--ink-soft)}
+.q-opt .speak-btn{background:rgba(255,255,255,.5)}
+.drill-prompt .speak-btn{width:30px;height:30px;margin-inline-start:8px;vertical-align:middle}
+
+/* ---------- xp / celebration effects ---------- */
+.stat-card .v.bump{animation:bump .4s ease}
+@keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.22);color:var(--gold)}100%{transform:scale(1)}}
+.gate-stop.just-unlocked .gstate{animation:glow-badge 1.4s ease 2}
+@keyframes glow-badge{0%,100%{box-shadow:0 0 0 0 rgba(217,164,65,.5)}50%{box-shadow:0 0 0 8px rgba(217,164,65,0)}}
+.q-opt.correct{animation:opt-correct .4s ease}
+.q-opt.wrong{animation:opt-wrong .4s ease}
+@keyframes opt-correct{0%{transform:scale(1)}40%{transform:scale(1.03)}100%{transform:scale(1)}}
+@keyframes opt-wrong{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+#confetti-layer{position:fixed;inset:0;pointer-events:none;z-index:150;overflow:hidden}
+.confetti-piece{position:absolute;top:-16px;border-radius:2px;animation:confetti-fall linear forwards}
+@keyframes confetti-fall{to{transform:translateY(110vh) rotate(540deg);opacity:.9}}
+.quiz-result.pass .score-ring{animation:score-pop .5s cubic-bezier(.2,.8,.25,1)}
+@keyframes score-pop{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+.btn-primary:active,.btn-outline:active,.btn-light:active{transform:scale(.97)}
+.lesson-row:not(.locked):active,.level-card.clickable:active{transform:scale(.985)}
+
+/* ---------- admin: impersonation banner ---------- */
+#impersonate-bar{
+  display:none;position:sticky;top:0;z-index:60;background:linear-gradient(90deg,var(--gold),#c9922f);
+  color:var(--navy-deep);padding:11px 20px;font-weight:800;font-size:13px;
+  align-items:center;justify-content:space-between;gap:12px;
+}
+#impersonate-bar.show{display:flex}
+#impersonate-bar button{background:var(--navy-deep);color:#fff;padding:7px 16px;border-radius:8px;font-size:12px;font-weight:800}
+.admin-btn.view{background:rgba(29,41,81,.1);color:var(--navy)}
 </style>
 </head>
 <body>
 
 <!-- ================= واجهة المستخدم العادية ================= -->
 <div id="app-shell">
+  <div id="impersonate-bar">
+    <span>👁️ أنتِ تتصفّحين كـ <b id="impersonate-name"></b> — وضع معاينة الإدارة</span>
+    <button id="btn-exit-impersonate">العودة للوحة الإدارة</button>
+  </div>
+
 
   <header class="topbar" id="topbar" style="display:none">
     <div class="brand">
@@ -805,7 +851,8 @@ const LEVELS = [
           ["물","mul","ماء"],["밥","bap","أرز / طعام"],
           ["친구","chingu","صديق"],["학교","hakgyo","مدرسة"],
           ["집","jip","منزل"],["사랑","sarang","حب"]
-        ]
+        ],
+        note:"احرصي على تكرار هذه الكلمات بصوت مرتفع يومياً — فهي الأكثر تكراراً في أي محادثة كورية حقيقية مهما كان مستواك."
       }
     ],
     quiz:{
@@ -852,7 +899,8 @@ const LEVELS = [
         sentences:[
           {ko:"저는 매일 학교에 가요",ar:"أذهب إلى المدرسة كل يوم (غير رسمي مهذّب)"},
           {ko:"저는 매일 학교에 갑니다",ar:"أذهب إلى المدرسة كل يوم (رسمي)"}
-        ]
+        ],
+        note:"الفرق الأهم عملياً: -아요/어요 هو ما ستسمعينه وتستخدمينه في أغلب المواقف اليومية، بينما -ㅂ니다/습니다 تسمعينه في الأخبار والاجتماعات الرسمية."
       },
       {
         id:"3-3", title:"النفي والسؤال", subtitle:"لا... / هل...؟",
@@ -862,7 +910,8 @@ const LEVELS = [
           ["-지 않다","-ji anta","نفي أطول يُضاف بعد جذع الفعل"],
           ["-까요؟","-kkayo؟","صيغة سؤال مهذّبة (هل...؟)"]
         ],
-        sentences:[{ko:"비가 올까요؟",ar:"هل ستمطر؟"}]
+        sentences:[{ko:"비가 올까요؟",ar:"هل ستمطر؟"}],
+        note:"لاحظي أن «안» تُوضع قبل الفعل مباشرة، بينما «-지 않다» تُضاف بعد جذع الفعل — كلاهما صحيح ومستخدم، لكن الأول أسهل للمبتدئين."
       },
       {
         id:"3-4", title:"الإشارة والملكية", subtitle:"هذا / يوجد / لا يوجد",
@@ -871,7 +920,8 @@ const LEVELS = [
           ["이것 / 그것 / 저것","igeot / geugeot / jeogeot","هذا (قريب) / ذلك (متوسط) / ذلك (بعيد)"],
           ["있다","itda","يوجد / لديه"],["없다","eopda","لا يوجد / ليس لديه"]
         ],
-        sentences:[{ko:"시간이 없어요",ar:"ليس لديّ وقت"}]
+        sentences:[{ko:"시간이 없어요",ar:"ليس لديّ وقت"}],
+        note:"«있어요» و«없어요» من أكثر الأفعال استخداماً في الكورية اليومية — احفظيهما جيداً فهما سيظهران في كل درس تقريباً بعد الآن."
       }
     ],
     quiz:{
@@ -903,7 +953,8 @@ const LEVELS = [
           {ko:"너무 비싸요",ar:"غالٍ جداً"},
           {ko:"깎아 주세요",ar:"خفّض السعر من فضلك"},
           {ko:"이거 주세요",ar:"أعطني هذا من فضلك"}
-        ]
+        ],
+        note:"في الأسواق التقليدية الكورية، المساومة على السعر مقبولة اجتماعياً وأحياناً متوقّعة، على عكس المتاجر الكبرى ذات الأسعار الثابتة."
       },
       {
         id:"4-2", title:"الطلب في المطعم", subtitle:"أثناء تناول الطعام",
@@ -913,7 +964,8 @@ const LEVELS = [
           {ko:"이거 하나 주세요",ar:"واحدة من هذا من فضلك"},
           {ko:"맛있어요",ar:"لذيذ"},
           {ko:"계산해 주세요",ar:"الفاتورة من فضلك"}
-        ]
+        ],
+        note:"من المعتاد في كوريا عدم ترك بقشيش في المطاعم — تُعتبر الخدمة جزءاً من السعر المعلن، وترك بقشيش قد يُسبّب حرجاً لا تقديراً."
       },
       {
         id:"4-3", title:"السؤال عن الاتجاهات", subtitle:"في الشارع",
@@ -923,7 +975,8 @@ const LEVELS = [
           {ko:"오른쪽/왼쪽으로 가세요",ar:"اذهب يميناً / يساراً"},
           {ko:"똑바로 가세요",ar:"اذهب مباشرة"},
           {ko:"얼마나 걸려요؟",ar:"كم يستغرق ذلك؟"}
-        ]
+        ],
+        note:"أضيفي كلمة «좀» (من فضلك، بتلطّف) لجعل أي طلب اتجاهات أكثر تهذيباً، مثل: «길 좀 알려주세요»."
       },
       {
         id:"4-4", title:"الوقت والمواعيد", subtitle:"متى؟ وكم الساعة؟",
@@ -933,7 +986,8 @@ const LEVELS = [
           {ko:"세 시예요",ar:"الساعة الثالثة"},
           {ko:"오늘 / 내일 / 어제",ar:"اليوم / غداً / أمس"},
           {ko:"약속이 있어요",ar:"لديّ موعد"}
-        ]
+        ],
+        note:"يستخدم الكوريون النظام الاثني عشري في الحديث اليومي غالباً، مع إضافة «오전» (صباحاً) أو «오후» (مساءً) عند الحاجة للتوضيح."
       }
     ],
     quiz:{
@@ -964,7 +1018,8 @@ const LEVELS = [
           {ko:"저는 매일 아침 7시에 일어나요.",ar:"أستيقظ كل صباح في الساعة السابعة."},
           {ko:"학교에 가서 친구들과 공부해요.",ar:"أذهب إلى المدرسة وأدرس مع أصدقائي."},
           {ko:"저녁에는 집에서 밥을 먹고 쉬어요.",ar:"في المساء آكل في المنزل وأستريح."}
-        ]
+        ],
+        note:"جرّبي قراءة الفقرة بصوت مرتفع 3 مرات متتالية قبل النظر إلى الترجمة — القراءة الجهرية المتكررة من أقوى طرق ترسيخ النطق الصحيح."
       },
       {
         id:"5-2", title:"كتابة جمل مركّبة", subtitle:"أدوات الربط",
@@ -974,7 +1029,8 @@ const LEVELS = [
           ["-지만","-jiman","«لكن»"],
           ["-아서 / 어서","-aseo / eoseo","«لأنّ... / فَـ...» (سبب ونتيجة)"]
         ],
-        sentences:[{ko:"비가 와서 집에 있어요",ar:"بما أن المطر ينزل، أنا في المنزل"}]
+        sentences:[{ko:"비가 와서 집에 있어요",ar:"بما أن المطر ينزل، أنا في المنزل"}],
+        note:"لاحظي أن -아서/어서 لا تُستخدم عادةً مع صيغة الأمر أو الاقتراح؛ في تلك الحالات تُستخدم -니까 بدلاً منها — تفصيل متقدّم يمكن تأجيله."
       },
       {
         id:"5-3", title:"الماضي والمستقبل", subtitle:"التعبير عن الزمن",
@@ -986,7 +1042,8 @@ const LEVELS = [
         sentences:[
           {ko:"어제 영화를 봤어요",ar:"شاهدتُ فيلماً بالأمس (ماضٍ)"},
           {ko:"내일 학교에 갈 거예요",ar:"سأذهب إلى المدرسة غداً (مستقبل)"}
-        ]
+        ],
+        note:"صيغة -(으)ㄹ 거예요 تُستخدم أيضاً للتعبير عن توقّع أو تخمين وليس فقط قراراً أكيداً، مثل: «비가 올 거예요» (أظنّ أنها ستمطر)."
       },
       {
         id:"5-4", title:"مراجعة شاملة", subtitle:"وخطوات لما بعد هذا المستوى",
@@ -995,7 +1052,8 @@ const LEVELS = [
           {ko:"안녕하세요, 제 이름은 ○○예요.",ar:"مرحباً، اسمي ○○."},
           {ko:"한국어를 배우고 있어요.",ar:"أنا أتعلّم اللغة الكورية الآن."},
           {ko:"더 열심히 공부할 거예요!",ar:"سأدرس بجدّ أكبر!"}
-        ]
+        ],
+        note:"أكملتِ المنهج الأساسي! أفضل خطوة تالية: اختاري مسلسلاً كورياً قصيراً بترجمة، وحاولي التقاط الكلمات التي تعلّمتِها هنا أثناء المشاهدة."
       }
     ],
     quiz:{
@@ -1100,6 +1158,108 @@ function gateSVG(state){
     <line x1="50" y1="50" x2="50" y2="100" stroke="${state==='locked'?'#C9C2AC':'#E3D6B8'}" stroke-width="2" stroke-dasharray="4 4"/>
     ${lock}
   </svg>`;
+}
+
+/* ============================================================
+   النطق الصوتي — عبر خاصية النطق المدمجة في المتصفح (بلا ملفات صوت خارجية)
+   ============================================================ */
+function speakKorean(text){
+  try{
+    if(!('speechSynthesis' in window)){ toast('متصفحكِ لا يدعم النطق الصوتي'); return; }
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'ko-KR';
+    u.rate = 0.82;
+    window.speechSynthesis.speak(u);
+  }catch(e){ /* صامت */ }
+}
+function speakBtn(koreanText){
+  return `<span class="speak-btn" data-speak="${escapeHtml(koreanText)}" aria-label="استمعي للنطق" title="استمعي للنطق">${SPEAKER_ICON}</span>`;
+}
+const SPEAKER_ICON = `<svg viewBox="0 0 24 24" width="15" height="15"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M19 6.5a8.5 8.5 0 0 1 0 11" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".6"/></svg>`;
+
+/* ============================================================
+   أيقونات صغيرة للمفردات — رموز بسيطة أحادية اللون تُختار تلقائياً
+   حسب الشرح العربي لكل كلمة (بلا صور خارجية، بلا مشاكل حقوق نشر)
+   ============================================================ */
+const WORD_ICON_SVGS = {
+  water: `<path d="M12 3c3 4 6 7.2 6 10.5A6 6 0 0 1 6 13.5C6 10.2 9 7 12 3z"/>`,
+  food: `<path d="M6 3v7a2 2 0 0 0 2 2v9M8 3v6M10 3v6M16 3c-1.5 0-2.5 1.5-2.5 4s.7 3.5 2.5 4v10"/>`,
+  house: `<path d="M4 11 12 4l8 7M6 10v10h12V10"/>`,
+  school: `<path d="M12 4 2 9l10 5 10-5-10-5zM6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/>`,
+  friend: `<circle cx="9" cy="8" r="3"/><circle cx="16" cy="9" r="2.4"/><path d="M4 20c0-3.3 2.5-6 5-6s5 2.7 5 6M13 20c.3-2.7 2-5 4-5.3 2 .3 3.5 2.4 3.5 5.3"/>`,
+  heart: `<path d="M12 20s-7-4.4-9.3-8.6C1.3 8.4 3 5 6.3 5c2 0 3.3 1.2 4 2.4C11 6.2 12.3 5 14.3 5c3.3 0 5 3.4 3.6 6.4C19 15.6 12 20 12 20z"/>`,
+  wave: `<path d="M5 8c1.5 3 4 3 5 6 1 3-1 5-1 5M12 5c1.5 3 4 3 5 6 1 3-1 5-1 5"/>`,
+  yes: `<path d="M4 12.5 9.5 18 20 6"/>`,
+  no: `<path d="M5 5l14 14M19 5 5 19"/>`,
+  number: `<path d="M6 4v16M14 4v16M4 9h16M4 15h16"/>`,
+  right: `<path d="M4 12h15M13 6l6 6-6 6"/>`,
+  left: `<path d="M20 12H5M11 6l-6 6 6 6"/>`,
+  straight: `<path d="M12 20V4M7 9l5-5 5 5"/>`,
+  clock: `<circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/>`,
+  money: `<circle cx="12" cy="12" r="8.5"/><path d="M9.5 9c0-1.4 1.2-2.3 2.6-2.3S14.6 7.6 14.6 9c0 3-5.2 2-5.2 5 0 1.4 1.2 2.3 2.6 2.3S14.6 15.4 14.6 14"/>`,
+  question: `<path d="M9 9c0-1.8 1.4-3 3-3s3 1.2 3 3c0 2-3 2.2-3 5"/><circle cx="12" cy="17.5" r=".6" fill="currentColor"/>`,
+  book: `<path d="M4 5.5C4 4.7 4.7 4 6 4h6v16H6c-1.3 0-2-.7-2-1.5v-13zM20 5.5C20 4.7 19.3 4 18 4h-6v16h6c1.3 0 2-.7 2-1.5v-13z"/>`,
+  shop: `<path d="M5 8h14l-1.3 10.5a2 2 0 0 1-2 1.5H8.3a2 2 0 0 1-2-1.5L5 8zM8.5 8V6a3.5 3.5 0 0 1 7 0v2"/>`,
+  restaurant: `<path d="M6 3v7a2 2 0 0 0 2 2v9M8 3v6M10 3v6M17 3c-3 0-3 4-3 6s1 3 2 3.3V21"/>`,
+  bathroom: `<circle cx="9" cy="6" r="2"/><path d="M9 8v13M15 3v18M15 3c2 0 3 1.5 3 4v3h-3"/>`,
+  weather: `<path d="M7 17a4 4 0 0 1 1-7.9A5.5 5.5 0 0 1 18.5 11 3.5 3.5 0 0 1 18 18H7z"/><path d="M9 20v1M12 20v1.5M15 20v1"/>`,
+  time_future: `<path d="M12 20V4M17 9l-5-5-5 5"/>`,
+  time_past: `<path d="M12 4v16M7 15l5 5 5-5"/>`,
+  study: `<path d="M12 4 2 9l10 5 10-5-10-5zM6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/>`,
+  travel: `<path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>`,
+  default: `<path d="M12 4c-3.5 0-6 2.5-6 6 0 2 1 3.3 2 4.3 1 1 1.3 1.7 1.3 3.2h5.4c0-1.5.3-2.2 1.3-3.2 1-1 2-2.3 2-4.3 0-3.5-2.5-6-6-6zM10 20h4"/>`
+};
+const WORD_ICON_KEYWORDS = [
+  [/ماء/, 'water'], [/أرز|طعام|لذيذ|أكل/, 'food'], [/منزل|بيت/, 'house'], [/مدرسة/, 'school'],
+  [/صديق/, 'friend'], [/حب/, 'heart'], [/مرحب|تحي|سلامة|آسف|شكر/, 'wave'],
+  [/^نعم/, 'yes'], [/^لا\b|لا يوجد/, 'no'], [/رقم|واحد|اثنان|ثلاث|[0-9]/, 'number'],
+  [/يمين/, 'right'], [/يسار/, 'left'], [/مباشرة|مستقيم/, 'straight'],
+  [/وقت|ساعة|موعد/, 'clock'], [/سعر|غالٍ|رخيص|فاتورة|نقود/, 'money'], [/\?|؟|سؤال/, 'question'],
+  [/كتاب|قراءة/, 'book'], [/تسوّق|متجر|اشتري/, 'shop'], [/مطعم|قائمة الطعام/, 'restaurant'],
+  [/حمّام/, 'bathroom'], [/مطر|طقس/, 'weather'], [/سوف|غداً|مستقبل/, 'time_future'],
+  [/أمس|ماضٍ|شاهدتُ/, 'time_past'], [/أدرس|دراسة/, 'study'], [/سافر|رحلة/, 'travel']
+];
+function pickWordIcon(glossText){
+  const g = String(glossText||'');
+  for(const [re, key] of WORD_ICON_KEYWORDS){ if(re.test(g)) return key; }
+  return 'default';
+}
+function wordIconSvg(glossText){
+  const key = pickWordIcon(glossText);
+  return `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${WORD_ICON_SVGS[key]}</svg>`;
+}
+
+/* ============================================================
+   احتفال بسيط بالورق الملوّن — بلا مكتبات خارجية
+   ============================================================ */
+function fireConfetti(){
+  let layer = document.getElementById('confetti-layer');
+  if(!layer){
+    layer = document.createElement('div');
+    layer.id = 'confetti-layer';
+    document.body.appendChild(layer);
+  }
+  const colors = ['#C1443C','#D9A441','#2F6F62','#1D2951'];
+  const n = 46;
+  for(let i=0;i<n;i++){
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    const size = 6 + Math.random()*6;
+    el.style.left = (Math.random()*100) + 'vw';
+    el.style.width = size+'px';
+    el.style.height = (size*0.4)+'px';
+    el.style.background = colors[i % colors.length];
+    el.style.animationDuration = (1.6 + Math.random()*1.2)+'s';
+    el.style.animationDelay = (Math.random()*0.3)+'s';
+    layer.appendChild(el);
+    setTimeout(()=> el.remove(), 3200);
+  }
+}
+function bumpEl(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump');
 }
 
 /* ============================================================
@@ -1392,7 +1552,10 @@ function renderDashboard(){
   if(!STATE.stats) return;
   const total = totalLessonCount();
   document.getElementById('stat-level').textContent = Math.min(STATE.stats.current_level, LEVELS.length);
-  document.getElementById('stat-xp').textContent = STATE.stats.xp;
+  const xpEl = document.getElementById('stat-xp');
+  const prevXp = Number(xpEl.textContent)||0;
+  xpEl.textContent = STATE.stats.xp;
+  if(STATE.stats.xp > prevXp) bumpEl('stat-xp');
   document.getElementById('stat-lessons').textContent = `${STATE.stats.lessons_completed}/${total}`;
   document.getElementById('stat-avg').textContent = STATE.stats.avg_quiz_score ? `٪${STATE.stats.avg_quiz_score}` : '—';
   document.getElementById('proficiency-tag').textContent = proficiencyLabel(STATE.stats.current_level, STATE.stats.avg_quiz_score);
@@ -1539,13 +1702,13 @@ function openLesson(levelId, lessonIdx){
   let html = '';
   if(lesson.intro) html += `<div class="content-block"><h4>📘 شرح</h4><p style="font-size:14.5px;line-height:1.9">${escapeHtml(lesson.intro)}</p></div>`;
   if(lesson.vocab){
-    html += `<div class="content-block"><h4>🔤 المفردات</h4><table class="vocab-table"><thead><tr><th>الكورية</th><th>النطق</th><th>الشرح</th></tr></thead><tbody>`;
-    html += lesson.vocab.map(v=>`<tr><td class="ko">${escapeHtml(v[0])}</td><td class="rom">${escapeHtml(v[1])}</td><td>${escapeHtml(v[2])}</td></tr>`).join('');
+    html += `<div class="content-block"><h4>🔤 المفردات</h4><table class="vocab-table"><thead><tr><th></th><th>الكورية</th><th>النطق</th><th>الشرح</th></tr></thead><tbody>`;
+    html += lesson.vocab.map(v=>`<tr><td class="wico">${wordIconSvg(v[2])}</td><td class="ko">${escapeHtml(v[0])} ${speakBtn(v[0])}</td><td class="rom">${escapeHtml(v[1])}</td><td>${escapeHtml(v[2])}</td></tr>`).join('');
     html += `</tbody></table></div>`;
   }
   if(lesson.sentences){
     html += `<div class="content-block"><h4>💬 جمل وأمثلة</h4>`;
-    html += lesson.sentences.map(s=>`<div class="sentence-line"><div class="sko kr">${escapeHtml(s.ko)}</div><div class="sar">${escapeHtml(s.ar)}</div></div>`).join('');
+    html += lesson.sentences.map(s=>`<div class="sentence-line"><div class="sko kr">${escapeHtml(s.ko)} ${speakBtn(s.ko)}</div><div class="sar">${escapeHtml(s.ar)}</div></div>`).join('');
     html += `</div>`;
   }
   if(lesson.note) html += `<div class="content-block"><div class="note-box">💡 ${escapeHtml(lesson.note)}</div></div>`;
@@ -1585,7 +1748,10 @@ function renderQuizQuestion(){
       <div class="q-eyebrow">المستوى ${level.id} · سؤال ${STATE.quiz.qIndex+1} من ${total}</div>
       <div class="q-text">${escapeHtml(q.q)}</div>
       <div class="q-options">
-        ${q.options.map((opt,i)=>`<button class="q-opt ${/[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(opt)?'kr':''} ${selected===i?'selected':''}" data-i="${i}">${escapeHtml(opt)}</button>`).join('')}
+        ${q.options.map((opt,i)=>{
+          const isKo = /[가-힣ㄱ-ㅎㅏ-ㅣ]/.test(opt);
+          return `<button class="q-opt ${isKo?'kr':''} ${selected===i?'selected':''}" data-i="${i}">${escapeHtml(opt)} ${isKo?speakBtn(opt):''}</button>`;
+        }).join('')}
       </div>
       <div class="quiz-nav">
         <button class="btn-outline" id="quiz-prev" ${STATE.quiz.qIndex===0?'disabled':''}>→ السابق</button>
@@ -1593,7 +1759,11 @@ function renderQuizQuestion(){
       </div>
     </div>`;
   document.querySelectorAll('.q-opt').forEach(b=>{
-    b.addEventListener('click', ()=>{ STATE.quiz.answers[STATE.quiz.qIndex] = Number(b.dataset.i); renderQuizQuestion(); });
+    b.addEventListener('click', (e)=>{
+      const speakEl = e.target.closest('.speak-btn');
+      if(speakEl){ e.stopPropagation(); speakKorean(speakEl.dataset.speak); return; }
+      STATE.quiz.answers[STATE.quiz.qIndex] = Number(b.dataset.i); renderQuizQuestion();
+    });
   });
   const prevBtn = document.getElementById('quiz-prev');
   if(prevBtn) prevBtn.addEventListener('click', ()=>{ STATE.quiz.qIndex--; renderQuizQuestion(); });
@@ -1618,7 +1788,7 @@ async function finishQuiz(){
   </div>`;
   await submitQuizAttempt(level.id, score, passed);
   document.getElementById('quiz-continue').addEventListener('click', ()=>{ STATE.quiz = null; openLevel(level.id); });
-  if(passed) toast(`+${30+Math.round(score/10)} XP · فُتح المستوى التالي`);
+  if(passed){ toast(`+${30+Math.round(score/10)} XP · فُتح المستوى التالي`); fireConfetti(); }
 }
 
 /* ---------- تدريب سريع: يتجدّد عشوائياً من مفردات الدروس المكتملة ---------- */
@@ -1658,13 +1828,17 @@ function renderDrillQuestion(){
   document.getElementById('drill-body').innerHTML = `
     <div class="drill-card">
       <div class="q-eyebrow" style="text-align:center">سؤال ${STATE.drill.idx+1} من ${total} · تدريب سريع متجدّد</div>
-      <div class="drill-prompt ${direction==='ko2ar'?'kr':'ar'}">${escapeHtml(promptText)}</div>
+      <div class="drill-prompt ${direction==='ko2ar'?'kr':'ar'}">${escapeHtml(promptText)} ${direction==='ko2ar'?speakBtn(promptText):''}</div>
       <div class="q-options">
-        ${options.map(opt=>`<button class="q-opt ${direction==='ar2ko'?'kr':''}" data-opt="${escapeHtml(opt)}">${escapeHtml(opt)}</button>`).join('')}
+        ${options.map(opt=>`<button class="q-opt ${direction==='ar2ko'?'kr':''}" data-opt="${escapeHtml(opt)}">${escapeHtml(opt)} ${direction==='ar2ko'?speakBtn(opt):''}</button>`).join('')}
       </div>
     </div>`;
   document.querySelectorAll('#drill-body .q-opt').forEach(b=>{
-    b.addEventListener('click', ()=> answerDrill(b.dataset.opt, b));
+    b.addEventListener('click', (e)=>{
+      const speakEl = e.target.closest('.speak-btn');
+      if(speakEl){ e.stopPropagation(); speakKorean(speakEl.dataset.speak); return; }
+      answerDrill(b.dataset.opt, b);
+    });
   });
 }
 function answerDrill(selected, btnEl){
@@ -1765,6 +1939,7 @@ async function renderAdminDashboard(){
       <div class="who"><b>${escapeHtml(p.username)}</b><span>@${escapeHtml(p.login_handle)}</span></div>
       <div class="meta">م${s.current_level} · ${s.xp} XP · ${s.lessons_completed} دروس</div>
       <div class="actions">
+        <button class="admin-btn view" data-act="view-as" data-id="${p.id}" data-name="${escapeHtml(p.username)}">👁️ دخول كمستخدم</button>
         <button class="admin-btn neutral" data-act="kick" data-id="${p.id}">إخراج</button>
         <button class="admin-btn no" data-act="delete" data-id="${p.id}">حذف الحساب</button>
       </div>
@@ -1783,6 +1958,7 @@ async function renderAdminDashboard(){
   document.querySelectorAll('#admin-screen-dashboard .admin-btn').forEach(b=>{
     b.addEventListener('click', async ()=>{
       const id = b.dataset.id, act = b.dataset.act;
+      if(act==='view-as'){ adminEnterAsUser(id, b.dataset.name); return; }
       if(act==='delete' && !confirm('حذف هذا الحساب نهائياً مع كل تقدّمه؟')) return;
       b.disabled = true;
       try{
@@ -1902,7 +2078,8 @@ async function handleSignup(){
 }
 async function logout(){
   try{ await sb.auth.signOut(); }catch(e){}
-  STATE.profile = null; STATE.stats = null; STATE.progress = {};
+  STATE.profile = null; STATE.stats = null; STATE.progress = {}; STATE.adminProfile = null;
+  document.getElementById('impersonate-bar').classList.remove('show');
   document.getElementById('login-handle').value='';
   document.getElementById('login-password').value='';
   showScreen('auth');
@@ -1984,6 +2161,25 @@ function exitAdminShell(){
   document.getElementById('admin-shell').classList.add('hidden');
   document.getElementById('app-shell').style.display = '';
 }
+async function adminEnterAsUser(userId, username){
+  STATE.adminProfile = STATE.profile; // احتفظي بحساب الإدارة الحقيقي للعودة إليه
+  try{
+    const { data: targetProfile } = await sb.from('profiles').select('*').eq('id', userId).maybeSingle();
+    if(!targetProfile){ toast('تعذّر العثور على هذا الحساب'); return; }
+    STATE.profile = targetProfile;
+    await loadLearningData();
+    exitAdminShell();
+    document.getElementById('impersonate-name').textContent = username;
+    document.getElementById('impersonate-bar').classList.add('show');
+    routeAfterAuth();
+  }catch(e){ toast('تعذّر الدخول لهذا الحساب'); STATE.profile = STATE.adminProfile; }
+}
+function adminExitImpersonation(){
+  STATE.profile = STATE.adminProfile;
+  STATE.adminProfile = null;
+  document.getElementById('impersonate-bar').classList.remove('show');
+  enterAdminShell();
+}
 async function adminLogout(){
   try{ await sb.auth.signOut(); }catch(e){}
   STATE.profile = null;
@@ -2009,6 +2205,10 @@ function hideFatalError(){ document.getElementById('fatal-error').classList.add(
    حتى لا تصبح الواجهة كاملةً بلا استجابة إن تعذّر تحميل مكوّن خارجي.
    ============================================================ */
 function wireAppEvents(){
+  document.addEventListener('click', (e)=>{
+    const speakEl = e.target.closest('.speak-btn');
+    if(speakEl && !speakEl.closest('.q-opt')){ speakKorean(speakEl.dataset.speak); }
+  });
   document.querySelectorAll('.auth-tab').forEach(t=>{
     t.addEventListener('click', ()=>{
       document.querySelectorAll('.auth-tab').forEach(x=>x.classList.remove('active'));
@@ -2024,6 +2224,7 @@ function wireAppEvents(){
   document.getElementById('signup-password').addEventListener('keydown', e=>{ if(e.key==='Enter') handleSignup(); });
 
   document.getElementById('btn-logout').addEventListener('click', logout);
+  document.getElementById('btn-exit-impersonate').addEventListener('click', adminExitImpersonation);
   document.getElementById('btn-pending-logout').addEventListener('click', logout);
   document.getElementById('btn-blocked-logout').addEventListener('click', logout);
   document.getElementById('btn-device-back').addEventListener('click', ()=> showScreen('auth'));
