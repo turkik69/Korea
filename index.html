@@ -1175,7 +1175,8 @@ async function loginUser(loginHandle, password){
   if(error) throw new Error('BAD_CREDENTIALS');
   const uid = data.user.id;
   const { data: profile } = await sb.from('profiles').select('*').eq('id', uid).maybeSingle();
-  if(!profile || profile.role === 'admin'){ await sb.auth.signOut(); throw new Error('BAD_CREDENTIALS'); }
+  if(!profile){ await sb.auth.signOut(); throw new Error('BAD_CREDENTIALS'); }
+  if(profile.role === 'admin') return profile; // دخول الإدارة من نفس النموذج، بلا فحص جهاز
   return await verifyDeviceAndTouch(profile);
 }
 
@@ -1860,9 +1861,14 @@ async function handleLogin(){
   const btn = document.getElementById('btn-login');
   btn.disabled = true; btn.textContent = '...جارٍ الدخول';
   try{
-    STATE.profile = await loginUser(handle, password);
-    await loadLearningData();
-    routeAfterAuth();
+    const profile = await loginUser(handle, password);
+    STATE.profile = profile;
+    if(profile.role === 'admin'){
+      enterAdminShell();
+    } else {
+      await loadLearningData();
+      routeAfterAuth();
+    }
   }catch(e){
     if(e.message==='DEVICE_MISMATCH'){ showScreen('device'); }
     else showAuthError(friendlyAuthError(e));
@@ -1963,11 +1969,24 @@ async function handleAdminLogin(){
   }
   btn.disabled=false; btn.textContent='دخول ←';
 }
+function enterAdminShell(){
+  document.getElementById('app-shell').style.display = 'none';
+  document.getElementById('admin-shell').classList.remove('hidden');
+  showAdminScreen('dashboard');
+  renderAdminDashboard();
+}
+function exitAdminShell(){
+  document.getElementById('admin-shell').classList.add('hidden');
+  document.getElementById('app-shell').style.display = '';
+}
 async function adminLogout(){
   try{ await sb.auth.signOut(); }catch(e){}
   STATE.profile = null;
-  const exists = await adminExists();
-  showAdminScreen(exists ? 'login' : 'setup');
+  exitAdminShell();
+  document.getElementById('login-handle').value='';
+  document.getElementById('login-password').value='';
+  showScreen('auth');
+  renderMiniLeaderboard();
 }
 
 /* ============================================================
@@ -2055,11 +2074,6 @@ async function boot(){
     catch(e){ showFatalError(); return; }
   }
 
-  if(location.hash === '#admin'){
-    await adminBoot();
-    return;
-  }
-
   document.getElementById('app-shell').style.display = '';
   document.getElementById('admin-shell').classList.add('hidden');
   renderMiniLeaderboard();
@@ -2068,7 +2082,9 @@ async function boot(){
     const profile = await restoreSession();
     if(profile){
       STATE.profile = profile;
-      if(profile.role !== 'admin'){
+      if(profile.role === 'admin'){
+        enterAdminShell();
+      } else {
         await loadLearningData();
         routeAfterAuth();
       }
