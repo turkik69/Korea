@@ -47,7 +47,6 @@ a{color:inherit}
 .hidden{display:none !important}
 img,svg{display:block}
 
-/* ---------- shell ---------- */
 #app-shell{max-width:1080px;margin:0 auto;padding:0 20px 80px}
 .topbar{
   display:flex;align-items:center;justify-content:space-between;
@@ -68,11 +67,11 @@ img,svg{display:block}
 .nav-tabs button.active{background:var(--navy);color:#fff}
 .user-pill{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--ink-soft);font-weight:600}
 .user-pill .dot{width:8px;height:8px;border-radius:50%;background:var(--jade)}
+.user-pill .admin-badge{background:var(--gold);color:var(--navy);padding:0 10px;border-radius:20px;font-size:10px;font-weight:800}
 
 .screen{animation:rise .45s cubic-bezier(.2,.8,.25,1)}
 @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 
-/* ---------- auth screen ---------- */
 #screen-auth{min-height:82vh;display:flex;align-items:center;justify-content:center}
 .auth-wrap{
   width:100%;display:grid;grid-template-columns:1.1fr .9fr;gap:38px;align-items:center;
@@ -106,6 +105,7 @@ img,svg{display:block}
 }
 .btn-primary:hover{background:var(--navy-deep);transform:translateY(-1px)}
 .btn-primary:active{transform:translateY(0)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
 .auth-note{margin-top:14px;font-size:12px;color:var(--ink-soft);display:flex;gap:7px;align-items:flex-start}
 .mini-board{margin-top:22px;border-top:1px dashed var(--line);padding-top:16px}
 .mini-board h3{font-size:12px;color:var(--ink-soft);font-weight:700;margin-bottom:10px}
@@ -113,8 +113,8 @@ img,svg{display:block}
 .mini-row .rank{width:20px;font-family:var(--font-mono);font-weight:700;color:var(--gold);text-align:center}
 .mini-row .name{flex:1;font-weight:700}
 .mini-row .xp{font-family:var(--font-mono);font-size:12px;color:var(--ink-soft)}
+.pending-badge{background:var(--gold);color:var(--navy);padding:0 10px;border-radius:20px;font-size:10px;font-weight:700}
 
-/* ---------- gate path (signature element) ---------- */
 .gate-path{display:flex;align-items:flex-end;gap:0;overflow-x:auto;padding:26px 4px 14px;position:relative}
 .gate-path::before{
   content:'';position:absolute;right:38px;left:38px;bottom:38px;height:3px;
@@ -133,7 +133,6 @@ img,svg{display:block}
 .gstate.progress{background:rgba(217,164,65,.18);color:#8a6416}
 .gstate.passed{background:rgba(47,111,98,.15);color:var(--jade)}
 
-/* ---------- dashboard ---------- */
 .dash-grid{display:grid;grid-template-columns:2fr 1fr;gap:22px;margin-top:8px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-sm)}
 .stat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
@@ -143,7 +142,7 @@ img,svg{display:block}
 .stat-card.accent .v{color:var(--red)}
 .section-head{display:flex;align-items:baseline;justify-content:space-between;margin:26px 0 12px}
 .section-head h2{font-size:18px;font-weight:800;color:var(--navy)}
-.section-head .link{font-size:12.5px;font-weight:700;color:var(--red)}
+.section-head .link{font-size:12.5px;font-weight:700;color:var(--red);cursor:pointer}
 .side-card{padding:20px}
 .side-card h3{font-size:14.5px;font-weight:800;color:var(--navy);margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .lb-row{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--line)}
@@ -155,7 +154,6 @@ img,svg{display:block}
 .lb-row .xp{font-family:var(--font-mono);font-weight:700;font-size:12.5px;color:var(--jade)}
 .badge-top1{color:var(--gold)}
 
-/* ---------- level view ---------- */
 .lesson-list{display:grid;gap:12px;margin-top:6px}
 .lesson-row{
   display:flex;align-items:center;gap:14px;padding:16px 18px;background:var(--card);
@@ -181,7 +179,6 @@ img,svg{display:block}
 .btn-light{background:#fff;color:var(--navy);padding:11px 20px;border-radius:10px;font-weight:800;font-size:13.5px}
 .btn-light:disabled{opacity:.4;cursor:not-allowed}
 
-/* ---------- lesson view ---------- */
 .lesson-hero{display:flex;gap:22px;align-items:center;padding:24px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:22px}
 .lesson-hero .ill{width:96px;height:96px;flex:none}
 .lesson-hero h2{font-size:21px;font-weight:800;color:var(--navy)}
@@ -198,10 +195,12 @@ img,svg{display:block}
 .sentence-line .sar{font-size:13px;color:var(--ink-soft);margin-top:4px}
 .note-box{background:rgba(217,164,65,.12);border-right:3px solid var(--gold);padding:14px 16px;border-radius:8px;font-size:13.5px;color:#6b4f14}
 .lesson-actions{display:flex;gap:12px;margin-top:8px}
-.btn-outline{padding:13px 22px;border-radius:12px;border:1.5px solid var(--navy);color:var(--navy);font-weight:800;font-size:14px}
+.btn-outline{padding:13px 22px;border-radius:12px;border:1.5px solid var(--navy);color:var(--navy);font-weight:800;font-size:14px;background:transparent}
 .btn-outline:hover{background:var(--navy);color:#fff}
+.btn-outline:disabled{opacity:.4;cursor:not-allowed}
+.btn-danger{padding:8px 16px;border-radius:10px;border:1.5px solid var(--red);color:var(--red);font-weight:700;font-size:12px;background:transparent}
+.btn-danger:hover{background:var(--red);color:#fff}
 
-/* ---------- quiz ---------- */
 .quiz-progress{height:6px;background:var(--line);border-radius:100px;overflow:hidden;margin-bottom:26px}
 .quiz-progress i{display:block;height:100%;background:var(--gold);transition:.3s}
 .q-card{padding:26px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius)}
@@ -225,7 +224,6 @@ img,svg{display:block}
 .quiz-result.fail h3{color:var(--red)}
 .quiz-result p{color:var(--ink-soft);font-size:14px;max-width:42ch;margin:0 auto}
 
-/* ---------- leaderboard full ---------- */
 .lb-table{width:100%;border-collapse:collapse}
 .lb-table th{text-align:right;font-size:11.5px;color:var(--ink-soft);padding:10px 12px;border-bottom:2px solid var(--line)}
 .lb-table td{padding:13px 12px;border-bottom:1px solid var(--line);font-size:14px}
@@ -233,13 +231,26 @@ img,svg{display:block}
 .rank-badge{font-family:var(--font-mono);font-weight:700}
 .rank-badge.g1{color:var(--gold)}.rank-badge.g2{color:#8b96ab}.rank-badge.g3{color:#b07a4e}
 
-/* ---------- toast ---------- */
+.admin-users-list{display:grid;gap:10px;margin-top:10px}
+.admin-user-row{
+  display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;
+}
+.admin-user-row .info{flex:1}
+.admin-user-row .info b{font-size:14px}
+.admin-user-row .info span{font-size:11.5px;color:var(--ink-soft);display:block}
+.admin-user-row .status-badge{
+  font-size:10.5px;font-weight:700;padding:3px 12px;border-radius:100px;
+}
+.status-badge.approved{background:rgba(47,111,98,.15);color:var(--jade)}
+.status-badge.pending{background:rgba(217,164,65,.18);color:#8a6416}
+.status-badge.rejected{background:rgba(193,68,60,.12);color:var(--red)}
+
 #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;
   background:var(--navy-deep);color:#fff;padding:13px 22px;border-radius:100px;font-size:13.5px;font-weight:700;
   box-shadow:var(--shadow);transition:.25s;z-index:100;pointer-events:none;white-space:nowrap}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* ---------- print book ---------- */
 #print-book{display:none}
 @media print{
   #app-shell,#toast{display:none !important}
@@ -252,7 +263,6 @@ img,svg{display:block}
   .pb-cover .ill{width:160px;height:160px;margin:30px auto}
 }
 
-/* ---------- responsive ---------- */
 @media (max-width:840px){
   .auth-wrap{grid-template-columns:1fr;gap:26px;padding:20px 0}
   .dash-grid{grid-template-columns:1fr}
@@ -263,8 +273,6 @@ img,svg{display:block}
   .lesson-hero{flex-direction:column;text-align:center}
   .topbar{flex-wrap:wrap;gap:12px}
 }
-
-/* ---------- mobile bottom nav ---------- */
 .mobile-nav{display:none}
 @media (max-width:840px){
   .mobile-nav{
@@ -277,8 +285,6 @@ img,svg{display:block}
   .mobile-nav svg{width:20px;height:20px}
   #app-shell{padding-bottom:90px}
 }
-
-/* ---------- levels list cards ---------- */
 .level-card{
   display:flex;align-items:center;gap:18px;padding:20px;background:var(--card);
   border:1px solid var(--line);border-radius:16px;transition:.15s;
@@ -297,8 +303,6 @@ img,svg{display:block}
 .status-chip.passed{background:rgba(47,111,98,.15);color:var(--jade)}
 .lock-msg{padding:40px;text-align:center;color:var(--ink-soft)}
 .lock-msg svg{width:56px;height:56px;margin:0 auto 14px}
-
-/* ---------- print book detail ---------- */
 .pb-page .pb-ill{width:70px;height:70px;margin-bottom:14px}
 .pb-page h2{font-size:22px;color:var(--navy);font-weight:800;margin-bottom:4px}
 .pb-page h3{font-size:13px;color:var(--ink-soft);font-weight:600;margin-bottom:16px}
@@ -315,7 +319,6 @@ img,svg{display:block}
 
 <div id="app-shell">
 
-  <!-- ================= TOPBAR ================= -->
   <header class="topbar" id="topbar" style="display:none">
     <div class="brand">
       <svg class="brand-mark" viewBox="0 0 48 48" id="brand-gate"></svg>
@@ -325,11 +328,11 @@ img,svg{display:block}
       <button data-go="dashboard" class="active">الرئيسية</button>
       <button data-go="levels">المستويات</button>
       <button data-go="leaderboard">لوحة المتصدرين</button>
+      <button data-go="admin" id="admin-tab-btn" style="display:none">👤 إدارة المستخدمين</button>
     </nav>
-    <div class="user-pill"><span class="dot"></span><span id="user-pill-name">—</span></div>
+    <div class="user-pill"><span class="dot"></span><span id="user-pill-name">—</span><span class="admin-badge" id="admin-badge" style="display:none">مشرف</span></div>
   </header>
 
-  <!-- ================= AUTH SCREEN ================= -->
   <section class="screen" id="screen-auth">
     <div class="auth-wrap">
       <div class="auth-hero">
@@ -342,14 +345,25 @@ img,svg{display:block}
         </div>
       </div>
       <div class="auth-card">
-        <h2>ابدئي التعلّم</h2>
-        <p class="sub">أدخلي اسمك لإنشاء ملفّك التعليمي ومتابعة تقدّمك بين الأجهزة</p>
+        <h2>تسجيل الدخول</h2>
+        <p class="sub">أدخلي اسم المستخدم ورقم الهاتف ورمز المرور لتسجيل الدخول</p>
         <div class="field">
-          <label for="username-input">اسم المستخدم</label>
-          <input id="username-input" type="text" placeholder="مثال: خديجة" maxlength="24" autocomplete="off">
+          <label for="login-username-input">اسم المستخدم</label>
+          <input id="login-username-input" type="text" placeholder="مثال: ورد" maxlength="24" autocomplete="off">
         </div>
-        <button class="btn-primary" id="btn-start">ابدأ التعلّم ←</button>
+        <div class="field" style="margin-top:12px">
+          <label for="login-phone-input">رقم الهاتف (للتحقق من هويتك)</label>
+          <input id="login-phone-input" type="text" placeholder="مثال: 98765432" maxlength="15" autocomplete="off">
+        </div>
+        <div class="field" style="margin-top:12px">
+          <label for="login-password-input">رمز المرور</label>
+          <input id="login-password-input" type="password" placeholder="••••••••" maxlength="20" autocomplete="off">
+        </div>
+        <button class="btn-primary" id="btn-login">تسجيل الدخول ←</button>
         <p class="auth-note" id="auth-error" style="color:var(--red);display:none"></p>
+        <div style="margin-top:18px;border-top:1px dashed var(--line);padding-top:14px">
+          <p style="font-size:12.5px;color:var(--ink-soft)">🔹 الحساب الجديد بحاجة موافقة المشرف "ورد"</p>
+        </div>
         <div class="mini-board">
           <h3>المتصدّرون حالياً</h3>
           <div id="mini-leaderboard"></div>
@@ -358,7 +372,6 @@ img,svg{display:block}
     </div>
   </section>
 
-  <!-- ================= DASHBOARD ================= -->
   <section class="screen hidden" id="screen-dashboard">
     <div class="stat-cards">
       <div class="stat-card"><div class="k">المستوى الحالي</div><div class="v" id="stat-level">1</div></div>
@@ -391,7 +404,6 @@ img,svg{display:block}
     </div>
   </section>
 
-  <!-- ================= LEVELS LIST ================= -->
   <section class="screen hidden" id="screen-levels">
     <div class="section-head">
       <h2>كل المستويات</h2>
@@ -400,7 +412,6 @@ img,svg{display:block}
     <div id="levels-list" style="display:grid;gap:16px"></div>
   </section>
 
-  <!-- ================= SINGLE LEVEL ================= -->
   <section class="screen hidden" id="screen-level">
     <button class="btn-outline" style="padding:8px 16px;font-size:12.5px;margin-bottom:16px" data-go="levels">→ رجوع للمستويات</button>
     <div class="lesson-hero">
@@ -423,7 +434,6 @@ img,svg{display:block}
     </div>
   </section>
 
-  <!-- ================= LESSON ================= -->
   <section class="screen hidden" id="screen-lesson">
     <button class="btn-outline" style="padding:8px 16px;font-size:12.5px;margin-bottom:16px" id="btn-back-to-level">→ رجوع للمستوى</button>
     <div class="lesson-hero">
@@ -440,13 +450,11 @@ img,svg{display:block}
     </div>
   </section>
 
-  <!-- ================= QUIZ ================= -->
   <section class="screen hidden" id="screen-quiz">
     <div class="quiz-progress"><i id="quiz-progress-bar" style="width:0%"></i></div>
     <div id="quiz-body"></div>
   </section>
 
-  <!-- ================= LEADERBOARD ================= -->
   <section class="screen hidden" id="screen-leaderboard">
     <div class="section-head"><h2>🏆 لوحة المتصدّرين الكاملة</h2></div>
     <div class="card" style="padding:8px 20px">
@@ -457,31 +465,44 @@ img,svg{display:block}
     </div>
   </section>
 
+  <section class="screen hidden" id="screen-admin">
+    <div class="section-head"><h2>👤 إدارة المستخدمين — المشرفة ورد</h2></div>
+    <div class="card" style="padding:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <div>
+          <p style="font-size:13px;color:var(--ink-soft)">هنا يمكنك الموافقة على المستخدمين الجدد أو حذف حساباتهم</p>
+        </div>
+        <div style="display:flex;gap:10px">
+          <span id="admin-stats" style="font-size:12px;color:var(--ink-soft)"></span>
+        </div>
+      </div>
+      <div id="admin-users-container" style="margin-top:16px"></div>
+    </div>
+  </section>
+
 </div>
 
 <nav class="mobile-nav" id="mobile-nav" style="display:none">
   <button data-go="dashboard" class="active">الرئيسية</button>
   <button data-go="levels">المستويات</button>
   <button data-go="leaderboard">المتصدّرون</button>
+  <button data-go="admin" id="mobile-admin-btn" style="display:none">الإدارة</button>
 </nav>
 
 <div id="toast"></div>
 <div id="print-book"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 /* ============================================================
    한글이랑 — منصّة تعلّم اللغة الكورية
+   نظام كامل يعمل بـ localStorage (بدون Supabase)
    ============================================================ */
 
-// ---------- Supabase config ----------
-const SUPABASE_URL = "https://qisyjglrwwfboxahdupg.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFpc3lqZ2xyd3dmYm94YWhkdXBnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwMTE2NjgsImV4cCI6MjA5OTU4NzY2OH0.tcmEoZ2Gb1S9SD2s6GOAqbkq044rhAsKzxkBiIcEuak";
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const PASS_THRESHOLD = 70;
+const ADMIN_USERNAME = "ورد";
+const ADMIN_PASSWORD = "ward123";
 
-const PASS_THRESHOLD = 70; // النسبة المطلوبة لاجتياز اختبار المستوى
-
-// ---------- Course data ----------
+// ---------- بيانات المستويات والدروس ----------
 const LEVELS = [
   {
     id: 1,
@@ -517,7 +538,7 @@ const LEVELS = [
       },
       {
         id: "1-3", title: "تركيب المقاطع", subtitle: "كيف تُبنى الكلمات الكورية",
-        intro: "كل مقطع كوري = صامت أول + صائت (+ صامت أخير اختياري)، تُكتب مجتمعة داخل مربّع افتراضي واحد. القراءة داخل المربع من أعلى إلى أسفل ومن يسار إلى يمين — وهذا عكس اتجاه الكتابة العربية، فانتبهي له.",
+        intro: "كل مقطع كوري = صامت أول + صائت (+ صامت أخير اختياري)، تُكتب مجتمعة داخل مربّع افتراضي واحد.",
         vocab: [
           ["가","ga","ㄱ + ㅏ"],["한","han","ㅎ + ㅏ + ㄴ"],
           ["물","mul","ㅁ + ㅜ + ㄹ (تعني: ماء)"],["상","sang","ㅅ + ㅏ + ㅇ"],
@@ -566,7 +587,7 @@ const LEVELS = [
           {ko:"죄송합니다",ar:"أنا آسف/آسفة (رسمي)"},
           {ko:"괜찮아요",ar:"لا بأس / أنا بخير"}
         ],
-        note:"لاحظي أن أغلب هذه العبارات تنتهي بـ«요 -yo» أو «다 -da» وهي علامة الأدب في الكورية — لا تُسقطيها أبداً مع الغرباء أو كبار السن."
+        note:"لاحظي أن أغلب هذه العبارات تنتهي بـ«요 -yo» أو «다 -da» وهي علامة الأدب في الكورية."
       },
       {
         id:"2-2", title:"تقديم النفس", subtitle:"التعارف بالكورية",
@@ -591,7 +612,7 @@ const LEVELS = [
           ["여덟 / 팔","yeodeol / pal","٨"],["아홉 / 구","ahop / gu","٩"],
           ["열 / 십","yeol / sip","١٠"]
         ],
-        note:"تُستخدم الأرقام الأصلية مع «كلمات العدّ» مثل الأعمار وعدد الأشخاص، بينما الأرقام الصينية-الكورية تُستخدم مع الدقائق والنقود وأرقام الهواتف."
+        note:"تُستخدم الأرقام الأصلية مع «كلمات العدّ» مثل الأعمار وعدد الأشخاص."
       },
       {
         id:"2-4", title:"كلمات يومية شائعة", subtitle:"مفردات لا غنى عنها",
@@ -654,7 +675,7 @@ const LEVELS = [
           ["-지 않다","-ji anta","نفي أطول يُضاف بعد جذع الفعل"],
           ["-까요؟","-kkayo؟","صيغة سؤال مهذّبة (هل...؟)"]
         ],
-        sentences:[{ko:"비가 올까요؟",ar:"هل ستمطر؟"}]
+        sentences:[{ko:"비가 올까요?",ar:"هل ستمطر؟"}]
       },
       {
         id:"3-4", title:"الإشارة والملكية", subtitle:"هذا / يوجد / لا يوجد",
@@ -773,7 +794,7 @@ const LEVELS = [
         ]
       },
       {
-        id:"5-4", title:"مراجعة شاملة", subtitle:"وخطوات لما بعد هذا المستوى",
+        id:"5-4", title:"مراجعة شاملة", subtitle:"خطوات لما بعد هذا المستوى",
         intro:"راجعي أهمّ ما تعلّمتِه، ثم استمرّي بهذه الخطوات: شاهدي محتوى كورياً بترجمة، كرّري المفردات يومياً على فترات متباعدة، وتحدّثي مع متحدّثين أصليين عبر الإنترنت.",
         sentences:[
           {ko:"안녕하세요, 제 이름은 ○○예요.",ar:"مرحباً، اسمي ○○."},
@@ -795,213 +816,276 @@ const LEVELS = [
   }
 ];
 
-// وسوم مستوى الإتقان النهائي بحسب المستوى الحالي والمعدل العام
-function proficiencyLabel(currentLevel, avgScore){
-  if(currentLevel <= 1) return "مبتدئ · 초급";
-  if(currentLevel === 2) return "مبتدئ متقدّم · 초급+";
-  if(currentLevel === 3) return "متوسط أساسي · 중급 초";
-  if(currentLevel === 4) return "متوسط · 중급";
-  if(currentLevel >= 5 && avgScore >= 90) return "متمكّن · 고급";
-  return "متقدّم · 중고급";
-}
-
-/* ============================================================
-   الرسوم التوضيحية (SVG) — بلا صور خارجية، كلها مرسومة برمجياً
-   ============================================================ */
+// ---------- رسوم SVG التوضيحية ----------
 const DANCHEONG = ["#C1443C","#D9A441","#2F6F62","#1D2951"];
-
-function dancheongDots(y){
-  return DANCHEONG.map((c,i)=>`<circle cx="${30+i*13}" cy="${y}" r="3.4" fill="${c}"/>`).join("");
-}
-
-function badgeWrap(inner){
-  return `<svg viewBox="0 0 100 100" width="100%" height="100%">
-    <rect x="3" y="3" width="94" height="94" rx="24" fill="#FFFDF8" stroke="#E3D6B8" stroke-width="2"/>
-    ${dancheongDots(16)}
-    ${inner}
-  </svg>`;
-}
-
+function dancheongDots(y){ return DANCHEONG.map((c,i)=>`<circle cx="${30+i*13}" cy="${y}" r="3.4" fill="${c}"/>`).join(""); }
+function badgeWrap(inner){ return `<svg viewBox="0 0 100 100" width="100%" height="100%"><rect x="3" y="3" width="94" height="94" rx="24" fill="#FFFDF8" stroke="#E3D6B8" stroke-width="2"/>${dancheongDots(16)}${inner}</svg>`; }
 const ILLUSTRATIONS = {
-  alphabet: ()=> badgeWrap(`
-    <text x="50" y="68" text-anchor="middle" font-family="'Noto Sans KR',sans-serif" font-weight="900" font-size="44" fill="#1D2951">한</text>
-    <circle cx="50" cy="65" r="34" fill="none" stroke="#D9A441" stroke-width="2" stroke-dasharray="3 5"/>
-  `),
-  greeting: ()=> badgeWrap(`
-    <path d="M22 40 q0 -14 16 -14 h24 q16 0 16 14 v10 q0 14 -16 14 h-20 l-10 10 v-10 h-4 q-6 0 -6 -8 z" fill="#2F6F62"/>
-    <text x="50" y="60" text-anchor="middle" font-family="'Noto Sans KR',sans-serif" font-weight="700" font-size="16" fill="#FFFDF8">안녕</text>
-    <path d="M34 24 q4 -6 8 0" stroke="#D9A441" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    <path d="M58 24 q4 -6 8 0" stroke="#D9A441" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-  `),
-  grammar: ()=> badgeWrap(`
-    <rect x="26" y="26" width="10" height="52" rx="3" fill="#1D2951"/>
-    <rect x="64" y="26" width="10" height="52" rx="3" fill="#1D2951"/>
-    <rect x="36" y="38" width="28" height="4" rx="2" fill="#C1443C"/>
-    <rect x="36" y="48" width="28" height="4" rx="2" fill="#D9A441"/>
-    <rect x="36" y="58" width="20" height="4" rx="2" fill="#2F6F62"/>
-  `),
-  conversation: ()=> badgeWrap(`
-    <path d="M18 36 q0 -10 12 -10 h20 q12 0 12 10 v6 q0 10 -12 10 h-16 l-8 8 v-8 q-8 0 -8 -8 z" fill="#1D2951"/>
-    <path d="M40 56 q0 -10 12 -10 h18 q12 0 12 10 v6 q0 10 -12 10 h-4 v8 l-9 -8 h-5 q-12 0 -12 -10 z" fill="none" stroke="#C1443C" stroke-width="2.5"/>
-  `),
-  advanced: ()=> badgeWrap(`
-    <path d="M50 30 q-14 -8 -28 -3 v42 q14 -5 28 3 z" fill="#1D2951"/>
-    <path d="M50 30 q14 -8 28 -3 v42 q-14 -5 -28 3 z" fill="#2F6F62"/>
-    <path d="M50 30 v42" stroke="#FFFDF8" stroke-width="1.5"/>
-    <path d="M74 34 l4 -8 4 8 -4 -3 z" fill="#D9A441"/>
-  `)
+  alphabet: ()=> badgeWrap(`<text x="50" y="68" text-anchor="middle" font-family="'Noto Sans KR',sans-serif" font-weight="900" font-size="44" fill="#1D2951">한</text><circle cx="50" cy="65" r="34" fill="none" stroke="#D9A441" stroke-width="2" stroke-dasharray="3 5"/>`),
+  greeting: ()=> badgeWrap(`<path d="M22 40 q0 -14 16 -14 h24 q16 0 16 14 v10 q0 14 -16 14 h-20 l-10 10 v-10 h-4 q-6 0 -6 -8 z" fill="#2F6F62"/><text x="50" y="60" text-anchor="middle" font-family="'Noto Sans KR',sans-serif" font-weight="700" font-size="16" fill="#FFFDF8">안녕</text><path d="M34 24 q4 -6 8 0" stroke="#D9A441" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M58 24 q4 -6 8 0" stroke="#D9A441" stroke-width="2.5" fill="none" stroke-linecap="round"/>`),
+  grammar: ()=> badgeWrap(`<rect x="26" y="26" width="10" height="52" rx="3" fill="#1D2951"/><rect x="64" y="26" width="10" height="52" rx="3" fill="#1D2951"/><rect x="36" y="38" width="28" height="4" rx="2" fill="#C1443C"/><rect x="36" y="48" width="28" height="4" rx="2" fill="#D9A441"/><rect x="36" y="58" width="20" height="4" rx="2" fill="#2F6F62"/>`),
+  conversation: ()=> badgeWrap(`<path d="M18 36 q0 -10 12 -10 h20 q12 0 12 10 v6 q0 10 -12 10 h-16 l-8 8 v-8 q-8 0 -8 -8 z" fill="#1D2951"/><path d="M40 56 q0 -10 12 -10 h18 q12 0 12 10 v6 q0 10 -12 10 h-4 v8 l-9 -8 h-5 q-12 0 -12 -10 z" fill="none" stroke="#C1443C" stroke-width="2.5"/>`),
+  advanced: ()=> badgeWrap(`<path d="M50 30 q-14 -8 -28 -3 v42 q14 -5 28 3 z" fill="#1D2951"/><path d="M50 30 q14 -8 28 -3 v42 q-14 -5 -28 3 z" fill="#2F6F62"/><path d="M50 30 v42" stroke="#FFFDF8" stroke-width="1.5"/><path d="M74 34 l4 -8 4 8 -4 -3 z" fill="#D9A441"/>`)
 };
 
-function mountIllustration(elId, type){
-  const el = document.getElementById(elId);
-  if(!el) return;
-  el.outerHTML = ILLUSTRATIONS[type] ? ILLUSTRATIONS[type]().replace('<svg ', `<svg id="${elId}" `) : "";
-}
+function mountIllustration(elId, type){ const el=document.getElementById(elId); if(!el)return; el.outerHTML=ILLUSTRATIONS[type]().replace('<svg ', `<svg id="${elId}" `); }
 
-// ---------- بوابة المستوى (العنصر المميّز للمنصّة) ----------
-function gateSVG(state){
-  // state: 'locked' | 'progress' | 'passed'
-  const pillar = state==='locked' ? '#C9C2AC' : '#1D2951';
-  const roof   = state==='locked' ? '#D8D0B8' : (state==='progress' ? '#8a7a52' : '#1D2951');
-  const stripes = state==='passed'
-    ? DANCHEONG.map((c,i)=>`<rect x="${20+i*15}" y="34" width="11" height="6" fill="${c}"/>`).join("")
-    : `<rect x="16" y="34" width="68" height="6" fill="${state==='progress'?'#D9A441':'#C9C2AC'}"/>`;
-  const lock = state==='locked' ? `
-    <circle cx="50" cy="76" r="9" fill="none" stroke="#8f8467" stroke-width="3"/>
-    <rect x="43" y="80" width="14" height="12" rx="2" fill="#8f8467"/>` : '';
-  const badge = state==='passed' ? `<path d="M50 4 l3.4 7 7.6 1 -5.5 5.4 1.3 7.6 -6.8 -3.6 -6.8 3.6 1.3 -7.6 -5.5 -5.4 7.6 -1 z" fill="#D9A441"/>` : '';
-  return `<svg viewBox="0 0 100 120" width="100%" height="100%">
-    ${badge}
-    <path d="M8 40 L50 16 L92 40 Z" fill="${roof}"/>
-    ${stripes}
-    <rect x="20" y="44" width="11" height="60" rx="2" fill="${pillar}"/>
-    <rect x="69" y="44" width="11" height="60" rx="2" fill="${pillar}"/>
-    <rect x="14" y="104" width="72" height="7" rx="2" fill="${pillar}"/>
-    <line x1="50" y1="50" x2="50" y2="100" stroke="${state==='locked'?'#C9C2AC':'#E3D6B8'}" stroke-width="2" stroke-dasharray="4 4"/>
-    ${lock}
-  </svg>`;
-}
+function gateSVG(state){ const pillar=state==='locked'?'#C9C2AC':'#1D2951'; const roof=state==='locked'?'#D8D0B8':(state==='progress'?'#8a7a52':'#1D2951'); const stripes=state==='passed'?DANCHEONG.map((c,i)=>`<rect x="${20+i*15}" y="34" width="11" height="6" fill="${c}"/>`).join(""):`<rect x="16" y="34" width="68" height="6" fill="${state==='progress'?'#D9A441':'#C9C2AC'}"/>`; const lock=state==='locked'?`<circle cx="50" cy="76" r="9" fill="none" stroke="#8f8467" stroke-width="3"/><rect x="43" y="80" width="14" height="12" rx="2" fill="#8f8467"/>`:''; const badge=state==='passed'?`<path d="M50 4 l3.4 7 7.6 1 -5.5 5.4 1.3 7.6 -6.8 -3.6 -6.8 3.6 1.3 -7.6 -5.5 -5.4 7.6 -1 z" fill="#D9A441"/>`:''; return `<svg viewBox="0 0 100 120" width="100%" height="100%">${badge}<path d="M8 40 L50 16 L92 40 Z" fill="${roof}"/>${stripes}<rect x="20" y="44" width="11" height="60" rx="2" fill="${pillar}"/><rect x="69" y="44" width="11" height="60" rx="2" fill="${pillar}"/><rect x="14" y="104" width="72" height="7" rx="2" fill="${pillar}"/><line x1="50" y1="50" x2="50" y2="100" stroke="${state==='locked'?'#C9C2AC':'#E3D6B8'}" stroke-width="2" stroke-dasharray="4 4"/>${lock}</svg>`; }
 
-/* ============================================================
-   الحالة والاتصال بقاعدة البيانات (Supabase)
-   ============================================================ */
+// ---------- الحالة العامة ----------
 const STATE = {
-  user: null,          // {id, username}
-  stats: null,          // صف من user_stats
-  progress: {},          // "levelId-lessonId" -> true
+  user: null,
+  stats: null,
+  progress: {},
   currentLevelId: null,
   currentLessonIdx: 0,
-  quiz: null            // {levelId, qIndex, answers[], locked}
+  quiz: null,
+  isAdmin: false,
+  allUsers: []
 };
 
-function toast(msg, ms=2600){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(t._timer);
-  t._timer = setTimeout(()=>t.classList.remove('show'), ms);
-}
-
+function toast(msg, ms=2600){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._timer); t._timer=setTimeout(()=>t.classList.remove('show'),ms); }
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function totalLessonCount(){ return LEVELS.reduce((s,l)=>s+l.lessons.length,0); }
 
-async function ensureUser(usernameRaw){
-  const username = usernameRaw.trim();
-  if(!username) throw new Error("empty");
-  const { data: existing } = await sb.from('users').select('id,username').eq('username', username).maybeSingle();
-  let id;
-  if(existing){
-    id = existing.id;
-  } else {
-    const { data: created, error: insErr } = await sb.from('users').insert({ username }).select().single();
-    if(insErr){
-      const { data: retry } = await sb.from('users').select('id').eq('username', username).maybeSingle();
-      if(retry) id = retry.id; else throw insErr;
-    } else {
-      id = created.id;
-    }
+// ---------- نظام التخزين المحلي ----------
+function getDB(){
+  let db = localStorage.getItem('hangeul_db');
+  if(!db){
+    const initial = { users: [], stats: [], progress: [], quizAttempts: [] };
+    localStorage.setItem('hangeul_db', JSON.stringify(initial));
+    return initial;
   }
-  localStorage.setItem('hi_user_id', id);
-  localStorage.setItem('hi_username', username);
-  return { id, username };
+  return JSON.parse(db);
 }
 
-async function loadUserData(user){
-  let { data: stats } = await sb.from('user_stats').select('*').eq('user_id', user.id).maybeSingle();
+function saveDB(db){
+  localStorage.setItem('hangeul_db', JSON.stringify(db));
+}
+
+function getDeviceId(){
+  let id = localStorage.getItem('hi_device_id');
+  if(!id){
+    id = 'dev_' + Math.random().toString(36).substring(2,10) + '_' + Date.now().toString(36);
+    localStorage.setItem('hi_device_id', id);
+  }
+  return id;
+}
+
+// ---------- دوال المستخدمين ----------
+function findUserByUsername(username){
+  const db = getDB();
+  return db.users.find(u => u.username === username);
+}
+
+function findUserById(id){
+  const db = getDB();
+  return db.users.find(u => u.id === id);
+}
+
+function createUser(username, phone, password){
+  const db = getDB();
+  if(db.users.find(u => u.username === username)) throw new Error('اسم المستخدم موجود بالفعل');
+  const newUser = {
+    id: 'u_' + Date.now() + '_' + Math.random().toString(36).substring(2,6),
+    username,
+    phone,
+    password,
+    status: 'pending',
+    device_id: null,
+    created_at: new Date().toISOString()
+  };
+  db.users.push(newUser);
+  saveDB(db);
+  return newUser;
+}
+
+function updateUserStatus(userId, status){
+  const db = getDB();
+  const user = db.users.find(u => u.id === userId);
+  if(!user) throw new Error('المستخدم غير موجود');
+  user.status = status;
+  saveDB(db);
+  return user;
+}
+
+function deleteUser(userId){
+  const db = getDB();
+  db.users = db.users.filter(u => u.id !== userId);
+  db.stats = db.stats.filter(s => s.user_id !== userId);
+  db.progress = db.progress.filter(p => p.user_id !== userId);
+  db.quizAttempts = db.quizAttempts.filter(q => q.user_id !== userId);
+  saveDB(db);
+}
+
+function getAllUsers(){
+  const db = getDB();
+  return db.users;
+}
+
+function getUserStats(userId){
+  const db = getDB();
+  let stats = db.stats.find(s => s.user_id === userId);
   if(!stats){
-    const defaults = { user_id:user.id, username:user.username, current_level:1, xp:0, lessons_completed:0, quizzes_passed:0, avg_quiz_score:0 };
-    const { data: created } = await sb.from('user_stats').insert(defaults).select().single();
-    stats = created;
-  } else if(stats.username !== user.username){
-    await sb.from('user_stats').update({ username:user.username }).eq('user_id', user.id);
-    stats.username = user.username;
+    stats = {
+      user_id: userId,
+      current_level: 1,
+      xp: 0,
+      lessons_completed: 0,
+      quizzes_passed: 0,
+      avg_quiz_score: 0
+    };
+    db.stats.push(stats);
+    saveDB(db);
   }
-  STATE.stats = stats;
+  return stats;
+}
 
-  const { data: prog } = await sb.from('progress').select('level_id,lesson_id,completed').eq('user_id', user.id);
+function updateUserStats(userId, updates){
+  const db = getDB();
+  let stats = db.stats.find(s => s.user_id === userId);
+  if(!stats){
+    stats = { user_id: userId, current_level:1, xp:0, lessons_completed:0, quizzes_passed:0, avg_quiz_score:0 };
+    db.stats.push(stats);
+  }
+  Object.assign(stats, updates);
+  saveDB(db);
+  return stats;
+}
+
+function getProgress(userId){
+  const db = getDB();
+  return db.progress.filter(p => p.user_id === userId);
+}
+
+function setProgress(userId, levelId, lessonId, completed){
+  const db = getDB();
+  let existing = db.progress.find(p => p.user_id === userId && p.level_id === levelId && p.lesson_id === lessonId);
+  if(existing){
+    existing.completed = completed;
+  } else {
+    db.progress.push({ user_id: userId, level_id: levelId, lesson_id: lessonId, completed, updated_at: new Date().toISOString() });
+  }
+  saveDB(db);
+}
+
+function addQuizAttempt(userId, levelId, score, passed){
+  const db = getDB();
+  db.quizAttempts.push({ user_id: userId, level_id: levelId, score, passed, created_at: new Date().toISOString() });
+  saveDB(db);
+  
+  // تحديث متوسط النتائج
+  const attempts = db.quizAttempts.filter(q => q.user_id === userId);
+  if(attempts.length){
+    const avg = attempts.reduce((s,a)=>s+Number(a.score),0)/attempts.length;
+    const stats = getUserStats(userId);
+    stats.avg_quiz_score = Math.round(avg*10)/10;
+    saveDB(db);
+  }
+}
+
+function getLeaderboard(){
+  const db = getDB();
+  const approvedUsers = db.users.filter(u => u.status === 'approved').map(u => u.id);
+  const stats = db.stats.filter(s => approvedUsers.includes(s.user_id));
+  stats.sort((a,b) => b.xp - a.xp);
+  return stats.map(s => {
+    const user = db.users.find(u => u.id === s.user_id);
+    return { ...s, username: user ? user.username : 'مجهول' };
+  });
+}
+
+// ---------- دوال تسجيل الدخول ----------
+function handleLogin(){
+  const username = document.getElementById('login-username-input').value.trim();
+  const phone = document.getElementById('login-phone-input').value.trim();
+  const password = document.getElementById('login-password-input').value.trim();
+  const errEl = document.getElementById('auth-error');
+  errEl.style.display='none';
+  
+  if(username.length<2){ errEl.textContent='الرجاء إدخال اسم مستخدم صحيح'; errEl.style.display='block'; return; }
+  if(phone.length<5){ errEl.textContent='الرجاء إدخال رقم هاتف صحيح'; errEl.style.display='block'; return; }
+  if(password.length<4){ errEl.textContent='الرجاء إدخال رمز مرور لا يقل عن 4 أحرف'; errEl.style.display='block'; return; }
+  
+  // التحقق من المشرف ورد
+  if(username === ADMIN_USERNAME && password === ADMIN_PASSWORD){
+    STATE.isAdmin = true;
+    STATE.user = { id: 'admin', username: ADMIN_USERNAME, isAdmin: true };
+    STATE.stats = { current_level: 5, xp: 999, lessons_completed: totalLessonCount(), quizzes_passed: 5, avg_quiz_score: 95 };
+    STATE.allUsers = getAllUsers();
+    afterLogin();
+    return;
+  }
+  
+  // التحقق من المستخدم العادي
+  const user = findUserByUsername(username);
+  if(!user || user.phone !== phone || user.password !== password){
+    errEl.textContent='اسم المستخدم أو رقم الهاتف أو رمز المرور غير صحيح';
+    errEl.style.display='block'; return;
+  }
+  
+  if(user.status === 'pending'){
+    errEl.textContent='⏳ حسابك في انتظار موافقة المشرفة ورد';
+    errEl.style.display='block'; return;
+  }
+  if(user.status === 'rejected'){
+    errEl.textContent='❌ تم رفض حسابك من قبل المشرفة';
+    errEl.style.display='block'; return;
+  }
+  if(user.status !== 'approved'){
+    errEl.textContent='حسابك غير مفعّل حالياً';
+    errEl.style.display='block'; return;
+  }
+  
+  // التحقق من الجهاز
+  const deviceId = getDeviceId();
+  if(user.device_id && user.device_id !== deviceId){
+    errEl.textContent='⚠️ هذا الحساب مرتبط بجهاز آخر. لا يمكن تسجيل الدخول من جهاز جديد.';
+    errEl.style.display='block'; return;
+  }
+  
+  if(!user.device_id){
+    const db = getDB();
+    const u = db.users.find(u => u.id === user.id);
+    if(u) u.device_id = deviceId;
+    saveDB(db);
+  }
+  
+  STATE.isAdmin = false;
+  STATE.user = { id: user.id, username: user.username };
+  STATE.stats = getUserStats(user.id);
   STATE.progress = {};
-  (prog||[]).forEach(r=>{ if(r.completed) STATE.progress[r.level_id+'-'+r.lesson_id] = true; });
+  getProgress(user.id).forEach(p => {
+    if(p.completed) STATE.progress[p.level_id+'-'+p.lesson_id] = true;
+  });
+  STATE.allUsers = getAllUsers();
+  afterLogin();
 }
 
-async function syncStats(){
-  try{
-    await sb.from('user_stats').update({
-      current_level: STATE.stats.current_level,
-      xp: STATE.stats.xp,
-      lessons_completed: STATE.stats.lessons_completed,
-      quizzes_passed: STATE.stats.quizzes_passed,
-      avg_quiz_score: STATE.stats.avg_quiz_score,
-      last_active: new Date().toISOString()
-    }).eq('user_id', STATE.user.id);
-  }catch(e){ toast("تعذّر مزامنة الإحصائيات مع الخادم"); }
-}
-
-async function markLessonComplete(levelId, lessonId){
-  const key = levelId+'-'+lessonId;
-  if(STATE.progress[key]) return false;
-  STATE.progress[key] = true;
-  STATE.stats.lessons_completed += 1;
-  STATE.stats.xp += 10;
-  try{
-    await sb.from('progress').upsert(
-      { user_id:STATE.user.id, level_id:levelId, lesson_id:lessonId, completed:true, updated_at:new Date().toISOString() },
-      { onConflict:'user_id,level_id,lesson_id' }
-    );
-    await syncStats();
-  }catch(e){ toast("تعذّر حفظ تقدّمك — تحقّقي من الاتصال"); }
-  return true;
-}
-
-async function submitQuizAttempt(levelId, score, passed){
-  try{
-    await sb.from('quiz_attempts').insert({ user_id:STATE.user.id, level_id:levelId, score, passed });
-    const { data: attempts } = await sb.from('quiz_attempts').select('score').eq('user_id', STATE.user.id);
-    if(attempts && attempts.length){
-      const avg = attempts.reduce((s,a)=>s+Number(a.score),0)/attempts.length;
-      STATE.stats.avg_quiz_score = Math.round(avg*10)/10;
-    }
-  }catch(e){ toast("تعذّر تسجيل نتيجة الاختبار على الخادم"); }
-  if(passed) STATE.stats.quizzes_passed += 1;
-  STATE.stats.xp += passed ? (30 + Math.round(score/10)) : 5;
-  if(passed && levelId === STATE.stats.current_level && levelId < LEVELS.length){
-    STATE.stats.current_level = levelId + 1;
+// ---------- دوال العرض ----------
+function afterLogin(){
+  document.getElementById('topbar').style.display='flex';
+  document.getElementById('mobile-nav').style.display='flex';
+  const bg = document.getElementById('brand-gate');
+  if(bg) bg.outerHTML = gateSVG('passed').replace('<svg ', '<svg id="brand-gate" class="brand-mark" ');
+  document.getElementById('user-pill-name').textContent = STATE.user.username;
+  
+  if(STATE.isAdmin){
+    document.getElementById('admin-badge').style.display='inline';
+    document.getElementById('admin-tab-btn').style.display='inline';
+    document.getElementById('mobile-admin-btn').style.display='flex';
+  } else {
+    document.getElementById('admin-badge').style.display='none';
+    document.getElementById('admin-tab-btn').style.display='none';
+    document.getElementById('mobile-admin-btn').style.display='none';
   }
-  await syncStats();
+  
+  goTo('dashboard');
 }
-
-async function fetchLeaderboard(limit=50){
-  try{
-    const { data } = await sb.from('user_stats').select('*').order('xp',{ascending:false}).limit(limit);
-    return data || [];
-  }catch(e){ return []; }
-}
-
-/* ============================================================
-   التنقّل والعرض
-   ============================================================ */
-const SCREENS = ['auth','dashboard','levels','level','lesson','quiz','leaderboard'];
 
 function goTo(name){
-  SCREENS.forEach(s=>{
+  const screens = ['auth','dashboard','levels','level','lesson','quiz','leaderboard','admin'];
+  screens.forEach(s=>{
     const el = document.getElementById('screen-'+s);
     if(el) el.classList.toggle('hidden', s!==name);
   });
@@ -1012,6 +1096,7 @@ function goTo(name){
   if(name==='dashboard') renderDashboard();
   if(name==='levels') renderLevelsList();
   if(name==='leaderboard') renderLeaderboardFull();
+  if(name==='admin' && STATE.isAdmin) renderAdminUsers();
 }
 
 function levelState(levelId){
@@ -1023,21 +1108,27 @@ function levelState(levelId){
 function levelUnlocked(levelId){ return levelId <= (STATE.stats?STATE.stats.current_level:1); }
 function lessonsCompletedInLevel(level){ return level.lessons.filter(ls=>STATE.progress[level.id+'-'+ls.id]).length; }
 
-/* ---------- شاشة الدخول ---------- */
-async function renderMiniLeaderboard(targetId, rowClass){
-  const rows = await fetchLeaderboard(5);
-  const host = document.getElementById(targetId);
+function renderMiniLeaderboard(){
+  const rows = getLeaderboard().slice(0,5);
+  const host = document.getElementById('mini-leaderboard');
   if(!rows.length){ host.innerHTML = `<p style="font-size:12.5px;color:var(--ink-soft)">كوني أوّل المتسابقين!</p>`; return; }
   host.innerHTML = rows.map((r,i)=>`
-    <div class="${rowClass}">
+    <div class="mini-row">
       <span class="rank">${i+1}</span>
       <span class="name">${escapeHtml(r.username)}</span>
       <span class="xp mono">${r.xp} XP</span>
     </div>`).join('');
 }
-function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-/* ---------- لوحة التحكم ---------- */
+function proficiencyLabel(currentLevel, avgScore){
+  if(currentLevel <= 1) return "مبتدئ · 초급";
+  if(currentLevel === 2) return "مبتدئ متقدّم · 초급+";
+  if(currentLevel === 3) return "متوسط أساسي · 중급 초";
+  if(currentLevel === 4) return "متوسط · 중급";
+  if(currentLevel >= 5 && avgScore >= 90) return "متمكّن · 고급";
+  return "متقدّم · 중고급";
+}
+
 function renderDashboard(){
   if(!STATE.stats) return;
   const total = totalLessonCount();
@@ -1090,8 +1181,8 @@ function renderDashboard(){
   renderSideLeaderboard();
 }
 
-async function renderSideLeaderboard(){
-  const rows = await fetchLeaderboard(50);
+function renderSideLeaderboard(){
+  const rows = getLeaderboard();
   const host = document.getElementById('dash-leaderboard');
   const meIdx = rows.findIndex(r=>r.user_id===STATE.user.id);
   let html = rows.slice(0,5).map((r,i)=>lbRowHtml(r,i)).join('');
@@ -1111,7 +1202,6 @@ function lbRowHtml(r,i){
   </div>`;
 }
 
-/* ---------- قائمة المستويات ---------- */
 function renderLevelsList(){
   const host = document.getElementById('levels-list');
   host.innerHTML = LEVELS.map(l=>{
@@ -1134,7 +1224,6 @@ function renderLevelsList(){
   });
 }
 
-/* ---------- شاشة مستوى واحد ---------- */
 function openLevel(levelId){
   const level = LEVELS.find(l=>l.id===levelId);
   STATE.currentLevelId = levelId;
@@ -1183,7 +1272,6 @@ function openLevel(levelId){
   btnQuiz.textContent = st==='passed' ? 'إعادة الاختبار' : 'ابدئي الاختبار';
 }
 
-/* ---------- شاشة الدرس ---------- */
 function openLesson(levelId, lessonIdx){
   const level = LEVELS.find(l=>l.id===levelId);
   const lesson = level.lessons[lessonIdx];
@@ -1219,7 +1307,6 @@ function openLesson(levelId, lessonIdx){
   document.getElementById('btn-back-to-level').onclick = ()=> openLevel(levelId);
 }
 
-/* ---------- الاختبار ---------- */
 function openQuiz(levelId){
   const level = LEVELS.find(l=>l.id===levelId);
   const done = lessonsCompletedInLevel(level);
@@ -1260,7 +1347,7 @@ function renderQuizQuestion(){
     else finishQuiz();
   });
 }
-async function finishQuiz(){
+function finishQuiz(){
   const level = LEVELS.find(l=>l.id===STATE.quiz.levelId);
   const total = level.quiz.questions.length;
   let correct = 0;
@@ -1274,7 +1361,17 @@ async function finishQuiz(){
     <p>${passed? `أحسنتِ! فُتحت البوابة التالية. حصلتِ على ${correct} من ${total} إجابات صحيحة.` : `تحتاجين ٪${PASS_THRESHOLD} على الأقل للنجاح. حصلتِ على ${correct} من ${total}. راجعي الدروس وحاولي مجدداً.`}</p>
     <button class="btn-primary" style="width:auto;padding:14px 30px;margin-top:22px" id="quiz-continue">متابعة</button>
   </div>`;
-  await submitQuizAttempt(level.id, score, passed);
+  
+  addQuizAttempt(STATE.user.id, level.id, score, passed);
+  const stats = getUserStats(STATE.user.id);
+  if(passed) stats.quizzes_passed += 1;
+  stats.xp += passed ? (30 + Math.round(score/10)) : 5;
+  if(passed && level.id === stats.current_level && level.id < LEVELS.length){
+    stats.current_level = level.id + 1;
+  }
+  updateUserStats(STATE.user.id, stats);
+  STATE.stats = stats;
+  
   document.getElementById('quiz-continue').addEventListener('click', ()=>{
     STATE.quiz = null;
     openLevel(level.id);
@@ -1282,9 +1379,8 @@ async function finishQuiz(){
   if(passed) toast(`+${30+Math.round(score/10)} XP · فُتح المستوى التالي`);
 }
 
-/* ---------- لوحة المتصدّرين الكاملة ---------- */
-async function renderLeaderboardFull(){
-  const rows = await fetchLeaderboard(100);
+function renderLeaderboardFull(){
+  const rows = getLeaderboard();
   const body = document.getElementById('leaderboard-full-body');
   if(!rows.length){ body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--ink-soft)">لا يوجد متسابقون بعد</td></tr>`; return; }
   body.innerHTML = rows.map((r,i)=>{
@@ -1301,38 +1397,94 @@ async function renderLeaderboardFull(){
   }).join('');
 }
 
-/* ============================================================
-   تصدير الكتاب المصوّر (طباعة → حفظ كـ PDF من المتصفح)
-   ============================================================ */
-function buildBookHTML(levelsArr, bookTitle){
-  let html = `<div class="pb-page pb-cover">
-     <div class="ill" style="width:160px;height:160px;margin:0 auto 30px" id="pb-cover-ill"></div>
-     <h1>${escapeHtml(bookTitle)}</h1>
-     <p style="margin-top:14px;color:var(--ink-soft);font-family:var(--font-kr)">한글이랑 · مع الهانغل</p>
-     <p style="margin-top:30px;color:var(--ink-soft);font-size:13px">أُعدّ خصيصاً لـ ${escapeHtml(STATE.user.username)} · ${new Date().toLocaleDateString('ar-EG')}</p>
-  </div>`;
-  levelsArr.forEach(level=>{
-    level.lessons.forEach(lesson=>{
-      html += `<div class="pb-page">
-        <div class="pb-ill" data-icon="${level.icon}"></div>
-        <h2>${escapeHtml(lesson.title)}</h2>
-        <h3>المستوى ${level.id} — ${escapeHtml(level.title)} · ${escapeHtml(lesson.subtitle||'')}</h3>`;
-      if(lesson.intro) html += `<p class="pb-intro">${escapeHtml(lesson.intro)}</p>`;
-      if(lesson.vocab){
-        html += `<table><thead><tr><th>الكورية</th><th>النطق</th><th>الشرح</th></tr></thead><tbody>`;
-        html += lesson.vocab.map(v=>`<tr><td class="ko">${escapeHtml(v[0])}</td><td>${escapeHtml(v[1])}</td><td>${escapeHtml(v[2])}</td></tr>`).join('');
-        html += `</tbody></table>`;
-      }
-      if(lesson.sentences){
-        html += lesson.sentences.map(s=>`<div class="pb-sentence"><b class="kr">${escapeHtml(s.ko)}</b><br>${escapeHtml(s.ar)}</div>`).join('');
-      }
-      if(lesson.note) html += `<div class="pb-note">💡 ${escapeHtml(lesson.note)}</div>`;
-      html += `</div>`;
-    });
-  });
-  return html;
+// ---------- دوال المشرف ----------
+function renderAdminUsers(){
+  const users = getAllUsers();
+  const container = document.getElementById('admin-users-container');
+  const pending = users.filter(u => u.status === 'pending').length;
+  document.getElementById('admin-stats').textContent = `📊 ${users.length} مستخدم · ${pending} في الانتظار`;
+  
+  const formHtml = `
+    <div style="background:var(--bg-soft);padding:16px;border-radius:12px;margin-bottom:14px;border:1px solid var(--line)">
+      <h4 style="margin-bottom:10px;color:var(--navy)">➕ تسجيل مستخدم جديد</h4>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end">
+        <div class="field" style="margin:0"><label>اسم المستخدم</label><input id="new-username" type="text" placeholder="اسم المستخدم"></div>
+        <div class="field" style="margin:0"><label>رقم الهاتف</label><input id="new-phone" type="text" placeholder="رقم الهاتف"></div>
+        <div class="field" style="margin:0"><label>رمز المرور</label><input id="new-password" type="text" placeholder="رمز المرور"></div>
+        <button class="btn-primary" style="width:auto;padding:10px 20px;margin:0" onclick="handleCreateUser()">تسجيل</button>
+      </div>
+    </div>
+  `;
+  
+  let listHtml = formHtml;
+  if(users.length === 0){
+    listHtml += `<p style="color:var(--ink-soft);font-size:13px">لا يوجد مستخدمون مسجّلون حتى الآن</p>`;
+  } else {
+    listHtml += users.map(u => `
+      <div class="admin-user-row">
+        <div class="info">
+          <b>${escapeHtml(u.username)}</b>
+          <span>📱 ${escapeHtml(u.phone)} · ${u.device_id ? '🔗 جهاز مرتبط' : '📱 جهاز غير مرتبط'}</span>
+        </div>
+        <span class="status-badge ${u.status}">${u.status === 'pending' ? '⏳ قيد الانتظار' : u.status === 'approved' ? '✅ موافق' : '❌ مرفوض'}</span>
+        <div style="display:flex;gap:6px">
+          ${u.status === 'pending' ? `
+            <button class="btn-primary" style="width:auto;padding:6px 14px;font-size:11px;margin:0" onclick="handleApproveUser('${u.id}')">موافقة</button>
+            <button class="btn-danger" onclick="handleRejectUser('${u.id}')">رفض</button>
+          ` : ''}
+          ${u.username !== ADMIN_USERNAME ? `<button class="btn-danger" onclick="handleDeleteUser('${u.id}')">🗑️ حذف</button>` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+  container.innerHTML = listHtml;
 }
 
+function handleCreateUser(){
+  const username = document.getElementById('new-username').value.trim();
+  const phone = document.getElementById('new-phone').value.trim();
+  const password = document.getElementById('new-password').value.trim();
+  if(username.length<2 || phone.length<5 || password.length<4){
+    toast('الرجاء تعبئة جميع الحقول بشكل صحيح');
+    return;
+  }
+  try{
+    createUser(username, phone, password);
+    toast('✅ تم تسجيل المستخدم بنجاح. في انتظار الموافقة.');
+    document.getElementById('new-username').value = '';
+    document.getElementById('new-phone').value = '';
+    document.getElementById('new-password').value = '';
+    renderAdminUsers();
+  }catch(e){
+    toast('❌ ' + e.message);
+  }
+}
+
+function handleApproveUser(userId){
+  updateUserStatus(userId, 'approved');
+  toast('✅ تم الموافقة على المستخدم');
+  renderAdminUsers();
+}
+
+function handleRejectUser(userId){
+  updateUserStatus(userId, 'rejected');
+  toast('❌ تم رفض المستخدم');
+  renderAdminUsers();
+}
+
+function handleDeleteUser(userId){
+  if(!confirm('هل أنتِ متأكدة من حذف هذا المستخدم؟ سيتم حذف جميع بياناته.')) return;
+  deleteUser(userId);
+  toast('تم حذف المستخدم');
+  renderAdminUsers();
+}
+
+// ---------- تصدير الكتاب ----------
+function buildBookHTML(levelsArr, bookTitle){
+  let html = `<div class="pb-page pb-cover"><div class="ill" style="width:160px;height:160px;margin:0 auto 30px" id="pb-cover-ill"></div><h1>${escapeHtml(bookTitle)}</h1><p style="margin-top:14px;color:var(--ink-soft);font-family:var(--font-kr)">한글이랑 · مع الهانغل</p><p style="margin-top:30px;color:var(--ink-soft);font-size:13px">أُعدّ خصيصاً لـ ${escapeHtml(STATE.user.username)} · ${new Date().toLocaleDateString('ar-EG')}</p></div>`;
+  levelsArr.forEach(level=>{ level.lessons.forEach(lesson=>{ html += `<div class="pb-page"><div class="pb-ill" data-icon="${level.icon}"></div><h2>${escapeHtml(lesson.title)}</h2><h3>المستوى ${level.id} — ${escapeHtml(level.title)} · ${escapeHtml(lesson.subtitle||'')}</h3>`; if(lesson.intro) html += `<p class="pb-intro">${escapeHtml(lesson.intro)}</p>`; if(lesson.vocab){ html += `<table><thead><tr><th>الكورية</th><th>النطق</th><th>الشرح</th></tr></thead><tbody>`; html += lesson.vocab.map(v=>`<tr><td class="ko">${escapeHtml(v[0])}</td><td>${escapeHtml(v[1])}</td><td>${escapeHtml(v[2])}</td></tr>`).join(''); html += `</tbody></table>`; } if(lesson.sentences){ html += lesson.sentences.map(s=>`<div class="pb-sentence"><b class="kr">${escapeHtml(s.ko)}</b><br>${escapeHtml(s.ar)}</div>`).join(''); } if(lesson.note) html += `<div class="pb-note">💡 ${escapeHtml(lesson.note)}</div>`; html += `</div>`; }); });
+  return html;
+}
 function exportBook(scope){
   const levelsArr = scope==='all' ? LEVELS : [LEVELS.find(l=>l.id===STATE.currentLevelId)];
   const title = scope==='all' ? 'كتاب 한글이랑 الكامل لتعلّم الكورية' : `كتاب المستوى ${levelsArr[0].id} — ${levelsArr[0].title}`;
@@ -1343,42 +1495,14 @@ function exportBook(scope){
   setTimeout(()=> window.print(), 400);
 }
 
-/* ============================================================
-   الإقلاع وربط الأحداث
-   ============================================================ */
-async function handleStart(){
-  const input = document.getElementById('username-input');
-  const btn = document.getElementById('btn-start');
-  const errEl = document.getElementById('auth-error');
-  errEl.style.display='none';
-  const name = input.value.trim();
-  if(name.length < 2){ errEl.textContent='الرجاء إدخال اسم لا يقلّ عن حرفين'; errEl.style.display='block'; return; }
-  btn.textContent = '...جارٍ التحضير'; btn.disabled = true;
-  try{
-    STATE.user = await ensureUser(name);
-    await loadUserData(STATE.user);
-    afterLogin();
-  }catch(e){
-    errEl.textContent = 'تعذّر الاتصال بالخادم، حاولي مجدداً';
-    errEl.style.display='block';
-  }
-  btn.textContent = 'ابدأ التعلّم ←'; btn.disabled=false;
-}
+// ---------- الإقلاع ----------
+document.addEventListener('DOMContentLoaded', ()=>{
+  renderMiniLeaderboard();
 
-function afterLogin(){
-  document.getElementById('topbar').style.display='flex';
-  document.getElementById('mobile-nav').style.display='flex';
-  const bg = document.getElementById('brand-gate');
-  if(bg) bg.outerHTML = gateSVG('passed').replace('<svg ', '<svg id="brand-gate" class="brand-mark" ');
-  document.getElementById('user-pill-name').textContent = STATE.user.username;
-  goTo('dashboard');
-}
-
-document.addEventListener('DOMContentLoaded', async ()=>{
-  renderMiniLeaderboard('mini-leaderboard','mini-row');
-
-  document.getElementById('btn-start').addEventListener('click', handleStart);
-  document.getElementById('username-input').addEventListener('keydown', e=>{ if(e.key==='Enter') handleStart(); });
+  document.getElementById('btn-login').addEventListener('click', handleLogin);
+  document.getElementById('login-password-input').addEventListener('keydown', e=>{ if(e.key==='Enter') handleLogin(); });
+  document.getElementById('login-username-input').addEventListener('keydown', e=>{ if(e.key==='Enter') handleLogin(); });
+  document.getElementById('login-phone-input').addEventListener('keydown', e=>{ if(e.key==='Enter') handleLogin(); });
 
   document.querySelectorAll('.nav-tabs button, .mobile-nav button').forEach(b=>{
     b.addEventListener('click', ()=> goTo(b.dataset.go));
@@ -1388,27 +1512,57 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   document.getElementById('btn-export-level').addEventListener('click', ()=> exportBook('level'));
   document.getElementById('btn-export-all').addEventListener('click', ()=> exportBook('all'));
 
-  document.getElementById('btn-complete-lesson').addEventListener('click', async ()=>{
+  document.getElementById('btn-complete-lesson').addEventListener('click', ()=>{
     const level = LEVELS.find(l=>l.id===STATE.currentLevelId);
     const lesson = level.lessons[STATE.currentLessonIdx];
-    const changed = await markLessonComplete(level.id, lesson.id);
-    if(changed) toast('+10 XP · أُنجز الدرس');
+    const key = level.id+'-'+lesson.id;
+    if(!STATE.progress[key]){
+      STATE.progress[key] = true;
+      setProgress(STATE.user.id, level.id, lesson.id, true);
+      const stats = getUserStats(STATE.user.id);
+      stats.lessons_completed += 1;
+      stats.xp += 10;
+      updateUserStats(STATE.user.id, stats);
+      STATE.stats = stats;
+      toast('+10 XP · أُنجز الدرس');
+    }
     openLesson(level.id, STATE.currentLessonIdx);
   });
+  
   document.getElementById('btn-next-lesson').addEventListener('click', ()=>{
     const level = LEVELS.find(l=>l.id===STATE.currentLevelId);
     if(STATE.currentLessonIdx < level.lessons.length-1) openLesson(level.id, STATE.currentLessonIdx+1);
     else openLevel(level.id);
   });
 
+  // محاولة استرجاع جلسة سابقة
   const savedId = localStorage.getItem('hi_user_id');
   const savedName = localStorage.getItem('hi_username');
   if(savedId && savedName){
-    try{
-      STATE.user = { id: savedId, username: savedName };
-      await loadUserData(STATE.user);
-      afterLogin();
-    }catch(e){ /* فشل الاسترجاع التلقائي — تبقى شاشة الدخول ظاهرة */ }
+    const user = findUserById(savedId);
+    if(user && user.status === 'approved'){
+      const deviceId = getDeviceId();
+      if(user.device_id && user.device_id !== deviceId){
+        localStorage.removeItem('hi_user_id');
+        localStorage.removeItem('hi_username');
+        toast('⚠️ تم اكتشاف محاولة دخول من جهاز مختلف. الرجاء تسجيل الدخول مجدداً.');
+      } else {
+        STATE.user = { id: savedId, username: savedName };
+        STATE.stats = getUserStats(savedId);
+        STATE.progress = {};
+        getProgress(savedId).forEach(p => { if(p.completed) STATE.progress[p.level_id+'-'+p.lesson_id] = true; });
+        afterLogin();
+      }
+    } else if(user && user.status === 'pending'){
+      toast('⏳ حسابك لا يزال في انتظار الموافقة');
+    } else if(user && user.status === 'rejected'){
+      toast('❌ تم رفض حسابك');
+      localStorage.removeItem('hi_user_id');
+      localStorage.removeItem('hi_username');
+    } else {
+      localStorage.removeItem('hi_user_id');
+      localStorage.removeItem('hi_username');
+    }
   }
 });
 </script>
